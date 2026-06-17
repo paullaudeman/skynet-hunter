@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T-800 skull ~ proof sheet</title>
+<style>
+  body{margin:0;background:radial-gradient(ellipse at 50% -10%,#2a1310,#0a0706 55%) fixed;color:#d9cfc9;font-family:-apple-system,Segoe UI,Roboto,sans-serif}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,.22) 2px 3px);mix-blend-mode:multiply}
+  .wrap{max-width:1000px;margin:0 auto;padding:2rem 1rem 4rem}
+  h1{color:#ff5141;text-shadow:0 0 10px rgba(255,45,32,.4);letter-spacing:.04em}
+  p.sub{color:#9a8c84}
+  .sheet{display:flex;flex-wrap:wrap;gap:1.4rem;justify-content:center}
+  .card{background:#0c0807;border:1px solid #8e1810;border-radius:8px;padding:1rem 1.2rem 1.2rem;text-align:center;box-shadow:0 0 24px rgba(255,45,32,.08)}
+  .label{font-family:ui-monospace,Menlo,monospace;color:#ffb000;font-weight:600;letter-spacing:.06em}
+  .desc{color:#9a8c84;font-size:.8rem;margin:.1rem 0 .8rem}
+  .grid{display:grid;gap:0;width:max-content;margin:0 auto;filter:drop-shadow(0 0 6px rgba(255,45,32,.2))}
+  .px{width:10px;height:10px}
+  .px.eye{box-shadow:0 0 5px 1px #ff5141,0 0 11px 3px rgba(255,45,32,.55);position:relative;z-index:2}
+</style></head><body><div class="wrap">
+<h1>&#129302; T-800 ~ proof sheet</h1>
+<p class="sub">Five variations of the pixel skull. Pick one (A&ndash;E) and I&rsquo;ll promote it into the explainer header and the TUI.</p>
+<div class="sheet" id="sheet"></div>
+</div>
+<script>
+const PAL={"b": "#4f80a4", "B": "#8fc0dd", "w": "#e8edf2", "G": "#a7adb8", "g": "#767c88", "d": "#454b5c", "k": "#20242e", "r": "#b8331e", "R": "#ff4d2c", "x": "#ffffff", "y": "#bd9f36", "Y": "#edcb60"};
+const VARIANTS={"A \u00b7 baseline": {"desc": "the current one", "rows": ["......bBBBBb......", "....bBGGGGGGBb....", "...bGwwwwwwwwGb...", "..bGwwwGGGGwwwGb..", ".bGwwGGggggGGwwGb.", ".bGwGGgddddggGwGb.", "bGwGgdkkkddkdgGwGb", "bGGgddkkkkkkddgGGb", "bGgdkkRxkkxRkkdgGb", "bGgdkkRxkkxRkkdgGb", "bGGgdkkkddkkkdgGGb", ".bGggdkkddkkdggGb.", ".bGGggddddddggGGb.", "..bGGgggkkgggGGb..", "..bGGGgdkkdgGGGb..", "...bGGgdkkdgGGb...", "...bGGggddggGGb...", "..bGGgyYYYYygGGb..", "..bGggyyyyyyggGb..", "...bGGgddddgGGb...", "....bGGddddGGb....", ".....bGGGGGGb.....", "......bgddgb......", ".......bggb......."]}, "B \u00b7 wide jaw": {"desc": "broader lower face / jaw", "rows": ["......bBBBBb......", "....bBGGGGGGBb....", "...bGwwwwwwwwGb...", "..bGwwwGGGGwwwGb..", ".bGwwGGggggGGwwGb.", ".bGwGGgddddggGwGb.", "bGwGgdkkkddkdgGwGb", "bGGgddkkkkkkddgGGb", "bGgdkkRxkkxRkkdgGb", "bGgdkkRxkkxRkkdgGb", "bGGgdkkkddkkkdgGGb", ".bGggdkkddkkdggGb.", ".bGGggddddddggGGb.", "..bGGgggkkgggGGb..", "..bGGGgdkkdgGGGb..", "...bGGgdkkdgGGb...", "...bGGggddggGGb...", ".bGGggyYYYYyggGGb.", ".bGgggyyyyyygggGb.", ".bGGgggddddgggGGb.", "..bGGGddddddGGGb..", "..bGGGGddddGGGGb..", "...bGGGGGGGGGGb...", "....bGGGGGGGGb...."]}, "C \u00b7 gaunt": {"desc": "narrower, more skeletal", "rows": [".......bBBb.......", ".....bBGGGGBb.....", "....bGwwwwwwGb....", "...bGwwGGGGwwGb...", "..bGwGgddddgGwGb..", "..bGwGdkkkkdGwGb..", "..bGGgdkkkkdgGGb..", "..bGgdkRxxRkdgGb..", "..bGgdkRxxRkdgGb..", "..bGGgdkkkkdgGGb..", "...bGgdkkkkdgGb...", "...bGGgddddgGGb...", "...bGGggddggGGb...", "....bGGgddgGGb....", "....bGGddddGGb....", ".....bGyyyyGb.....", ".....bGGddGGb.....", "......bGddGb......", ".......bGGb.......", "........bb........"]}, "D \u00b7 big grin": {"desc": "prominent toothy grin", "rows": ["......bBBBBb......", "....bBGGGGGGBb....", "...bGwwwwwwwwGb...", "..bGwwwGGGGwwwGb..", ".bGwwGGggggGGwwGb.", ".bGwGGgddddggGwGb.", "bGwGgdkkkddkdgGwGb", "bGGgddkkkkkkddgGGb", "bGgdkkRxkkxRkkdgGb", "bGgdkkRxkkxRkkdgGb", "bGGgdkkkddkkkdgGGb", ".bGggdkkddkkdggGb.", ".bGGggddddddggGGb.", "..bGGgggkkgggGGb..", "..bGGGgdkkdgGGGb..", "...bGGgdkkdgGGb...", "...bGGggddggGGb...", ".bGgyYYYYYYYYygGb.", ".bGggyYYYYYYyggGb.", ".bGGgyyyyyyyygGGb.", "..bGGggddddggGGb..", "..bGGgddddddgGGb..", "...bGGgddddgGGb...", "....bGGddddGGb...."]}, "E \u00b7 heavy brow": {"desc": "deeper brow, smaller eyes", "rows": ["......bBBBBb......", "....bBGGGGGGBb....", "...bGwwwwwwwwGb...", "..bGwwwGGGGwwwGb..", ".bGwwGGggggGGwwGb.", ".bGwGGgddddggGwGb.", "bGwGddkkkkkkddgGwG", "bGGddkkkkkkkkddgGG", "bGgdkkkRxxRkkkdgGG", "bGgdkkkRxxRkkkdgGG", "bGGddkkkkkkkkddgGG", ".bGggdkkddkkdggGb.", ".bGGggddddddggGGb.", "..bGGgggkkgggGGb..", "..bGGGgdkkdgGGGb..", "...bGGgdkkdgGGb...", "...bGGggddggGGb...", "..bGGgyYYYYygGGb..", "..bGggyyyyyyggGb..", "...bGGgddddgGGb...", "....bGGddddGGb....", ".....bGGGGGGb.....", "......bgddgb......", ".......bggb......."]}};
+const sheet=document.getElementById('sheet');
+for(const [label,info] of Object.entries(VARIANTS)){
+  const card=document.createElement('div'); card.className='card';
+  const lab=document.createElement('div'); lab.className='label'; lab.textContent=label; card.appendChild(lab);
+  const desc=document.createElement('div'); desc.className='desc'; desc.textContent=info.desc; card.appendChild(desc);
+  const grid=document.createElement('div'); grid.className='grid';
+  const W=info.rows[0].length;
+  grid.style.gridTemplateColumns='repeat('+W+',10px)';
+  for(const row of info.rows){ for(const ch of row){ const d=document.createElement('div'); d.className='px'; const c=PAL[ch]; if(c){ d.style.background=c; if(ch==='R'||ch==='x') d.classList.add('eye'); } grid.appendChild(d);} }
+  card.appendChild(grid); sheet.appendChild(card);
+}
+</script></body></html>
