@@ -9,6 +9,8 @@ license = { text = "MIT" }
 dependencies = [
     "anthropic>=0.49.0",
     "pydantic>=2.6",
+    "textual>=0.89.0",
+    "rich>=13.0.0",
 ]
 
 [project.optional-dependencies]

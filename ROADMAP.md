@@ -19,6 +19,16 @@ First pass shipped the full agentic demo (3 units, adversarial grid, both engine
 - **Difficulty levels** ~ deeper obfuscation (multi-hop association chains) that force more cycles and reward the adaptive unit harder.
 - **Web TUI** ~ a browser front end mirroring the HUD for a shareable link.
 
+## Interactive TUI 🖥️ (next phase candidate)
+
+A Textual + Rich front end (matching the `gmdigest` stack: `src/tui/` with `app.py` / `widgets.py` / `themes.py`). The engine already supports this cleanly because `ui` is an injected interface ~ a `TextualUI` adapter implementing the same method surface (`mission_briefing`, `skynet_decision`, `deploy`, `tool_call`, `intel_report`, `target_acquired`) is a drop-in. One headless engine, two front-ends (CLI BBS theater + TUI).
+
+- **3-pane HUD:** unit roster w/ status lights · pursuit log · editable scenario panel.
+- **Thinking animation:** a widget cycling `analyzing . / .. / ...` while a step is in flight (simulate: paced; live: while awaiting the API call, later streaming real adaptive-thinking summaries via `display:"summarized"`).
+- **Scenario editing + regen:** bind the template fields to Textual inputs; `[Regenerate]` rebuilds the `Scenario`, `[Run]` kicks the pursuit. Needs a small `build_scenario(overrides=…)` extension.
+- **Threading:** `Skynet.run()` runs in a `@work(thread=True)` worker; the adapter posts via `app.call_from_thread`.
+- Phasing: ~~(1) adapter + basic 3-pane run~~ ✅ **shipped** (`--tui`), (2) thinking `...` animation + richer status lights, (3) editable scenario panel + regen.
+
 ## Bigger swing: a Skynet-themed MUD 🌐
 
 A persistent, hostable, multiplayer Skynet world you can actually log into and play. This is the natural evolution of the orchestration pattern ~ same bones, more agents and state:

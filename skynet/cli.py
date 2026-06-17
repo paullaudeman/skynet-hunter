@@ -51,6 +51,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="Agentic Terminator demo: Skynet hunts John Connor across a synthetic 1984 LA grid.",
     )
     p.add_argument("--simulate", action="store_true", help="Run offline (no API key, deterministic).")
+    p.add_argument("--tui", action="store_true", help="Launch the interactive Textual TUI (offline).")
     p.add_argument("--theme", choices=["platinum", "silver", "amber"], help="Override the terminal theme.")
     p.add_argument("--scenario", choices=scenario.SCENARIO_CHOICES, default="john-connor",
                    help="Which hunt to run. 'random' rerolls a fresh scenario.")
@@ -75,6 +76,11 @@ def main(argv: list[str] | None = None) -> int:
     theme = Theme(theme_name)
     ui = UI(theme, art=not args.no_art)
     units = build_units(config)
+
+    if args.tui:
+        from .tui.app import run_tui
+        run_tui(units, sc, max_cycles)
+        return 0
 
     if args.simulate:
         simulate.run_simulation(units, sc, ui, max_cycles)

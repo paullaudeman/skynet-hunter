@@ -47,6 +47,10 @@ uv run python -m skynet --simulate
 cp .env.example .env          # then paste your ANTHROPIC_API_KEY
 uv run python -m skynet
 
+# Interactive TUI ~ a 3-pane HUD (Textual). Press r to engage, q to quit.
+uv run python -m skynet --tui
+uv run python -m skynet --tui --scenario random
+
 # Scenario randomiser ~ a different hunt each run
 uv run python -m skynet --simulate --scenario random        # reroll a fresh target
 uv run python -m skynet --simulate --scenario random --seed 11   # reproducible reroll
