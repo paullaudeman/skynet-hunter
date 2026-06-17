@@ -20,13 +20,15 @@ STATUS_GLYPH = {"idle": "○", "thinking": "◉", "deployed": "●"}
 UNIT_GLYPH = {"skynet": "◤", "t1000": "❖", "t800": "⚙"}
 
 CSS = """
-Screen { background: #0a0706; color: #d9cfc9; }
+/* CRT feel: hatch draws faint horizontal scanlines into the background;
+   heavy borders read like a monitor bezel; power-on flicker lives in app.py. */
+Screen { background: #0a0706; color: #d9cfc9; hatch: horizontal #2a1210 22%; }
 
 #titlebar {
     height: 3;
     content-align: center middle;
     background: #0c0807;
-    border: round #8e1810;
+    border: heavy #8e1810;
     color: #ff5141;
     text-style: bold;
 }
@@ -35,13 +37,14 @@ Screen { background: #0a0706; color: #d9cfc9; }
 
 #units {
     width: 28;
-    border: round #8e1810;
+    border: heavy #8e1810;
     padding: 1 1;
+    hatch: horizontal #1c0c0a 18%;
 }
 
 #log {
     width: 1fr;
-    border: round #8e1810;
+    border: heavy #8e1810;
     background: #0d0908;
     padding: 0 1;
     scrollbar-color: #8e1810 #0a0706;
@@ -49,8 +52,9 @@ Screen { background: #0a0706; color: #d9cfc9; }
 
 #scenario {
     width: 34;
-    border: round #8e1810;
+    border: heavy #8e1810;
     padding: 1 1;
+    hatch: horizontal #1c0c0a 18%;
 }
 
 Footer { background: #150f0d; }

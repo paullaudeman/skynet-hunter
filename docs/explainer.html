@@ -49,6 +49,10 @@
   @keyframes hum{50%{text-shadow:0 0 10px var(--red-glow),0 0 22px rgba(255,45,32,.45)}}
   .eye{color:#fff2ec;text-shadow:0 0 4px #fff,0 0 9px #ff5141,0 0 18px var(--red),0 0 30px var(--red);animation:eyepulse 2.2s ease-in-out infinite}
   @keyframes eyepulse{0%,100%{opacity:.82}50%{opacity:1}}
+  .skull-grid{--px:9px;display:grid;gap:0;width:max-content;margin:.4rem auto .2rem;filter:drop-shadow(0 0 7px rgba(255,45,32,.22));}
+  .skull-grid .px{width:var(--px);height:var(--px);}
+  .skull-grid .px.eye{box-shadow:0 0 5px 1px #ff5141,0 0 11px 3px rgba(255,45,32,.55);position:relative;z-index:2;animation:eyepulse 2.2s ease-in-out infinite;}
+  @media (max-width:560px){ .skull-grid{--px:7px;} }
   .conn{font-family:var(--mono);font-size:.72rem;color:var(--green);margin:.9rem 0 .2rem;letter-spacing:.02em}
   .conn .grant{color:#fff;background:var(--red-deep);padding:.08em .5em;border-radius:3px;text-shadow:none}
   .cursor{color:var(--red-br);animation:blink 1s steps(1) infinite}
@@ -114,19 +118,7 @@
 
 <header>
   <div class="titlebar">Cyberdyne Systems · Skynet Defense Network · Model 101</div>
-<pre class="skull">          ▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-       ▄████████████████████▄
-      ██████████████████████████
-     ███▀▀              ▀▀███
-    ███    ▄████▄  ▄████▄    ███
-    ██     █ <span class="eye">██</span> █  █ <span class="eye">██</span> █     ██
-    ██     ▀████▀  ▀████▀     ██
-    ███       ▄███▄       ███
-     ███▄    ▀▀▀▀▀▀▀    ▄███
-      ███   █▀█▀█▀█▀█▀   ███
-      ██    █▄█▄█▄█▄█▄    ██
-       ▀███▄         ▄███▀
-         ▀▀█████████████▀▀</pre>
+<div id="skull" class="skull-grid" aria-label="T-800 endoskeleton"></div>
   <div class="conn">ATDT 1&#8209;800&#8209;SKYNET … CARRIER DETECTED … CONNECT 9600 … <span class="grant">ACCESS GRANTED</span> <span class="cursor">█</span></div>
   <div class="band">▓▒░ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ░▒▓</div>
   <h1><span class="bot">🤖</span> Skynet Hunter</h1>
@@ -361,6 +353,42 @@ uv run --extra dev pytest</code></pre>
 
 </div>
 <script>
+// Multi-colour pixel T-800 ~ data-driven so the map is easy to tune.
+(function(){
+  const SKULL=[
+    "......bBBBBb......",
+    "....bBGGGGGGBb....",
+    "...bGwwwwwwwwGb...",
+    "..bGwwwGGGGwwwGb..",
+    ".bGwwGGggggGGwwGb.",
+    ".bGwGGgddddggGwGb.",
+    "bGwGgdkkkddkdgGwGb",
+    "bGGgddkkkkkkddgGGb",
+    "bGgdkkRxkkxRkkdgGb",
+    "bGgdkkRxkkxRkkdgGb",
+    "bGGgdkkkddkkkdgGGb",
+    ".bGggdkkddkkdggGb.",
+    ".bGGggddddddggGGb.",
+    "..bGGgggkkgggGGb..",
+    "..bGGGgdkkdgGGGb..",
+    "...bGGgdkkdgGGb...",
+    "...bGGggddggGGb...",
+    "..bGGgyYYYYygGGb..",
+    "..bGggyyyyyyggGb..",
+    "...bGGgddddgGGb...",
+    "....bGGddddGGb....",
+    ".....bGGGGGGb.....",
+    "......bgddgb......",
+    ".......bggb......."
+  ];
+  const PAL={b:'#4f80a4',B:'#8fc0dd',w:'#e8edf2',G:'#a7adb8',g:'#767c88',d:'#454b5c',k:'#20242e',r:'#b8331e',R:'#ff4d2c',x:'#ffffff',y:'#bd9f36',Y:'#edcb60'};
+  const el=document.getElementById('skull'); if(!el) return;
+  el.style.gridTemplateColumns='repeat('+SKULL[0].length+', var(--px))';
+  const frag=document.createDocumentFragment();
+  for(const row of SKULL){ for(const ch of row){ const d=document.createElement('div'); d.className='px'; const c=PAL[ch]; if(c){ d.style.background=c; if(ch==='R'||ch==='x') d.classList.add('eye'); } frag.appendChild(d);} }
+  el.appendChild(frag);
+})();
+
 function cp(btn){
   const code = btn.parentElement.querySelector('code').innerText;
   navigator.clipboard.writeText(code).then(()=>{

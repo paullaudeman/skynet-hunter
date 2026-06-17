@@ -21,6 +21,7 @@ from textual.app import App, ComposeResult
 from textual.containers import Horizontal
 from textual.widgets import Footer, RichLog, Static
 
+from .skull import skull_text
 from .themes import CSS, PALETTE
 from .widgets import ScenarioPanel, UnitsPanel
 
@@ -151,7 +152,7 @@ class SkynetApp(App):
 
     def compose(self) -> ComposeResult:
         yield Static(
-            f" CYBERDYNE // SKYNET TERMINAL    ::    OBJECTIVE: {self.scenario.target_name} ",
+            f" CYBERDYNE // SKYNET TERMINAL    ::    OBJECTIVE: {self.scenario.target_name} [blink]█[/] ",
             id="titlebar",
         )
         with Horizontal(id="body"):
@@ -162,9 +163,21 @@ class SkynetApp(App):
 
     def on_mount(self) -> None:
         self.units_panel = self.query_one(UnitsPanel)
-        self.query_one("#log", RichLog).write(
+        log = self.query_one("#log", RichLog)
+        log.write(skull_text())
+        log.write(
             f"[{PALETTE['dim']}]Terminal ready. Press [bold {PALETTE['red']}]r[/] to engage the pursuit.[/]"
         )
+        self._power_on()
+
+    def _power_on(self) -> None:
+        """CRT warm-up flicker ~ ramp the screen opacity with a couple of dips."""
+        self.screen.styles.opacity = 0.0
+        for delay, value in [(0.05, 0.65), (0.12, 0.12), (0.19, 0.9), (0.28, 0.35), (0.38, 1.0)]:
+            self.set_timer(delay, lambda v=value: self._screen_opacity(v))
+
+    def _screen_opacity(self, value: float) -> None:
+        self.screen.styles.opacity = value
 
     # -- thread-safe widget updates (called via call_from_thread) --
     def log_line(self, markup: str) -> None:
