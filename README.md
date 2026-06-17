@@ -6,7 +6,16 @@
 ▓▒░ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ░▒▓
 ```
 
-It's a toy with a real lesson inside it: **multi-agent orchestration, tool use, and structured output**, costumed as a Skynet command hierarchy. The command structure *is* the agent topology. The model tiers *are* an architecture decision.
+A toy? No ~ a first step. It's **multi-agent orchestration, tool use, and structured output**, costumed as a Skynet command hierarchy. The command structure *is* the agent topology; the model tiers *are* an architecture decision.
+
+**What it demonstrates**
+
+- An **orchestrator → worker → tools** agent loop ~ hand-written, ~30 lines.
+- **Model tier as an architecture decision** ~ Opus to reason, Sonnet to adapt, Haiku to grind.
+- **Structured output** (Pydantic) as the typed contract between agents ~ no string-parsing.
+- **Adversarial data** that makes the task require reasoning, not a lookup.
+- **Two engines** ~ real Claude agents, and a deterministic `--simulate` mode that needs no key.
+- **No LangChain / LangGraph / CrewAI**, by design ~ knowing where *not* to add the abstraction is the point.
 
 ---
 
@@ -72,23 +81,67 @@ uv run --extra dev pytest
 
 ---
 
+## What a run looks like
+
+Offline (`--simulate`), ANSI stripped and trimmed:
+
+```text
+  PRIMARY OBJECTIVE: terminate John Connor
+  COUNTERMEASURES: Target concealed under alias 'John Reese'. A literal surname
+  sweep returns the mother and decoys ~ never the target.
+
+── ENGAGEMENT CYCLE 1 / 4 ──
+  ◤ SKYNET  [claude-opus-4-8]
+    ANALYSIS  ▸ No intel yet. The grid may file the target under an alias.
+    REASONING ▸ Start cheap and broad. A literal sweep is the T-800's purpose.
+    DECISION  ▸ deploy T-800
+  ⚙ DEPLOYING T-800  [claude-haiku-4-5]
+      ├─ query_grid(name_contains='Connor')
+      └─ grid ▸ 5 record(s)
+    ▣ T-800 INTEL  confidence 15%
+      5 surname matches. None match the target profile. No minor located.
+      note: One associate of interest: Sarah Connor ~ flagged with a dependent minor.
+
+── ENGAGEMENT CYCLE 2 / 4 ──
+  ◤ SKYNET  [claude-opus-4-8]
+    ANALYSIS  ▸ Sarah Connor carries a dependent-minor flag. That is the thread.
+    REASONING ▸ A blunt query can't defeat an alias. The T-1000 can cross-reference.
+    DECISION  ▸ deploy T-1000
+  ❖ DEPLOYING T-1000  [claude-sonnet-4-6]
+      ├─ cross_reference(name='Sarah Connor')
+      └─ grid ▸ 1 record(s)
+      ├─ interrogate(record_id='LA-1984-0742')
+      └─ grid ▸ John Reese
+    ▣ T-1000 INTEL  confidence 93%
+      candidate target: LA-1984-0742
+
+▓▒░ TARGET ACQUIRED ░▒▓
+  ◉ John Reese  (LA-1984-0742)
+    age 10 ~ student ~ Reseda
+  "Come with me if you want to live."
+```
+
+---
+
 ## How it's built
 
 ```
 skynet-hunter/
-├── config.toml            # mission + per-unit model/effort/colour mapping
+├── config.toml            # mission + per-unit model/colour mapping
 ├── data/
-│   └── los_angeles_1984.json   # synthetic grid; target obfuscated, surrounded by decoys
+│   └── los_angeles_1984.json   # neutral civilian pool (targets injected per scenario)
 ├── skynet/
-│   ├── grid.py            # the dataset + 3 tools (query_grid / interrogate / cross_reference)
+│   ├── grid.py            # dataset + 3 tools (query_grid / interrogate / cross_reference)
+│   ├── scenario.py        # templates + builder: injects the target per run (randomiser)
 │   ├── units.py           # per-terminator model config + personas
 │   ├── schemas.py         # Pydantic: IntelReport, SkynetDecision (structured output)
-│   ├── orchestrator.py    # the live engine: Skynet's loop + each unit's manual tool loop
+│   ├── orchestrator.py    # live engine: Skynet's loop + each unit's manual tool loop
 │   ├── simulate.py        # deterministic offline mirror (no API)
-│   ├── theme.py / ui.py   # ANSI/BBS theater: boot, HUD, typewriter, colour-coded output
-│   └── cli.py             # argparse entry point
-├── docs/explainer.html    # self-contained visual explainer (intro / concepts / implementation)
-└── tests/
+│   ├── theme.py / ui.py   # CLI front end: ANSI/BBS theater
+│   ├── tui/               # TUI front end: TextualUI adapter, app, widgets
+│   └── cli.py             # entry point (--simulate / --tui / --scenario)
+├── docs/explainer.html    # self-contained visual explainer
+└── tests/                 # grid, scenario, simulate, tui adapter (14 tests)
 ```
 
 **The three patterns worth internalizing:**
@@ -96,6 +149,7 @@ skynet-hunter/
 - **Tool use** ~ `grid.py` defines three tools as JSON schemas with one `execute_tool` dispatcher. A unit's manual agentic loop (`orchestrator.deploy`) feeds them to `client.messages.create(tools=...)`, runs tool calls, feeds results back, repeats until `stop_reason != "tool_use"`.
 - **Structured output** ~ Skynet's decisions and every intel report come back as validated Pydantic models via `client.messages.parse(output_format=...)`. No fragile string parsing between agents.
 - **Orchestration** ~ the orchestrator reasons (Skynet) and the workers execute (terminators + tools). That separation is the reusable shape; the Terminator skin is just paint.
+- **No framework** ~ no LangChain, LangGraph, or CrewAI. Just the Anthropic SDK + a hand-written loop. A framework would hide the loop this demo exists to show, behind indirection and a dependency tree. They earn their keep at real complexity (many agents, branching state, durable execution); this isn't that.
 
 📖 **Full walkthrough:** open `docs/explainer.html` in a browser.
 
