@@ -161,4 +161,4 @@ Future build-out lives in [`ROADMAP.md`](ROADMAP.md) ~ PyPI packaging, a live OS
 
 ## License
 
-MIT.
+© 2026 Paul Laudeman. Released under the [MIT License](LICENSE).

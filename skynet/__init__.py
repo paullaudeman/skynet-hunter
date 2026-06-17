@@ -6,3 +6,6 @@ the model tiers are the lesson.
 """
 
 __version__ = "0.1.0"
+__author__ = "Paul Laudeman"
+__copyright__ = "© 2026 Paul Laudeman"
+__license__ = "MIT"
