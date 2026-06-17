@@ -17,3 +17,6 @@ build/
 
 # OS
 .DS_Store
+
+# Internal planning ~ not for the public repo
+where-to-go-next-plans.md
