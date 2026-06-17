@@ -148,8 +148,12 @@
 </header>
 
 <h2>1 · What this is</h2>
-<p class="lead">A toy with a real lesson inside it. <span class="skynet">Skynet</span> runs the mission ~ hunt <b>John Connor</b> ~ by commanding terminator sub-agents that use tools to search a synthetic 1984 Los Angeles grid.</p>
-<p>It's a multi-agent orchestration demo wearing a T-800 mask. The scary part isn't the AI; it's how clean the separation of concerns is. Skynet reasons and decides. The terminators execute. The tools touch the data. Strip the costume and you have the canonical <b>orchestrator → worker → tools</b> loop you'd build for any real agentic system.</p>
+<p class="lead"><b>A toy? No ~ a first step.</b> <span class="skynet">Skynet</span> runs the mission ~ hunt <b>John Connor</b> ~ by commanding terminator sub-agents that use tools to search a synthetic 1984 Los Angeles grid. The skin is 1984. The architecture underneath ~ an intelligence that plans, delegates, and acts through tools ~ is the one everything is being built on right now. <span class="t800">That part isn't the costume.</span></p>
+<p>It's a multi-agent orchestration demo wearing a T-800 mask. The unsettling thing isn't the AI; it's how clean the separation of concerns is. Skynet reasons and decides. The terminators execute. The tools touch the data. Strip the costume and you have the canonical <b>orchestrator → worker → tools</b> loop you'd build for any real agentic system ~ because it <em>is</em> one.</p>
+
+<div class="callout">
+  <b>First step, not last.</b> Strip the Terminator paint and the loop is unchanged: an orchestrator that reasons, delegates to workers, acts through tools, and decides again. Today it hunts a 10-year-old who doesn't exist, on a grid from 1984. <span class="t800">The architecture doesn't care what you point it at.</span> That's the part worth sitting with ~ the costume is the only thing keeping it cute.
+</div>
 
 <div class="callout">
   <b>Two engines.</b> Run it live (real Claude agents calling tools, needs an API key) or offline (<code>--simulate</code> ~ deterministic, no key, no credit spent). The offline path is the friend-demo: it cannot flake or rate-limit. That's not paranoia, it's blast-radius hygiene.
