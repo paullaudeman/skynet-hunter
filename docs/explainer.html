@@ -133,7 +133,7 @@
   <p class="sub">A Terminator-themed demo of multi-agent orchestration, tool use, and structured output. The command hierarchy <em>is</em> the agent topology.</p>
   <div>
     <span class="tag">Python</span><span class="tag">Anthropic SDK</span>
-    <span class="tag">tool use</span><span class="tag">structured output</span><span class="tag">orchestration</span>
+    <span class="tag">tool use</span><span class="tag">structured output</span><span class="tag">orchestration</span><span class="tag">Textual TUI</span>
   </div>
 </header>
 
@@ -188,7 +188,51 @@
 </ul>
 <p>The blunt <span class="t800">T-800</span> fails on the literal sweep. The adaptive <span class="t1000">T-1000</span> reasons its way in. <em>That gap is the demo.</em></p>
 
-<h2>6 · Tech stack</h2>
+<h2>6 · See it reason ~ and re-roll the hunt</h2>
+<p>Two upgrades make the demo watchable and replayable.</p>
+
+<h3>Explanatory decisioning</h3>
+<p>Skynet doesn't just emit a verdict ~ it narrates an <b>assessment → reasoning → expectation</b> chain, and each unit reports its <b>method</b>. The viewer sees the <em>why</em>, not just the move. These are structured-output fields, so they're always present and render identically in both front ends.</p>
+<div class="codeblock">
+<pre><code><span style="color:var(--blue)">◤ SKYNET</span> <span style="color:var(--gray)">[claude-opus-4-8]</span>
+<span style="color:var(--gray)">  ANALYSIS  ▸</span> The literal sweep returned only decoys, but Sarah Connor
+              carries a dependent-minor flag. That is the thread.
+<span style="color:var(--gray)">  REASONING ▸</span> A blunt query cannot defeat an alias. Deploy the T-1000 to
+              cross-reference the protector.
+<span style="color:var(--amber)">  DECISION  ▸ deploy T-1000</span>
+<span style="color:var(--gray)">  EXPECT    ▸</span> The aliased record of the hidden minor.</code></pre>
+</div>
+
+<h3>Scenario randomiser</h3>
+<p>The dataset on disk is now just a neutral civilian population. Each run, a <em>scenario</em> injects the target (under an alias), the protector (who shares the target's real surname and carries the "dependent minor" flag), and a handful of surname decoys. <code>--scenario random --seed N</code> rerolls a fresh, reproducible hunt; named templates (<code>john-connor</code>, <code>danny-dyson</code>, <code>blair-brewster</code>, <code>eli-vega</code>) pick a specific one.</p>
+<div class="callout">
+  <b>The invariant that survives randomisation:</b> a literal surname sweep always misses the aliased target but surfaces the protector; cross-referencing the protector always reaches the target. That's what keeps every reroll solvable ~ and keeps the <span class="t800">T-800</span> / <span class="t1000">T-1000</span> gap meaningful.
+</div>
+
+<h2>7 · Two front-ends, one engine</h2>
+<p>The engine is headless. It never prints ~ it calls methods on an injected <code>ui</code> object (<code>skynet_decision</code>, <code>deploy</code>, <code>tool_call</code>, <code>intel_report</code>, …). That one design choice means a whole new front end costs almost nothing:</p>
+<ul>
+  <li><b>CLI</b> ~ the <code>UI</code> class prints the ANSI/BBS theater.</li>
+  <li><b>TUI</b> ~ a <code>TextualUI</code> adapter implements the <em>same methods</em> and posts to Textual widgets. The engine doesn't change a line.</li>
+</ul>
+<p>The Textual TUI (<code>--tui</code>) is a 3-pane HUD: unit roster with live status lights, a streaming pursuit log, and the scenario summary. The pursuit runs in a worker thread; updates marshal back to the UI thread via <code>call_from_thread</code>.</p>
+<div class="codeblock">
+<pre><code> CYBERDYNE // SKYNET TERMINAL ────────── OBJECTIVE: John Connor
+ UNITS              │ PURSUIT LOG                 │ SCENARIO
+ ◤ SKYNET  ◉ think  │ ◤ SKYNET [opus-4-8]         │ target   John Connor
+   opus-4-8         │   ANALYSIS ▸ …              │ alias    John Reese
+ ❖ T-1000  ○ idle   │   DECISION ▸ deploy T-800   │ protector Sarah Connor
+   sonnet-4-6       │ ⚙ T-800 deployed            │ relation mother
+ ⚙ T-800   ● deploy │   ├ query_grid(Connor)      │
+   haiku-4-5        │   └ grid ▸ 5 records        │ press r to engage
+ ─────────────────────────────────────────────────────────────
+ r Run   q Quit</code></pre>
+</div>
+<div class="callout">
+  <b>The lesson:</b> program the engine against an <em>interface</em>, not a printer. Presentation becomes swappable ~ ANSI today, Textual now, a web UI or a MUD later, all over the same agent loop.
+</div>
+
+<h2>8 · Tech stack</h2>
 <p>Deliberately dependency-light: <b>two</b> runtime dependencies (<code>anthropic</code>, <code>pydantic</code>) ~ everything else is the Python standard library. No TUI framework, no web server, no database.</p>
 
 <h3>Language &amp; runtime</h3>
@@ -212,25 +256,28 @@
 
 <h3>Presentation &amp; testing</h3>
 <div class="cards">
-  <div class="card"><h4>Raw ANSI truecolor</h4><p>The BBS theater (boot sequence, HUD, gradient bands, typewriter) is hand-rolled escape codes ~ <em>zero</em> TUI dependency. No <code>rich</code>, no <code>curses</code>.</p></div>
-  <div class="card"><h4>pytest</h4><p>Smoke tests lock the grid's obfuscation and guarantee the offline path always acquires the target.</p></div>
+  <div class="card"><h4>Raw ANSI truecolor</h4><p>The CLI BBS theater (boot sequence, HUD, gradient bands, typewriter) is hand-rolled escape codes ~ no framework.</p></div>
+  <div class="card"><h4>Textual + Rich</h4><p>The interactive TUI front end (<code>--tui</code>): a 3-pane HUD over the same headless engine via the <code>TextualUI</code> adapter.</p></div>
+  <div class="card"><h4>pytest</h4><p>Smoke tests lock the grid's obfuscation, the randomiser's solvability, and the adapter drive-through ~ 14 green.</p></div>
   <div class="card"><h4>This explainer</h4><p>Plain HTML + CSS, CRT-grunge palette, a few lines of vanilla JS for the copy buttons. Self-contained, single file.</p></div>
 </div>
 
-<h2>7 · Implementation</h2>
+<h2>9 · Implementation</h2>
 <div class="filemap">skynet-hunter/
   config.toml            <b>· mission + per-unit model/colour mapping</b>
-  data/los_angeles_1984.json   <b>· synthetic grid; target obfuscated + decoys</b>
+  data/los_angeles_1984.json   <b>· neutral civilian pool (targets injected per scenario)</b>
   skynet/
     grid.py              <b>· dataset + 3 tools + execute_tool dispatcher</b>
+    scenario.py          <b>· templates + builder: injects the target (randomiser)</b>
     units.py             <b>· per-terminator model config + personas</b>
     schemas.py           <b>· Pydantic: IntelReport, SkynetDecision</b>
     orchestrator.py      <b>· live engine: Skynet loop + each unit's tool loop</b>
     simulate.py          <b>· deterministic offline mirror (no API)</b>
-    theme.py / ui.py     <b>· ANSI/BBS theater: boot, HUD, typewriter</b>
-    cli.py               <b>· argparse entry point</b>
+    theme.py / ui.py     <b>· CLI front end: ANSI/BBS theater</b>
+    tui/                 <b>· TUI front end: TextualUI adapter, app, widgets</b>
+    cli.py               <b>· argparse entry point (--simulate / --tui / --scenario)</b>
   docs/explainer.html    <b>· this file</b>
-  tests/</div>
+  tests/                 <b>· 14 tests (grid, scenario, simulate, tui adapter)</b></div>
 
 <h3>The worker's manual agentic loop</h3>
 <p>The heart of <code>orchestrator.py</code>. A manual loop (rather than the SDK tool-runner) keeps every step visible ~ which is the point of a teaching demo.</p>
@@ -273,15 +320,22 @@ report = client.messages.<span class="c-fn">parse</span>(model=unit.model, messa
 decision = resp.parsed_output</code></pre>
 </div>
 
-<h2>8 · Run it</h2>
+<h2>10 · Run it</h2>
 <div class="codeblock">
 <button class="copy" onclick="cp(this)">copy</button>
 <pre><code><span class="c-cm"># offline ~ deterministic, no key. start here.</span>
 uv run python -m skynet --simulate
 
+<span class="c-cm"># interactive TUI ~ 3-pane HUD. press r to engage, q to quit.</span>
+uv run python -m skynet --tui
+
 <span class="c-cm"># live ~ real Claude agents calling tools</span>
 cp .env.example .env   <span class="c-cm"># paste ANTHROPIC_API_KEY</span>
 uv run python -m skynet
+
+<span class="c-cm"># re-roll the hunt</span>
+uv run python -m skynet --simulate --scenario random --seed 11
+uv run python -m skynet --tui --scenario danny-dyson
 
 <span class="c-cm"># options</span>
 uv run python -m skynet --simulate --theme amber   <span class="c-cm"># platinum | silver | amber</span>
@@ -289,9 +343,11 @@ uv run python -m skynet --simulate --no-art        <span class="c-cm"># mute the
 uv run --extra dev pytest</code></pre>
 </div>
 
-<h2>9 · Key takeaways</h2>
+<h2>11 · Key takeaways</h2>
 <ul class="takeaways">
   <li><b>Orchestrator ≠ worker.</b> One agent reasons over results; others execute against tools. Keep them separate and the system stays legible.</li>
+  <li><b>Program to an interface, not a printer.</b> The engine calls an injected <code>ui</code>; the CLI prints ANSI and the TUI posts to widgets over the <em>same</em> methods. Presentation became swappable for free.</li>
+  <li><b>Make the reasoning a first-class output.</b> Assessment → reasoning → expectation as structured fields ~ the demo explains itself, and the data is the same in every front end.</li>
   <li><b>Model tier is a design lever.</b> Opus where reasoning is the bottleneck; Haiku where you want cheap volume. Costume aside, that's the real decision.</li>
   <li><b>Structured output is the glue.</b> Pydantic schemas between agents beat string-parsing ~ validated, typed, and refactor-safe.</li>
   <li><b>Adversarial data makes it agentic.</b> Obfuscate the target and a single query can't win; the agent has to reason. Without that, it's just a database.</li>
