@@ -6,70 +6,106 @@
 <title>Skynet Hunter ~ Project Explainer</title>
 <style>
   :root{
-    --bg:#282828; --bg1:#32302f; --bg2:#3c3836; --bg3:#504945;
-    --fg:#ebdbb2; --fg-dim:#a89984; --gray:#928374;
-    --red:#fb4934; --green:#b8bb26; --yellow:#fabd2f;
-    --blue:#83a598; --purple:#d3869b; --aqua:#8ec07c; --orange:#fe8019;
-    --silver:#d5c4a1;
+    --bg:#0a0706; --bg1:#150f0d; --bg2:#1c1411; --bg3:#3a221d;
+    --fg:#d9cfc9; --fg-dim:#9a8c84; --gray:#7a6b63;
+    --red:#ff2d20; --red-br:#ff5141; --red-deep:#8e1810; --red-glow:rgba(255,45,32,.5);
+    --amber:#ffb000; --green:#3fcf5a; --silver:#cfc6bf; --blue:#6fb0c0;
     --mono:'SF Mono',ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;
     --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.6;font-size:16px}
-  .wrap{max-width:880px;margin:0 auto;padding:2rem 1.25rem 5rem}
-  header{text-align:center;padding:2.5rem 0 1.5rem;border-bottom:1px solid var(--bg3)}
-  .band{font-family:var(--mono);color:var(--gray);letter-spacing:.04em;font-size:.8rem}
-  h1{font-size:2.1rem;margin:.4rem 0 .2rem;letter-spacing:-.01em}
-  h1 .bot{filter:grayscale(.2)}
+  html{scrollbar-color:var(--red-deep) var(--bg)}
+  body{
+    margin:0;color:var(--fg);font-family:var(--sans);line-height:1.6;font-size:16px;
+    background:radial-gradient(ellipse at 50% -10%, #2a1310 0%, #0a0706 55%) fixed;
+  }
+  /* CRT scanlines + flicker ~ the grunge */
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.22) 2px 3px);
+    mix-blend-mode:multiply;animation:flick 6s infinite steps(60);
+  }
+  @keyframes flick{0%,96%,100%{opacity:1}97%{opacity:.85}98%{opacity:.95}}
+  .wrap{max-width:880px;margin:0 auto;padding:1.5rem 1.25rem 5rem;position:relative;z-index:1}
+
+  /* ---- BBS login header ---- */
+  header{
+    margin:1rem 0 1.5rem;padding:1.4rem 1rem 1.8rem;text-align:center;
+    background:#0c0807;border:1px solid var(--red-deep);border-radius:6px;
+    box-shadow:0 0 40px rgba(255,45,32,.12), inset 0 0 60px rgba(255,45,32,.05);
+  }
+  .titlebar{
+    font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;color:var(--red-br);
+    text-transform:uppercase;border:1px solid var(--red-deep);border-radius:4px;
+    display:inline-block;padding:.3rem .9rem;margin-bottom:1rem;
+    text-shadow:0 0 8px var(--red-glow);
+  }
+  .skull{
+    color:var(--red);text-shadow:0 0 6px var(--red-glow),0 0 14px rgba(255,45,32,.3);
+    font-family:var(--mono);font-size:clamp(.34rem,1.55vw,.78rem);line-height:1.02;
+    white-space:pre;display:block;width:fit-content;margin:0 auto;overflow-x:auto;max-width:100%;
+    animation:hum 4s ease-in-out infinite;
+  }
+  @keyframes hum{50%{text-shadow:0 0 10px var(--red-glow),0 0 22px rgba(255,45,32,.45)}}
+  .eye{color:#fff;text-shadow:0 0 4px #fff,0 0 10px var(--red),0 0 18px var(--red);animation:eye 3s infinite}
+  @keyframes eye{0%,95%,100%{opacity:1}96%{opacity:.25}97%{opacity:1}98%{opacity:.3}}
+  .conn{font-family:var(--mono);font-size:.72rem;color:var(--green);margin:.9rem 0 .2rem;letter-spacing:.02em}
+  .conn .grant{color:#fff;background:var(--red-deep);padding:.08em .5em;border-radius:3px;text-shadow:none}
+  .cursor{color:var(--red-br);animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .band{font-family:var(--mono);color:var(--gray);letter-spacing:.04em;font-size:.78rem;margin-top:.9rem}
+  h1{font-size:2.2rem;margin:.5rem 0 .2rem;letter-spacing:-.01em;color:var(--fg);text-shadow:0 0 10px rgba(255,45,32,.25)}
+  h1 .bot{filter:grayscale(.3) brightness(1.1)}
   .sub{color:var(--fg-dim);max-width:38rem;margin:.5rem auto 0}
-  h2{font-size:1.35rem;margin:2.6rem 0 .75rem;color:var(--yellow);border-left:3px solid var(--yellow);padding-left:.6rem}
-  h3{font-size:1.05rem;margin:1.4rem 0 .4rem;color:var(--aqua)}
-  a{color:var(--blue)}
-  code{font-family:var(--mono);background:var(--bg2);padding:.1em .35em;border-radius:4px;font-size:.88em;color:var(--silver)}
-  p code{color:var(--orange)}
+  .tag{display:inline-block;font-family:var(--mono);font-size:.7rem;padding:.12rem .5rem;border-radius:999px;border:1px solid var(--bg3);color:var(--fg-dim);margin:.15rem .2rem 0 0}
+
+  /* ---- sections ---- */
+  h2{
+    font-size:1.3rem;margin:2.8rem 0 .75rem;color:var(--red);text-transform:uppercase;
+    letter-spacing:.06em;border-left:3px solid var(--red);padding-left:.6rem;
+    text-shadow:0 0 10px var(--red-glow);
+  }
+  h2::before{content:"▌ ";color:var(--red-deep)}
+  h3{font-size:1.02rem;margin:1.4rem 0 .4rem;color:var(--amber);letter-spacing:.02em}
+  a{color:var(--red-br)}
+  code{font-family:var(--mono);background:var(--bg2);padding:.1em .35em;border-radius:4px;font-size:.88em;color:var(--silver);border:1px solid #2a1c18}
+  p code{color:var(--amber)}
   .lead{font-size:1.08rem;color:var(--fg)}
-  .tag{display:inline-block;font-family:var(--mono);font-size:.72rem;padding:.12rem .5rem;border-radius:999px;border:1px solid var(--bg3);color:var(--fg-dim);margin:.15rem .2rem 0 0}
+  .skynet{color:var(--blue)} .t1000{color:var(--silver)} .t800{color:var(--red-br)}
 
-  /* unit colors */
-  .skynet{color:var(--blue)} .t1000{color:var(--silver)} .t800{color:var(--red)}
-
-  /* flow diagram */
   .flow{display:flex;flex-direction:column;gap:.5rem;margin:1rem 0;font-family:var(--mono);font-size:.9rem}
   .node{background:var(--bg1);border:1px solid var(--bg3);border-radius:8px;padding:.7rem .9rem}
-  .node b{font-weight:600}
-  .arrow{text-align:center;color:var(--gray);font-size:1.1rem;line-height:1}
+  .arrow{text-align:center;color:var(--red-deep);font-size:1.1rem;line-height:1}
   .node.sky{border-left:4px solid var(--blue)}
   .node.unit{border-left:4px solid var(--silver)}
   .node.tools{border-left:4px solid var(--green)}
-  .node.report{border-left:4px solid var(--yellow)}
+  .node.report{border-left:4px solid var(--red)}
 
-  /* cards */
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem;margin:1rem 0}
-  .card{background:var(--bg1);border:1px solid var(--bg3);border-radius:10px;padding:1rem}
-  .card h4{margin:0 0 .3rem;font-size:.95rem;color:var(--orange)}
+  .card{background:var(--bg1);border:1px solid var(--bg3);border-radius:10px;padding:1rem;transition:border-color .15s,box-shadow .15s}
+  .card:hover{border-color:var(--red);box-shadow:0 0 18px rgba(255,45,32,.12)}
+  .card h4{margin:0 0 .3rem;font-size:.95rem;color:var(--amber)}
   .card p{margin:0;font-size:.9rem;color:var(--fg-dim)}
 
-  /* table */
   table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
   th,td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--bg3);vertical-align:top}
-  th{color:var(--yellow);font-weight:600}
+  th{color:var(--red-br);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:.82rem}
   td code{font-size:.82em}
 
-  /* code blocks */
   .codeblock{position:relative;margin:1rem 0}
-  pre{background:#1d2021;border:1px solid var(--bg3);border-radius:10px;padding:1rem 1rem;overflow-x:auto;margin:0}
-  pre code{background:none;padding:0;color:var(--fg);font-size:.82rem;line-height:1.55}
-  .copy{position:absolute;top:.5rem;right:.5rem;background:var(--bg3);color:var(--fg-dim);border:none;border-radius:6px;padding:.25rem .6rem;font-family:var(--mono);font-size:.72rem;cursor:pointer}
-  .copy:hover{background:var(--bg);color:var(--fg)}
-  .c-kw{color:var(--red)} .c-fn{color:var(--green)} .c-str{color:var(--green)} .c-cm{color:var(--gray);font-style:italic} .c-cls{color:var(--yellow)}
+  pre{background:#0d0908;border:1px solid var(--bg3);border-radius:10px;padding:1rem;overflow-x:auto;margin:0;box-shadow:inset 0 0 30px rgba(255,45,32,.04)}
+  pre code{background:none;padding:0;border:none;color:var(--fg);font-size:.82rem;line-height:1.55}
+  .copy{position:absolute;top:.5rem;right:.5rem;background:var(--bg3);color:var(--fg);border:none;border-radius:6px;padding:.25rem .6rem;font-family:var(--mono);font-size:.72rem;cursor:pointer}
+  .copy:hover{background:var(--red-deep)}
+  .c-kw{color:var(--red-br)} .c-fn{color:var(--green)} .c-str{color:var(--amber)} .c-cm{color:var(--gray);font-style:italic} .c-cls{color:var(--silver)}
 
-  .callout{background:var(--bg1);border:1px solid var(--bg3);border-left:4px solid var(--purple);border-radius:8px;padding:.9rem 1.1rem;margin:1.2rem 0}
-  .callout b{color:var(--purple)}
+  .callout{background:var(--bg1);border:1px solid var(--bg3);border-left:4px solid var(--red);border-radius:8px;padding:.9rem 1.1rem;margin:1.2rem 0}
+  .callout b{color:var(--red-br)}
   ul.takeaways{list-style:none;padding:0}
   ul.takeaways li{background:var(--bg1);border:1px solid var(--bg3);border-radius:8px;padding:.7rem .9rem;margin:.5rem 0}
-  ul.takeaways li b{color:var(--green)}
+  ul.takeaways li b{color:var(--amber)}
   footer{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--bg3);color:var(--gray);font-family:var(--mono);font-size:.78rem;text-align:center}
-  .filemap{font-family:var(--mono);font-size:.82rem;background:#1d2021;border:1px solid var(--bg3);border-radius:10px;padding:1rem;overflow-x:auto;color:var(--fg-dim)}
+  .filemap{font-family:var(--mono);font-size:.82rem;background:#0d0908;border:1px solid var(--bg3);border-radius:10px;padding:1rem;overflow-x:auto;color:var(--fg-dim)}
   .filemap b{color:var(--silver)}
 </style>
 </head>
@@ -77,6 +113,21 @@
 <div class="wrap">
 
 <header>
+  <div class="titlebar">Cyberdyne Systems · Skynet Defense Network · Model 101</div>
+<pre class="skull">          ▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+       ▄████████████████████▄
+      ████▀▀▀▀▀▀▀▀▀▀▀▀▀▀████
+     ███▀                  ▀███
+     ██     ▄▄▄▄      ▄▄▄▄     ██
+     ██    ██████    ██████    ██
+     ██    ██<span class="eye">██</span>██    ██<span class="eye">██</span>██    ██
+     ██    ██████    ██████    ██
+     ██     ▀▀▀▀      ▀▀▀▀     ██
+     ███    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄    ███
+      ██    █ █ █ █ █ █ █ █    ██
+      ▀██▄▄              ▄▄██▀
+        ▀▀████████████████▀▀</pre>
+  <div class="conn">ATDT 1&#8209;800&#8209;SKYNET … CARRIER DETECTED … CONNECT 9600 … <span class="grant">ACCESS GRANTED</span> <span class="cursor">█</span></div>
   <div class="band">▓▒░ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ░▒▓</div>
   <h1><span class="bot">🤖</span> Skynet Hunter</h1>
   <p class="sub">A Terminator-themed demo of multi-agent orchestration, tool use, and structured output. The command hierarchy <em>is</em> the agent topology.</p>
@@ -104,7 +155,7 @@
   <div class="arrow">▼ calls</div>
   <div class="node tools"><b style="color:var(--green)">🟢 GRID TOOLS</b> — <code>query_grid</code> · <code>interrogate</code> · <code>cross_reference</code></div>
   <div class="arrow">▲ returns an IntelReport</div>
-  <div class="node report"><b style="color:var(--yellow)">↻ back to SKYNET</b> — TARGET ACQUIRED, or run another cycle with a new strategy</div>
+  <div class="node report"><b style="color:var(--red-br)">↻ back to SKYNET</b> — TARGET ACQUIRED, or run another cycle with a new strategy</div>
 </div>
 
 <h2>3 · Three patterns worth internalizing</h2>
@@ -163,7 +214,7 @@
 <div class="cards">
   <div class="card"><h4>Raw ANSI truecolor</h4><p>The BBS theater (boot sequence, HUD, gradient bands, typewriter) is hand-rolled escape codes ~ <em>zero</em> TUI dependency. No <code>rich</code>, no <code>curses</code>.</p></div>
   <div class="card"><h4>pytest</h4><p>Smoke tests lock the grid's obfuscation and guarantee the offline path always acquires the target.</p></div>
-  <div class="card"><h4>This explainer</h4><p>Plain HTML + CSS, Gruvbox palette, a few lines of vanilla JS for the copy buttons. Self-contained, single file.</p></div>
+  <div class="card"><h4>This explainer</h4><p>Plain HTML + CSS, CRT-grunge palette, a few lines of vanilla JS for the copy buttons. Self-contained, single file.</p></div>
 </div>
 
 <h2>7 · Implementation</h2>

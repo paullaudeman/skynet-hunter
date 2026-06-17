@@ -13,6 +13,7 @@ class IntelReport(BaseModel):
     """What a deployed terminator returns to Skynet."""
 
     unit: str = Field(description="Designation of the reporting unit, e.g. 'T-800'.")
+    method: str = Field(default="", description="How you searched ~ which tools, in what order, and why.")
     summary: str = Field(description="One or two sentences on what the unit did and found.")
     records_examined: list[str] = Field(default_factory=list, description="Record ids inspected.")
     candidate_record_ids: list[str] = Field(default_factory=list, description="Possible matches.")
@@ -24,8 +25,10 @@ class IntelReport(BaseModel):
 class SkynetDecision(BaseModel):
     """Skynet's next-action decision after weighing the intel so far."""
 
-    reasoning: str = Field(description="Brief, clinical justification for the decision.")
+    assessment: str = Field(description="What the intel gathered so far tells you ~ read the board for the viewer.")
+    reasoning: str = Field(description="Why this is the right next move, given the assessment.")
     target_acquired: bool = Field(description="True only when the target is confirmed.")
     target_record_id: str | None = Field(default=None, description="The confirmed target's id.")
     deploy_unit: str | None = Field(default=None, description="'T-800' or 'T-1000' to deploy next, else null.")
     directive: str | None = Field(default=None, description="The order issued to the deployed unit.")
+    expectation: str | None = Field(default=None, description="What you expect the deployed unit to achieve.")

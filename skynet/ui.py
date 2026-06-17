@@ -68,11 +68,11 @@ class UI:
             self._pause(0.12)
         self._out()
 
-    def mission_briefing(self, target: str) -> None:
+    def mission_briefing(self, target: str, profile: str | None = None) -> None:
         self._out(self.t.band("MISSION BRIEFING"))
         self._out(self.t.unit("blue", "  SKYNET", bold=True) + self.t.paint("dim", "  command intelligence online"))
         self._out(self.t.paint("accent", f"  PRIMARY OBJECTIVE: terminate {target}", bold=True))
-        self._out(self.t.paint("dim", "  RESISTANCE COUNTERMEASURES: target concealed under alias"))
+        self._out(self.t.paint("dim", f"  COUNTERMEASURES: {profile or 'target concealed under alias'}"))
         self._out()
         self._pause(0.3)
 
@@ -83,11 +83,17 @@ class UI:
     def skynet_decision(self, unit: Any, decision: Any) -> None:
         tag = self.t.unit("blue", "  ◤ SKYNET", bold=True)
         self._out(tag + self.t.paint("dim", f"  [{unit.model}]"))
-        self._type(self.t.unit("blue", f"    {decision.reasoning}"))
+        assessment = getattr(decision, "assessment", "")
+        if assessment:
+            self._type(self.t.paint("dim", "    ANALYSIS  ▸ ") + self.t.unit("blue", assessment))
+        self._type(self.t.paint("dim", "    REASONING ▸ ") + self.t.unit("blue", decision.reasoning))
         if decision.target_acquired:
-            self._out(self.t.paint("ok", "    DECISION: TARGET CONFIRMED", bold=True))
+            self._out(self.t.paint("ok", "    DECISION  ▸ TARGET CONFIRMED", bold=True))
         elif decision.deploy_unit:
-            self._out(self.t.paint("accent", f"    DECISION: deploy {decision.deploy_unit}", bold=True))
+            self._out(self.t.paint("accent", f"    DECISION  ▸ deploy {decision.deploy_unit}", bold=True))
+            exp = getattr(decision, "expectation", None)
+            if exp:
+                self._out(self.t.paint("dim", f"    EXPECT    ▸ {exp}"))
         self._out()
         self._pause(0.2)
 
@@ -127,6 +133,9 @@ class UI:
         c = unit.color
         conf = f"{report.confidence:.0%}"
         self._out(self.t.unit(c, f"    ▣ {unit.designation} INTEL", bold=True) + self.t.paint("dim", f"  confidence {conf}"))
+        method = getattr(report, "method", "")
+        if method:
+            self._out(self.t.paint("dim", f"      method ▸ {method}"))
         self._out(self.t.paint("accent", f"      {report.summary}"))
         if report.target_record_id:
             self._out(self.t.paint("ok", f"      candidate target: {report.target_record_id}", bold=True))

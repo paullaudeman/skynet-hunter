@@ -26,25 +26,27 @@ UNIT_MAX_TOKENS = 8000
 SKYNET_MAX_TOKENS = 6000
 
 _REPORT_PROMPT = (
-    "Stop searching. Compile your findings into an intel report now. Include every "
-    "record id you examined, any candidate ids, the confirmed target id if you have "
-    "one, and your confidence (0.0-1.0)."
+    "Stop searching. Compile your findings into an intel report now. Describe your "
+    "method (which tools you used, in what order, and why), include every record id "
+    "you examined, any candidate ids, the confirmed target id if you have one, and "
+    "your confidence (0.0-1.0)."
 )
 
 
 class Skynet:
-    def __init__(self, client: Any, units: dict[str, Unit], db: grid.GridDatabase, ui: Any, target: str, max_cycles: int):
+    def __init__(self, client: Any, units: dict[str, Unit], db: grid.GridDatabase, ui: Any, target: str, max_cycles: int, profile: str | None = None):
         self.client = client
         self.units = units
         self.db = db
         self.ui = ui
         self.target = target
         self.max_cycles = max_cycles
+        self.profile = profile
         self.skynet = units["skynet"]
 
     # -- the orchestration loop ------------------------------------------
     def run(self) -> bool:
-        self.ui.mission_briefing(self.target)
+        self.ui.mission_briefing(self.target, self.profile)
         intel_log: list[dict[str, Any]] = []
 
         for cycle in range(1, self.max_cycles + 1):
@@ -82,7 +84,10 @@ class Skynet:
             f"civil grid.\n\nINTEL GATHERED SO FAR:\n{log_text}\n\n"
             "Decide your next action. If a unit has returned a high-confidence target "
             "record matching the hidden-minor profile, declare acquisition. Otherwise "
-            "deploy the unit best suited to the next step, with a precise directive."
+            "deploy the unit best suited to the next step, with a precise directive.\n\n"
+            "Make your thinking visible: give an ASSESSMENT of what the intel so far "
+            "tells you, your REASONING for the next move, and ~ when deploying ~ what "
+            "you EXPECT that unit to achieve."
         )
         resp = self.client.messages.parse(
             model=self.skynet.model,

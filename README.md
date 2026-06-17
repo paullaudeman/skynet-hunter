@@ -47,11 +47,18 @@ uv run python -m skynet --simulate
 cp .env.example .env          # then paste your ANTHROPIC_API_KEY
 uv run python -m skynet
 
+# Scenario randomiser ~ a different hunt each run
+uv run python -m skynet --simulate --scenario random        # reroll a fresh target
+uv run python -m skynet --simulate --scenario random --seed 11   # reproducible reroll
+uv run python -m skynet --simulate --scenario danny-dyson   # or pick a named one
+
 # Options
 uv run python -m skynet --simulate --theme amber       # platinum | silver | amber
 uv run python -m skynet --simulate --no-art            # mute the BBS theater / typewriter
-uv run python -m skynet --max-cycles 3 --target "John Connor"
+uv run python -m skynet --simulate --max-cycles 3
 ```
+
+Named scenarios: `john-connor` (default), `danny-dyson`, `blair-brewster`, `eli-vega`, or `random`. Each run, Skynet narrates its **assessment → reasoning → expectation** and each unit reports its **method**, so the viewer sees the *why*, not just the verdict.
 
 Tests:
 

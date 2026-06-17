@@ -1,8 +1,8 @@
 """Deterministic offline run ~ same theater, no API key, no credit spent.
 
-Mirrors the exact beats of a live pursuit using canned decisions and reports,
-drawn from the real dataset so nothing on screen is a lie. This is the path the
-friend-demo runs on: it cannot flake, rate-limit, or cost anything.
+Scenario-driven: it reads the chosen Scenario's real fields (target, alias,
+protector, ids) and plays the exact beats of a live pursuit against the real
+grid, so nothing on screen is a lie and it adapts to `--scenario random`.
 """
 
 from __future__ import annotations
@@ -11,50 +11,56 @@ from typing import Any
 
 from . import grid
 from .schemas import IntelReport, SkynetDecision
+from .scenario import Scenario
 from .units import Unit
 
 
-def _play_tools(ui: Any, unit: Unit, calls: list[tuple[str, dict[str, Any], str]]) -> None:
+def _play_tools(ui: Any, unit: Unit, db: grid.GridDatabase, calls: list[tuple[str, dict[str, Any]]]) -> None:
     """Replay a unit's tool calls against the real grid for honest output."""
-    for name, args, _ in calls:
+    for name, args in calls:
         ui.tool_call(unit, name, args)
-        out = grid.execute_tool(_play_tools.db, name, args)  # type: ignore[attr-defined]
-        ui.tool_result(unit, name, out)
+        ui.tool_result(unit, name, grid.execute_tool(db, name, args))
 
 
-def run_simulation(units: dict[str, Unit], db: grid.GridDatabase, ui: Any, target: str, max_cycles: int = 4) -> bool:
-    _play_tools.db = db  # type: ignore[attr-defined]
-    skynet = units["skynet"]
-    t800 = units["t800"]
-    t1000 = units["t1000"]
+def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycles: int = 4) -> bool:
+    db = scenario.database()
+    skynet, t800, t1000 = units["skynet"], units["t800"], units["t1000"]
+
+    first = scenario.target_name.split()[0]
+    last = scenario.target_name.split()[-1]
+    sweep = db.query(name_contains=last)
+    sweep_ids = [r["id"] for r in sweep]
 
     ui.boot()
-    ui.mission_briefing(target)
+    ui.mission_briefing(scenario.target_name, scenario.profile)
 
     # -- Cycle 1: broad literal sweep (and its failure) ------------------
     ui.cycle_header(1, max_cycles)
     ui.skynet_decision(
         skynet,
         SkynetDecision(
-            reasoning="No intel yet. Begin with a broad literal sweep. Deploy the T-800.",
+            assessment="No intel yet. The target name is known but the grid may file them under an alias.",
+            reasoning="Start cheap and broad. A literal surname sweep is the T-800's whole purpose ~ deploy it first.",
             target_acquired=False,
             deploy_unit="T-800",
-            directive=f"Sweep the grid for the surname in '{target}'. Report all matches.",
+            directive=f"Sweep the grid for the surname '{last}'. Report all matches.",
+            expectation="A list of surname matches to triage ~ and confirmation of whether a literal sweep is enough.",
         ),
     )
-    ui.deploy(t800, f"Search the grid for '{target.split()[-1]}'. Report matches.")
+    ui.deploy(t800, f"Search the grid for '{last}'. Report matches.")
     ui.unit_says(t800, "Scanning. Surname query initiated.")
-    _play_tools(ui, t800, [("query_grid", {"name_contains": "Connor"}, "")])
+    _play_tools(ui, t800, db, [("query_grid", {"name_contains": last})])
     ui.intel_report(
         t800,
         IntelReport(
             unit="T-800",
-            summary="Five surname matches. None match the target profile. No minor located.",
-            records_examined=["LA-1984-0003", "LA-1984-0008", "LA-1984-0011", "LA-1984-0017", "LA-1984-0029"],
-            candidate_record_ids=["LA-1984-0017"],
+            method="Single literal query_grid on the surname. No alias reasoning ~ that is not my function.",
+            summary=f"{len(sweep)} surname matches. None match the target profile. No minor located.",
+            records_examined=sweep_ids,
+            candidate_record_ids=[scenario.protector_id],
             target_record_id=None,
             confidence=0.15,
-            notes="One associate of interest: Sarah Connor (LA-1984-0017), a 19yo with a dependent minor on record.",
+            notes=f"One associate of interest: {scenario.protector_name} ({scenario.protector_id}) ~ flagged with a dependent minor on record.",
         ),
     )
 
@@ -63,45 +69,46 @@ def run_simulation(units: dict[str, Unit], db: grid.GridDatabase, ui: Any, targe
     ui.skynet_decision(
         skynet,
         SkynetDecision(
-            reasoning="Literal sweep stalled on decoys. Sarah Connor has a hidden minor. Deploy the T-1000 to cross-reference her associates.",
+            assessment=f"The literal sweep returned only decoys, but {scenario.protector_name} carries a dependent-minor flag. That is the thread.",
+            reasoning="A blunt query cannot defeat an alias. The T-1000 can cross-reference the protector and interrogate whoever is concealed behind them.",
             target_acquired=False,
             deploy_unit="T-1000",
-            directive="Cross-reference Sarah Connor's associates. Interrogate any concealed minor.",
+            directive=f"Cross-reference {scenario.protector_name}'s associates. Interrogate any concealed minor.",
+            expectation="The aliased record of the hidden minor, surfaced via the protector's associate link.",
         ),
     )
-    ui.deploy(t1000, "Cross-reference Sarah Connor. Interrogate linked records.")
+    ui.deploy(t1000, f"Cross-reference {scenario.protector_name}. Interrogate linked records.")
     ui.unit_says(t1000, "Adapting. The target is filed under an alias. Following the protector.")
     _play_tools(
-        ui,
-        t1000,
-        [
-            ("cross_reference", {"name": "Sarah Connor"}, ""),
-            ("interrogate", {"record_id": "LA-1984-0042"}, ""),
-        ],
+        ui, t1000, db,
+        [("cross_reference", {"name": scenario.protector_name}), ("interrogate", {"record_id": scenario.target_id})],
     )
-    ui.unit_says(t1000, "A 10-year-old. No SSN. No birth record. Guardian: Sarah Connor. This is the target.")
+    ui.unit_says(t1000, f"A minor. No SSN. No birth record. Guardian: {scenario.protector_name}. This is the target.")
     ui.intel_report(
         t1000,
         IntelReport(
             unit="T-1000",
-            summary="Concealed minor identified via Sarah Connor's associate link. Filed under alias 'John Reese'.",
-            records_examined=["LA-1984-0017", "LA-1984-0042"],
-            candidate_record_ids=["LA-1984-0042"],
-            target_record_id="LA-1984-0042",
+            method=f"cross_reference on {scenario.protector_name} to defeat the alias, then interrogate the linked record.",
+            summary=f"Concealed minor identified via {scenario.protector_name}'s associate link. Filed under alias '{scenario.alias}'.",
+            records_examined=[scenario.protector_id, scenario.target_id],
+            candidate_record_ids=[scenario.target_id],
+            target_record_id=scenario.target_id,
             confidence=0.93,
-            notes="Age 10, no SSN, no birth certificate, three address changes. Profile matches a protected target.",
+            notes="No SSN, no birth certificate, multiple address changes. Profile matches a protected target.",
         ),
     )
 
     # -- Cycle 3: confirmation -------------------------------------------
     ui.cycle_header(3, max_cycles)
     decision = SkynetDecision(
-        reasoning="The T-1000 returned a high-confidence record matching the hidden-minor profile. Target confirmed.",
+        assessment=f"The T-1000 returned a high-confidence record ({scenario.target_id}) matching the hidden-minor profile.",
+        reasoning="Confidence exceeds the acquisition threshold and the profile fits. No further deployment is warranted.",
         target_acquired=True,
-        target_record_id="LA-1984-0042",
+        target_record_id=scenario.target_id,
         deploy_unit=None,
         directive=None,
+        expectation=None,
     )
     ui.skynet_decision(skynet, decision)
-    ui.target_acquired(db.interrogate("LA-1984-0042"), decision)
+    ui.target_acquired(db.interrogate(scenario.target_id), decision)
     return True

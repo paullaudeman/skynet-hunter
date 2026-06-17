@@ -149,3 +149,9 @@ def execute_tool(db: GridDatabase, name: str, tool_input: dict[str, Any]) -> str
     else:
         result = {"error": f"Unknown tool {name!r}."}
     return json.dumps(result, ensure_ascii=False)
+
+
+def load_civilians(path: Path | str = DATA_PATH) -> list[dict[str, Any]]:
+    """Return just the neutral civilian population. The target, protector, and
+    surname-decoys are injected per scenario by `scenario.build_scenario`."""
+    return json.loads(Path(path).read_text(encoding="utf-8"))["records"]

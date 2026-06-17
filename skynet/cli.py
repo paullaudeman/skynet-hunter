@@ -18,7 +18,7 @@ try:  # stdlib on 3.11+
 except ModuleNotFoundError:  # pragma: no cover
     import tomli as tomllib  # type: ignore
 
-from . import grid, simulate
+from . import scenario, simulate
 from .theme import Theme
 from .ui import UI
 from .units import build_units
@@ -52,7 +52,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument("--simulate", action="store_true", help="Run offline (no API key, deterministic).")
     p.add_argument("--theme", choices=["platinum", "silver", "amber"], help="Override the terminal theme.")
-    p.add_argument("--target", help="Override the mission target.")
+    p.add_argument("--scenario", choices=scenario.SCENARIO_CHOICES, default="john-connor",
+                   help="Which hunt to run. 'random' rerolls a fresh scenario.")
+    p.add_argument("--seed", type=int, help="Seed for --scenario random (reproducible rerolls).")
     p.add_argument("--max-cycles", type=int, help="Override the engagement budget.")
     p.add_argument("--no-art", action="store_true", help="Mute the BBS theater / typewriter delays.")
     p.add_argument("--config", default=str(DEFAULT_CONFIG), help="Path to config.toml.")
@@ -63,17 +65,19 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     config = load_config(args.config)
 
-    target = args.target or config["mission"]["target"]
     max_cycles = args.max_cycles or config["mission"]["max_cycles"]
     theme_name = args.theme or config["theme"]["name"]
+
+    sc = scenario.build_scenario(args.scenario, seed=args.seed)
+    target = sc.target_name
+    db = sc.database()
 
     theme = Theme(theme_name)
     ui = UI(theme, art=not args.no_art)
     units = build_units(config)
-    db = grid.GridDatabase.load()
 
     if args.simulate:
-        simulate.run_simulation(units, db, ui, target, max_cycles)
+        simulate.run_simulation(units, sc, ui, max_cycles)
         return 0
 
     # Live path needs a key.
@@ -92,7 +96,7 @@ def main(argv: list[str] | None = None) -> int:
 
     client = anthropic.Anthropic()
     ui.boot()
-    skynet = Skynet(client, units, db, ui, target, max_cycles)
+    skynet = Skynet(client, units, db, ui, target, max_cycles, profile=sc.profile)
     acquired = skynet.run()
     return 0 if acquired else 2
 
