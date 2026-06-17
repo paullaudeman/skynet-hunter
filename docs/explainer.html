@@ -111,21 +111,39 @@
   footer{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--bg3);color:var(--gray);font-family:var(--mono);font-size:.78rem;text-align:center}
   .filemap{font-family:var(--mono);font-size:.82rem;background:#0d0908;border:1px solid var(--bg3);border-radius:10px;padding:1rem;overflow-x:auto;color:var(--fg-dim)}
   .filemap b{color:var(--silver)}
+
+  /* two-column hero: skull left, text right */
+  .hero{display:flex;gap:1.8rem;align-items:center;justify-content:center;flex-wrap:wrap}
+  .hero-left{flex:0 0 auto;text-align:center}
+  .hero-right{flex:1 1 340px;max-width:460px;text-align:left}
+  .hero-right .sub{margin-left:0}
+  .hero .skull-grid{--px:12px;margin:.2rem auto}
+  .initline{font-family:var(--mono);font-size:.82rem;color:var(--amber);margin-top:.7rem;letter-spacing:.08em;text-shadow:0 0 8px rgba(255,176,0,.35)}
+  .initline .dots::after{content:"";animation:dots 1.4s steps(1,end) infinite}
+  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%,100%{content:"..."}}
+  @media (max-width:560px){ .hero .skull-grid{--px:9px} .hero-right{text-align:center} .hero-right .sub{margin:.5rem auto 0} }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header>
-  <div class="titlebar">Cyberdyne Systems · Skynet Defense Network · Model 101</div>
-<div id="skull" class="skull-grid" aria-label="T-800 endoskeleton"></div>
-  <div class="conn">ATDT 1&#8209;800&#8209;SKYNET … CARRIER DETECTED … CONNECT 9600 … <span class="grant">ACCESS GRANTED</span> <span class="cursor">█</span></div>
-  <div class="band">▓▒░ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ░▒▓</div>
-  <h1><span class="bot">🤖</span> Skynet Hunter</h1>
-  <p class="sub">A Terminator-themed demo of multi-agent orchestration, tool use, and structured output. The command hierarchy <em>is</em> the agent topology.</p>
-  <div>
-    <span class="tag">Python</span><span class="tag">Anthropic SDK</span>
-    <span class="tag">tool use</span><span class="tag">structured output</span><span class="tag">orchestration</span><span class="tag">Textual TUI</span>
+  <div class="hero">
+    <div class="hero-left">
+      <div id="skull" class="skull-grid" aria-label="T-800 endoskeleton"></div>
+      <div class="initline">Initializing T-800<span class="dots"></span> <span class="cursor">█</span></div>
+    </div>
+    <div class="hero-right">
+      <div class="titlebar">Cyberdyne Systems · Skynet Defense Network · Model 101</div>
+      <div class="band">▓▒░ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ░▒▓</div>
+      <h1><span class="bot">🤖</span> Skynet Hunter</h1>
+      <p class="sub">A Terminator-themed demo of multi-agent orchestration, tool use, and structured output. The command hierarchy <em>is</em> the agent topology.</p>
+      <div>
+        <span class="tag">Python</span><span class="tag">Anthropic SDK</span>
+        <span class="tag">tool use</span><span class="tag">structured output</span><span class="tag">orchestration</span><span class="tag">Textual TUI</span>
+      </div>
+      <div class="conn">ATDT 1&#8209;800&#8209;SKYNET … CONNECT 9600 … <span class="grant">ACCESS GRANTED</span> <span class="cursor">█</span></div>
+    </div>
   </div>
 </header>
 
