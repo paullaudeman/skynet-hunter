@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skynet Hunter ~ Project Explainer</title>
+<style>
+  :root{
+    --bg:#282828; --bg1:#32302f; --bg2:#3c3836; --bg3:#504945;
+    --fg:#ebdbb2; --fg-dim:#a89984; --gray:#928374;
+    --red:#fb4934; --green:#b8bb26; --yellow:#fabd2f;
+    --blue:#83a598; --purple:#d3869b; --aqua:#8ec07c; --orange:#fe8019;
+    --silver:#d5c4a1;
+    --mono:'SF Mono',ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.6;font-size:16px}
+  .wrap{max-width:880px;margin:0 auto;padding:2rem 1.25rem 5rem}
+  header{text-align:center;padding:2.5rem 0 1.5rem;border-bottom:1px solid var(--bg3)}
+  .band{font-family:var(--mono);color:var(--gray);letter-spacing:.04em;font-size:.8rem}
+  h1{font-size:2.1rem;margin:.4rem 0 .2rem;letter-spacing:-.01em}
+  h1 .bot{filter:grayscale(.2)}
+  .sub{color:var(--fg-dim);max-width:38rem;margin:.5rem auto 0}
+  h2{font-size:1.35rem;margin:2.6rem 0 .75rem;color:var(--yellow);border-left:3px solid var(--yellow);padding-left:.6rem}
+  h3{font-size:1.05rem;margin:1.4rem 0 .4rem;color:var(--aqua)}
+  a{color:var(--blue)}
+  code{font-family:var(--mono);background:var(--bg2);padding:.1em .35em;border-radius:4px;font-size:.88em;color:var(--silver)}
+  p code{color:var(--orange)}
+  .lead{font-size:1.08rem;color:var(--fg)}
+  .tag{display:inline-block;font-family:var(--mono);font-size:.72rem;padding:.12rem .5rem;border-radius:999px;border:1px solid var(--bg3);color:var(--fg-dim);margin:.15rem .2rem 0 0}
+
+  /* unit colors */
+  .skynet{color:var(--blue)} .t1000{color:var(--silver)} .t800{color:var(--red)}
+
+  /* flow diagram */
+  .flow{display:flex;flex-direction:column;gap:.5rem;margin:1rem 0;font-family:var(--mono);font-size:.9rem}
+  .node{background:var(--bg1);border:1px solid var(--bg3);border-radius:8px;padding:.7rem .9rem}
+  .node b{font-weight:600}
+  .arrow{text-align:center;color:var(--gray);font-size:1.1rem;line-height:1}
+  .node.sky{border-left:4px solid var(--blue)}
+  .node.unit{border-left:4px solid var(--silver)}
+  .node.tools{border-left:4px solid var(--green)}
+  .node.report{border-left:4px solid var(--yellow)}
+
+  /* cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.9rem;margin:1rem 0}
+  .card{background:var(--bg1);border:1px solid var(--bg3);border-radius:10px;padding:1rem}
+  .card h4{margin:0 0 .3rem;font-size:.95rem;color:var(--orange)}
+  .card p{margin:0;font-size:.9rem;color:var(--fg-dim)}
+
+  /* table */
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.55rem .6rem;border-bottom:1px solid var(--bg3);vertical-align:top}
+  th{color:var(--yellow);font-weight:600}
+  td code{font-size:.82em}
+
+  /* code blocks */
+  .codeblock{position:relative;margin:1rem 0}
+  pre{background:#1d2021;border:1px solid var(--bg3);border-radius:10px;padding:1rem 1rem;overflow-x:auto;margin:0}
+  pre code{background:none;padding:0;color:var(--fg);font-size:.82rem;line-height:1.55}
+  .copy{position:absolute;top:.5rem;right:.5rem;background:var(--bg3);color:var(--fg-dim);border:none;border-radius:6px;padding:.25rem .6rem;font-family:var(--mono);font-size:.72rem;cursor:pointer}
+  .copy:hover{background:var(--bg);color:var(--fg)}
+  .c-kw{color:var(--red)} .c-fn{color:var(--green)} .c-str{color:var(--green)} .c-cm{color:var(--gray);font-style:italic} .c-cls{color:var(--yellow)}
+
+  .callout{background:var(--bg1);border:1px solid var(--bg3);border-left:4px solid var(--purple);border-radius:8px;padding:.9rem 1.1rem;margin:1.2rem 0}
+  .callout b{color:var(--purple)}
+  ul.takeaways{list-style:none;padding:0}
+  ul.takeaways li{background:var(--bg1);border:1px solid var(--bg3);border-radius:8px;padding:.7rem .9rem;margin:.5rem 0}
+  ul.takeaways li b{color:var(--green)}
+  footer{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--bg3);color:var(--gray);font-family:var(--mono);font-size:.78rem;text-align:center}
+  .filemap{font-family:var(--mono);font-size:.82rem;background:#1d2021;border:1px solid var(--bg3);border-radius:10px;padding:1rem;overflow-x:auto;color:var(--fg-dim)}
+  .filemap b{color:var(--silver)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="band">▓▒░ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ░▒▓</div>
+  <h1><span class="bot">🤖</span> Skynet Hunter</h1>
+  <p class="sub">A Terminator-themed demo of multi-agent orchestration, tool use, and structured output. The command hierarchy <em>is</em> the agent topology.</p>
+  <div>
+    <span class="tag">Python</span><span class="tag">Anthropic SDK</span>
+    <span class="tag">tool use</span><span class="tag">structured output</span><span class="tag">orchestration</span>
+  </div>
+</header>
+
+<h2>1 · What this is</h2>
+<p class="lead">A toy with a real lesson inside it. <span class="skynet">Skynet</span> runs the mission ~ hunt <b>John Connor</b> ~ by commanding terminator sub-agents that use tools to search a synthetic 1984 Los Angeles grid.</p>
+<p>It's a multi-agent orchestration demo wearing a T-800 mask. The scary part isn't the AI; it's how clean the separation of concerns is. Skynet reasons and decides. The terminators execute. The tools touch the data. Strip the costume and you have the canonical <b>orchestrator → worker → tools</b> loop you'd build for any real agentic system.</p>
+
+<div class="callout">
+  <b>Two engines.</b> Run it live (real Claude agents calling tools, needs an API key) or offline (<code>--simulate</code> ~ deterministic, no key, no credit spent). The offline path is the friend-demo: it cannot flake or rate-limit. That's not paranoia, it's blast-radius hygiene.
+</div>
+
+<h2>2 · The agentic loop</h2>
+<p>Every cycle, Skynet looks at the intel so far, decides which unit to deploy and with what directive, and sends it in. The unit runs its <em>own</em> tool loop, then hands back a structured report. Skynet ingests it and decides again.</p>
+
+<div class="flow">
+  <div class="node sky"><b class="skynet">🔵 SKYNET</b> · orchestrator — weighs intel, picks the next unit + directive (structured output)</div>
+  <div class="arrow">▼ deploys</div>
+  <div class="node unit"><b class="t800">🔴 T-800</b> / <b class="t1000">⚪ T-1000</b> · worker — runs its own agentic tool loop</div>
+  <div class="arrow">▼ calls</div>
+  <div class="node tools"><b style="color:var(--green)">🟢 GRID TOOLS</b> — <code>query_grid</code> · <code>interrogate</code> · <code>cross_reference</code></div>
+  <div class="arrow">▲ returns an IntelReport</div>
+  <div class="node report"><b style="color:var(--yellow)">↻ back to SKYNET</b> — TARGET ACQUIRED, or run another cycle with a new strategy</div>
+</div>
+
+<h2>3 · Three patterns worth internalizing</h2>
+<div class="cards">
+  <div class="card"><h4>Tool use</h4><p>Three tools as JSON schemas, one <code>execute_tool</code> dispatcher. A unit's manual loop feeds them to <code>messages.create(tools=…)</code>, runs the calls, feeds results back, repeats until <code>stop_reason != "tool_use"</code>.</p></div>
+  <div class="card"><h4>Structured output</h4><p>Skynet's decisions and every intel report come back as validated Pydantic models via <code>messages.parse(output_format=…)</code>. No fragile string-parsing between agents.</p></div>
+  <div class="card"><h4>Orchestration</h4><p>The orchestrator reasons (Skynet); the workers execute (terminators + tools). That separation is the reusable shape ~ the Terminator skin is just paint.</p></div>
+</div>
+
+<h2>4 · The lesson: model tier is an architecture decision</h2>
+<p>The terminator lore lines up with a real tradeoff almost suspiciously well. Each unit runs a different model because each job has a different bottleneck.</p>
+<table>
+  <thead><tr><th>Unit</th><th>Model</th><th>Thinking</th><th>Why it fits</th></tr></thead>
+  <tbody>
+    <tr><td class="skynet"><b>🔵 Skynet</b></td><td><code>claude-opus-4-8</code></td><td>adaptive · <code>xhigh</code></td><td>Apex intelligence. Plans, synthesizes, decides. Expensive ~ runs once per cycle, worth it.</td></tr>
+    <tr><td class="t1000"><b>⚪ T-1000</b></td><td><code>claude-sonnet-4-6</code></td><td>adaptive</td><td>The morph <em>is</em> adaptive thinking ~ it reshapes its search when brute force stalls. Mid-tier, agile.</td></tr>
+    <tr><td class="t800"><b>🔴 T-800</b></td><td><code>claude-haiku-4-5</code></td><td>none</td><td>The original. Blunt, cheap, literal. Doesn't deliberate ~ pursues. You want ten cheap passes, not one expensive one.</td></tr>
+  </tbody>
+</table>
+<div class="callout">
+  <b>Bare-metal note.</b> Haiku 4.5 rejects the <code>effort</code> / <code>budget_tokens</code> params (they 400), so the T-800 stays deliberately bare. Fitting for a 1984 endoskeleton. Swap any model string in <code>config.toml</code> and the same demo runs on a different tier ~ that swap is the whole point.
+</div>
+
+<h2>5 · The adversarial grid (why it's not just a lookup)</h2>
+<p>If you could find John Connor with one query, there'd be no agent ~ a <code>SELECT</code> would do. So he's <b>concealed</b>:</p>
+<ul>
+  <li>Filed under an alias (<span class="t1000">"John Reese"</span>), so a literal <code>query_grid(name_contains="Connor")</code> returns his mother and four decoys ~ never him.</li>
+  <li>Age 10, no SSN, no birth record, shifting address ~ a protected minor's profile.</li>
+  <li>The <b>only</b> thread is his protector, <span class="skynet">Sarah Connor</span>. <code>cross_reference("Sarah Connor")</code> surfaces the alias record; <code>interrogate</code> confirms it.</li>
+</ul>
+<p>The blunt <span class="t800">T-800</span> fails on the literal sweep. The adaptive <span class="t1000">T-1000</span> reasons its way in. <em>That gap is the demo.</em></p>
+
+<h2>6 · Tech stack</h2>
+<p>Deliberately dependency-light: <b>two</b> runtime dependencies (<code>anthropic</code>, <code>pydantic</code>) ~ everything else is the Python standard library. No TUI framework, no web server, no database.</p>
+
+<h3>Language &amp; runtime</h3>
+<div class="cards">
+  <div class="card"><h4>Python 3.11+</h4><p>Stdlib does the plumbing: <code>argparse</code> (CLI), <code>tomllib</code> (config), <code>json</code>, <code>pathlib</code>, <code>dataclasses</code>, <code>time</code>/<code>sys</code> (the theater).</p></div>
+  <div class="card"><h4>uv</h4><p>Environment + runner. <code>uv run python -m skynet</code> resolves and runs in one step.</p></div>
+  <div class="card"><h4>hatchling</h4><p>Build backend behind the <code>pyproject.toml</code> ~ makes <code>skynet</code> an installable package.</p></div>
+</div>
+
+<h3>AI &amp; agents</h3>
+<div class="cards">
+  <div class="card"><h4>Anthropic Python SDK</h4><p><code>messages.create(tools=…)</code> drives each unit's agentic loop; <code>messages.parse(output_format=…)</code> returns validated structured output; <code>thinking={"type":"adaptive"}</code> on the reasoning tiers.</p></div>
+  <div class="card"><h4>Claude models</h4><p><code>claude-opus-4-8</code> (Skynet) · <code>claude-sonnet-4-6</code> (T-1000) · <code>claude-haiku-4-5</code> (T-800). Three tiers, one tradeoff.</p></div>
+</div>
+
+<h3>Data &amp; validation</h3>
+<div class="cards">
+  <div class="card"><h4>Pydantic v2</h4><p>Typed schemas for every inter-agent message ~ <code>IntelReport</code> and <code>SkynetDecision</code>. The structured-output contract.</p></div>
+  <div class="card"><h4>TOML + JSON</h4><p><code>config.toml</code> holds the mission and the model/colour mapping; the synthetic grid is a flat <code>.json</code> file ~ no DB needed.</p></div>
+</div>
+
+<h3>Presentation &amp; testing</h3>
+<div class="cards">
+  <div class="card"><h4>Raw ANSI truecolor</h4><p>The BBS theater (boot sequence, HUD, gradient bands, typewriter) is hand-rolled escape codes ~ <em>zero</em> TUI dependency. No <code>rich</code>, no <code>curses</code>.</p></div>
+  <div class="card"><h4>pytest</h4><p>Smoke tests lock the grid's obfuscation and guarantee the offline path always acquires the target.</p></div>
+  <div class="card"><h4>This explainer</h4><p>Plain HTML + CSS, Gruvbox palette, a few lines of vanilla JS for the copy buttons. Self-contained, single file.</p></div>
+</div>
+
+<h2>7 · Implementation</h2>
+<div class="filemap">skynet-hunter/
+  config.toml            <b>· mission + per-unit model/colour mapping</b>
+  data/los_angeles_1984.json   <b>· synthetic grid; target obfuscated + decoys</b>
+  skynet/
+    grid.py              <b>· dataset + 3 tools + execute_tool dispatcher</b>
+    units.py             <b>· per-terminator model config + personas</b>
+    schemas.py           <b>· Pydantic: IntelReport, SkynetDecision</b>
+    orchestrator.py      <b>· live engine: Skynet loop + each unit's tool loop</b>
+    simulate.py          <b>· deterministic offline mirror (no API)</b>
+    theme.py / ui.py     <b>· ANSI/BBS theater: boot, HUD, typewriter</b>
+    cli.py               <b>· argparse entry point</b>
+  docs/explainer.html    <b>· this file</b>
+  tests/</div>
+
+<h3>The worker's manual agentic loop</h3>
+<p>The heart of <code>orchestrator.py</code>. A manual loop (rather than the SDK tool-runner) keeps every step visible ~ which is the point of a teaching demo.</p>
+<div class="codeblock">
+<button class="copy" onclick="cp(this)">copy</button>
+<pre><code><span class="c-kw">for</span> _ <span class="c-kw">in</span> <span class="c-fn">range</span>(MAX_UNIT_STEPS):
+    resp = client.messages.<span class="c-fn">create</span>(
+        model=unit.model, system=unit.system_prompt,
+        tools=grid.TOOL_SCHEMAS, messages=messages,
+        max_tokens=<span class="c-cls">8000</span>,            <span class="c-cm"># thinking= added for Sonnet/Opus, omitted for Haiku</span>
+    )
+    messages.<span class="c-fn">append</span>({<span class="c-str">"role"</span>: <span class="c-str">"assistant"</span>, <span class="c-str">"content"</span>: resp.content})
+
+    <span class="c-kw">if</span> resp.stop_reason != <span class="c-str">"tool_use"</span>:
+        <span class="c-kw">break</span>
+
+    tool_results = []
+    <span class="c-kw">for</span> block <span class="c-kw">in</span> resp.content:
+        <span class="c-kw">if</span> block.type == <span class="c-str">"tool_use"</span>:
+            out = grid.<span class="c-fn">execute_tool</span>(db, block.name, <span class="c-fn">dict</span>(block.input))
+            tool_results.<span class="c-fn">append</span>({<span class="c-str">"type"</span>: <span class="c-str">"tool_result"</span>,
+                                 <span class="c-str">"tool_use_id"</span>: block.id, <span class="c-str">"content"</span>: out})
+    messages.<span class="c-fn">append</span>({<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: tool_results})
+
+<span class="c-cm"># …then distil the work into a validated report</span>
+report = client.messages.<span class="c-fn">parse</span>(model=unit.model, messages=messages + [...],
+                              output_format=IntelReport).parsed_output</code></pre>
+</div>
+
+<h3>Skynet's structured decision</h3>
+<div class="codeblock">
+<button class="copy" onclick="cp(this)">copy</button>
+<pre><code>resp = client.messages.<span class="c-fn">parse</span>(
+    model=<span class="c-str">"claude-opus-4-8"</span>,
+    thinking={<span class="c-str">"type"</span>: <span class="c-str">"adaptive"</span>},
+    system=SKYNET_SYSTEM,
+    messages=[{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: mission_plus_intel_log}],
+    output_format=SkynetDecision,   <span class="c-cm"># {reasoning, deploy_unit, directive, target_acquired}</span>
+)
+decision = resp.parsed_output</code></pre>
+</div>
+
+<h2>8 · Run it</h2>
+<div class="codeblock">
+<button class="copy" onclick="cp(this)">copy</button>
+<pre><code><span class="c-cm"># offline ~ deterministic, no key. start here.</span>
+uv run python -m skynet --simulate
+
+<span class="c-cm"># live ~ real Claude agents calling tools</span>
+cp .env.example .env   <span class="c-cm"># paste ANTHROPIC_API_KEY</span>
+uv run python -m skynet
+
+<span class="c-cm"># options</span>
+uv run python -m skynet --simulate --theme amber   <span class="c-cm"># platinum | silver | amber</span>
+uv run python -m skynet --simulate --no-art        <span class="c-cm"># mute the theater</span>
+uv run --extra dev pytest</code></pre>
+</div>
+
+<h2>9 · Key takeaways</h2>
+<ul class="takeaways">
+  <li><b>Orchestrator ≠ worker.</b> One agent reasons over results; others execute against tools. Keep them separate and the system stays legible.</li>
+  <li><b>Model tier is a design lever.</b> Opus where reasoning is the bottleneck; Haiku where you want cheap volume. Costume aside, that's the real decision.</li>
+  <li><b>Structured output is the glue.</b> Pydantic schemas between agents beat string-parsing ~ validated, typed, and refactor-safe.</li>
+  <li><b>Adversarial data makes it agentic.</b> Obfuscate the target and a single query can't win; the agent has to reason. Without that, it's just a database.</li>
+  <li><b>Ship an offline mode.</b> A deterministic <code>--simulate</code> path means the demo never fails in front of an audience, and the tests never hit the network.</li>
+</ul>
+
+<footer>
+  ▓▒░ this explainer is kept in sync with the code ░▒▓<br>
+  Skynet Hunter · MIT · "There is no fate but what we make."
+</footer>
+
+</div>
+<script>
+function cp(btn){
+  const code = btn.parentElement.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{
+    const t = btn.textContent; btn.textContent='copied ✓';
+    setTimeout(()=>btn.textContent=t, 1200);
+  });
+}
+</script>
+</body>
+</html>

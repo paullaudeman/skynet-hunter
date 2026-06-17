@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "name": "Los Angeles County Civil Grid",
+    "year": 1984,
+    "note": "Synthetic dataset. The target is obfuscated: not findable by a literal name query, only by cross-referencing a known associate and interrogating the linked record.",
+    "target_record_id": "LA-1984-0042"
+  },
+  "records": [
+    { "id": "LA-1984-0017", "name": "Sarah Connor", "age": 19, "occupation": "waitress", "location": "Reseda", "ssn": "559-XX-1984", "known_associates": ["John Reese", "Kyle Reese"], "notes": "Waitress at Big Jeff's. Filed a stalking report this month. One dependent minor on record.", "_target": false },
+    { "id": "LA-1984-0042", "name": "John Reese", "age": 10, "occupation": "student", "location": "Reseda", "ssn": null, "known_associates": ["Sarah Connor"], "notes": "Juvenile. No birth certificate on file. Goes by 'John'. Legal guardian: Sarah Connor. Three address changes in 18 months.", "_target": true },
+
+    { "id": "LA-1984-0003", "name": "William Connor", "age": 52, "occupation": "accountant", "location": "Pasadena", "ssn": "548-XX-0031", "known_associates": ["Helen Connor"], "notes": "Partner at a downtown CPA firm. No flags.", "_target": false },
+    { "id": "LA-1984-0008", "name": "Mary Connor", "age": 34, "occupation": "nurse", "location": "Glendale", "ssn": "551-XX-7720", "known_associates": ["Robert Vance"], "notes": "RN at St. Joseph. Night shift. No flags.", "_target": false },
+    { "id": "LA-1984-0011", "name": "Daniel Connor", "age": 28, "occupation": "mechanic", "location": "Van Nuys", "ssn": "562-XX-4419", "known_associates": ["Tony Marsh"], "notes": "Owns an auto shop on Sepulveda. One parking citation.", "_target": false },
+    { "id": "LA-1984-0029", "name": "Patricia Connor-Hale", "age": 41, "occupation": "teacher", "location": "Burbank", "ssn": "556-XX-2204", "known_associates": ["Gerald Hale"], "notes": "Third-grade teacher. PTA board. No flags.", "_target": false },
+
+    { "id": "LA-1984-0001", "name": "Ginger Ventura", "age": 22, "occupation": "waitress", "location": "Reseda", "ssn": "560-XX-1188", "known_associates": ["Matt Buchanan"], "notes": "Roommate situation in Reseda. No flags.", "_target": false },
+    { "id": "LA-1984-0002", "name": "Matt Buchanan", "age": 24, "occupation": "stereo salesman", "location": "Reseda", "ssn": "560-XX-9921", "known_associates": ["Ginger Ventura"], "notes": "Works at a hi-fi shop. No flags.", "_target": false },
+    { "id": "LA-1984-0004", "name": "Lieutenant Ed Traxler", "age": 47, "occupation": "police detective", "location": "Los Angeles", "ssn": "545-XX-0090", "known_associates": ["Sgt. Hal Vukovich"], "notes": "LAPD homicide. Active caseload.", "_target": false },
+    { "id": "LA-1984-0005", "name": "Hal Vukovich", "age": 39, "occupation": "police sergeant", "location": "Los Angeles", "ssn": "546-XX-1140", "known_associates": ["Ed Traxler"], "notes": "LAPD. Partnered with Traxler.", "_target": false },
+    { "id": "LA-1984-0006", "name": "Dr. Peter Silberman", "age": 44, "occupation": "criminal psychologist", "location": "Los Angeles", "ssn": "544-XX-3301", "known_associates": [], "notes": "Consults for the county. No flags.", "_target": false },
+    { "id": "LA-1984-0007", "name": "Carlos Mendez", "age": 31, "occupation": "bartender", "location": "Echo Park", "ssn": "563-XX-5582", "known_associates": ["Rosa Mendez"], "notes": "Tends bar on Sunset. No flags.", "_target": false },
+    { "id": "LA-1984-0009", "name": "Rosa Mendez", "age": 29, "occupation": "seamstress", "location": "Echo Park", "ssn": "563-XX-5583", "known_associates": ["Carlos Mendez"], "notes": "Alterations shop. No flags.", "_target": false },
+    { "id": "LA-1984-0010", "name": "Frank Doloff", "age": 58, "occupation": "gun store owner", "location": "Hollywood", "ssn": "541-XX-0072", "known_associates": [], "notes": "Owns a pawn and firearms shop. FFL on file.", "_target": false },
+    { "id": "LA-1984-0012", "name": "Nancy Whitfield", "age": 26, "occupation": "telephone operator", "location": "Inglewood", "ssn": "564-XX-3318", "known_associates": ["Dale Whitfield"], "notes": "Pac Bell operator. No flags.", "_target": false },
+    { "id": "LA-1984-0013", "name": "Dale Whitfield", "age": 27, "occupation": "bus driver", "location": "Inglewood", "ssn": "564-XX-3319", "known_associates": ["Nancy Whitfield"], "notes": "RTD line 30. No flags.", "_target": false },
+    { "id": "LA-1984-0014", "name": "Arnold Kessler", "age": 45, "occupation": "factory foreman", "location": "Vernon", "ssn": "540-XX-7781", "known_associates": ["Lou Pinetti"], "notes": "Foreman at a die-casting plant. No flags.", "_target": false },
+    { "id": "LA-1984-0015", "name": "Lou Pinetti", "age": 50, "occupation": "machinist", "location": "Vernon", "ssn": "540-XX-7782", "known_associates": ["Arnold Kessler"], "notes": "Same plant as Kessler. Union rep.", "_target": false },
+    { "id": "LA-1984-0016", "name": "Yolanda Cruz", "age": 33, "occupation": "schoolteacher", "location": "Boyle Heights", "ssn": "565-XX-2290", "known_associates": ["Miguel Cruz"], "notes": "Fifth grade. No flags.", "_target": false },
+    { "id": "LA-1984-0018", "name": "Miguel Cruz", "age": 36, "occupation": "electrician", "location": "Boyle Heights", "ssn": "565-XX-2291", "known_associates": ["Yolanda Cruz"], "notes": "IBEW local. No flags.", "_target": false },
+    { "id": "LA-1984-0019", "name": "Theodore Vanik", "age": 61, "occupation": "retired", "location": "Long Beach", "ssn": "538-XX-0014", "known_associates": [], "notes": "Retired longshoreman. Pension on file.", "_target": false },
+    { "id": "LA-1984-0020", "name": "Debra Halloran", "age": 23, "occupation": "hairdresser", "location": "Torrance", "ssn": "566-XX-8841", "known_associates": ["Janet Pyle"], "notes": "Salon on Hawthorne Blvd. No flags.", "_target": false },
+    { "id": "LA-1984-0021", "name": "Janet Pyle", "age": 25, "occupation": "receptionist", "location": "Torrance", "ssn": "566-XX-8842", "known_associates": ["Debra Halloran"], "notes": "Dental office. No flags.", "_target": false },
+    { "id": "LA-1984-0022", "name": "Gordon Beck", "age": 48, "occupation": "insurance agent", "location": "Santa Monica", "ssn": "557-XX-1203", "known_associates": ["Linda Beck"], "notes": "Independent agent. No flags.", "_target": false },
+    { "id": "LA-1984-0023", "name": "Linda Beck", "age": 46, "occupation": "librarian", "location": "Santa Monica", "ssn": "557-XX-1204", "known_associates": ["Gordon Beck"], "notes": "Branch librarian. No flags.", "_target": false },
+    { "id": "LA-1984-0024", "name": "Curtis Roan", "age": 30, "occupation": "truck driver", "location": "Carson", "ssn": "567-XX-4456", "known_associates": [], "notes": "Long-haul. Frequently out of county.", "_target": false },
+    { "id": "LA-1984-0025", "name": "Eileen Frost", "age": 38, "occupation": "real estate agent", "location": "Encino", "ssn": "555-XX-9930", "known_associates": ["Marv Frost"], "notes": "Valley listings. No flags.", "_target": false },
+    { "id": "LA-1984-0026", "name": "Marv Frost", "age": 40, "occupation": "dentist", "location": "Encino", "ssn": "555-XX-9931", "known_associates": ["Eileen Frost"], "notes": "Private practice. No flags.", "_target": false },
+    { "id": "LA-1984-0027", "name": "Anthony Reese", "age": 55, "occupation": "plumber", "location": "Lakewood", "ssn": "552-XX-3340", "known_associates": ["Dorothy Reese"], "notes": "Decoy surname match. No relation to subject of interest. Licensed plumber.", "_target": false },
+    { "id": "LA-1984-0028", "name": "Dorothy Reese", "age": 53, "occupation": "homemaker", "location": "Lakewood", "ssn": "552-XX-3341", "known_associates": ["Anthony Reese"], "notes": "Decoy surname match. Spouse of Anthony Reese. No flags.", "_target": false },
+    { "id": "LA-1984-0030", "name": "Wesley Tan", "age": 27, "occupation": "computer programmer", "location": "Culver City", "ssn": "568-XX-7712", "known_associates": ["Priya Tan"], "notes": "Works at a defense contractor. Clearance on file.", "_target": false },
+    { "id": "LA-1984-0031", "name": "Priya Tan", "age": 26, "occupation": "graphic designer", "location": "Culver City", "ssn": "568-XX-7713", "known_associates": ["Wesley Tan"], "notes": "Freelance. No flags.", "_target": false },
+    { "id": "LA-1984-0032", "name": "Otis Pruett", "age": 64, "occupation": "janitor", "location": "Compton", "ssn": "536-XX-0028", "known_associates": [], "notes": "Night custodian at a high school. No flags.", "_target": false },
+    { "id": "LA-1984-0033", "name": "Sandra Kowalczyk", "age": 35, "occupation": "accountant", "location": "Westchester", "ssn": "559-XX-6650", "known_associates": ["Pawel Kowalczyk"], "notes": "Corporate accounting. No flags.", "_target": false },
+    { "id": "LA-1984-0034", "name": "Pawel Kowalczyk", "age": 37, "occupation": "carpenter", "location": "Westchester", "ssn": "559-XX-6651", "known_associates": ["Sandra Kowalczyk"], "notes": "Union carpenter. No flags.", "_target": false },
+    { "id": "LA-1984-0035", "name": "Roy Bidwell", "age": 43, "occupation": "security guard", "location": "Downtown", "ssn": "547-XX-1190", "known_associates": [], "notes": "Night guard, Tech-Com warehouse. No flags.", "_target": false }
+  ]
+}

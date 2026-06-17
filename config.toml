@@ -1,0 +1,35 @@
+# Skynet Hunter ~ mission + unit configuration.
+# Everything here is swappable: change a model string and the same demo runs
+# on a different tier. That swap IS the lesson ~ model tier is an architecture
+# decision, not a default.
+
+[mission]
+target = "John Connor"
+max_cycles = 4
+
+[theme]
+# platinum | silver | amber
+name = "platinum"
+
+# --- Units --------------------------------------------------------------
+# thinking: "adaptive" | "none"
+# effort:   low | medium | high | xhigh | max   (omit / ignored on Haiku ~ it 400s)
+
+[units.skynet]
+designation = "Skynet"
+model = "claude-opus-4-8"
+color = "blue"
+thinking = "adaptive"
+effort = "xhigh"
+
+[units.t1000]
+designation = "T-1000"
+model = "claude-sonnet-4-6"
+color = "silver"
+thinking = "adaptive"
+
+[units.t800]
+designation = "T-800"
+model = "claude-haiku-4-5"
+color = "red"
+thinking = "none"
