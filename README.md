@@ -3,7 +3,7 @@
 > An agentic Terminator demo. **Skynet** orchestrates terminator sub-agents that use tools to hunt **John Connor** across a synthetic 1984 Los Angeles grid ~ and the three terminator models map onto a real engineering tradeoff.
 
 <p align="center">
-  <video src="https://github.com/paullaudeman/skynet-hunter/raw/main/docs/skynet-hunter.mp4" controls muted loop width="720"></video>
+  <img src="docs/skynet-hunter.gif" alt="Skynet Hunter ~ animated splash" width="720">
 </p>
 
 ```
