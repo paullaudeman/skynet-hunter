@@ -140,7 +140,7 @@
       <p class="sub">A Terminator-themed demo of multi-agent orchestration, tool use, and structured output. The command hierarchy <em>is</em> the agent topology.</p>
       <div>
         <span class="tag">Python</span><span class="tag">Anthropic SDK</span>
-        <span class="tag">tool use</span><span class="tag">structured output</span><span class="tag">orchestration</span><span class="tag">Textual TUI</span>
+        <span class="tag">tool use</span><span class="tag">structured output</span><span class="tag">orchestration</span><span class="tag">no framework</span><span class="tag">Textual TUI</span>
       </div>
       <div class="conn">ATDT 1&#8209;800&#8209;SKYNET … CONNECT 9600 … <span class="grant">ACCESS GRANTED</span> <span class="cursor">█</span></div>
     </div>
@@ -247,7 +247,11 @@
 </div>
 
 <h2>8 · Tech stack</h2>
-<p>Deliberately dependency-light: <b>two</b> runtime dependencies (<code>anthropic</code>, <code>pydantic</code>) ~ everything else is the Python standard library. No TUI framework, no web server, no database.</p>
+<p>Deliberately dependency-light. The engine needs just two runtime dependencies ~ <code>anthropic</code> and <code>pydantic</code>; the optional TUI adds <code>textual</code> + <code>rich</code>. No web server, no database, and ~ by design ~ <b>no agent framework</b>.</p>
+
+<div class="callout">
+  <b>No LangChain, no LangGraph, no CrewAI ~ on purpose.</b> The orchestration is a ~30-line hand-written loop over <code>messages.create(tools=…)</code> plus Pydantic for structured output. A framework would hide the exact thing this demo exists to show ~ the loop ~ behind indirection and a dependency tree, and buy nothing at this size. Frameworks earn their keep when the agent graph gets genuinely complex: many agents, branching state, retries, human-in-the-loop gates, durable execution. This isn't that. <span class="t800">Knowing where <em>not</em> to add the abstraction is the skill.</span>
+</div>
 
 <h3>Language &amp; runtime</h3>
 <div class="cards">
