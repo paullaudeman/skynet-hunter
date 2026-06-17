@@ -47,8 +47,8 @@
     animation:hum 4s ease-in-out infinite;
   }
   @keyframes hum{50%{text-shadow:0 0 10px var(--red-glow),0 0 22px rgba(255,45,32,.45)}}
-  .eye{color:#fff;text-shadow:0 0 4px #fff,0 0 10px var(--red),0 0 18px var(--red);animation:eye 3s infinite}
-  @keyframes eye{0%,95%,100%{opacity:1}96%{opacity:.25}97%{opacity:1}98%{opacity:.3}}
+  .eye{color:#fff2ec;text-shadow:0 0 4px #fff,0 0 9px #ff5141,0 0 18px var(--red),0 0 30px var(--red);animation:eyepulse 2.2s ease-in-out infinite}
+  @keyframes eyepulse{0%,100%{opacity:.82}50%{opacity:1}}
   .conn{font-family:var(--mono);font-size:.72rem;color:var(--green);margin:.9rem 0 .2rem;letter-spacing:.02em}
   .conn .grant{color:#fff;background:var(--red-deep);padding:.08em .5em;border-radius:3px;text-shadow:none}
   .cursor{color:var(--red-br);animation:blink 1s steps(1) infinite}
@@ -116,17 +116,17 @@
   <div class="titlebar">Cyberdyne Systems · Skynet Defense Network · Model 101</div>
 <pre class="skull">          ▄▄▄▄▄▄▄▄▄▄▄▄▄▄
        ▄████████████████████▄
-      ████▀▀▀▀▀▀▀▀▀▀▀▀▀▀████
-     ███▀                  ▀███
-     ██     ▄▄▄▄      ▄▄▄▄     ██
-     ██    ██████    ██████    ██
-     ██    ██<span class="eye">██</span>██    ██<span class="eye">██</span>██    ██
-     ██    ██████    ██████    ██
-     ██     ▀▀▀▀      ▀▀▀▀     ██
-     ███    ▄▄▄▄▄▄▄▄▄▄▄▄▄▄    ███
-      ██    █ █ █ █ █ █ █ █    ██
-      ▀██▄▄              ▄▄██▀
-        ▀▀████████████████▀▀</pre>
+      ██████████████████████████
+     ███▀▀              ▀▀███
+    ███    ▄████▄  ▄████▄    ███
+    ██     █ <span class="eye">██</span> █  █ <span class="eye">██</span> █     ██
+    ██     ▀████▀  ▀████▀     ██
+    ███       ▄███▄       ███
+     ███▄    ▀▀▀▀▀▀▀    ▄███
+      ███   █▀█▀█▀█▀█▀   ███
+      ██    █▄█▄█▄█▄█▄    ██
+       ▀███▄         ▄███▀
+         ▀▀█████████████▀▀</pre>
   <div class="conn">ATDT 1&#8209;800&#8209;SKYNET … CARRIER DETECTED … CONNECT 9600 … <span class="grant">ACCESS GRANTED</span> <span class="cursor">█</span></div>
   <div class="band">▓▒░ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ░▒▓</div>
   <h1><span class="bot">🤖</span> Skynet Hunter</h1>
