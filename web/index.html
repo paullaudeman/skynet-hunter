@@ -258,7 +258,7 @@ body{
         <span class="obj">OBJECTIVE: <b id="objective">—</b></span>
         <span class="ctrls">
           <button class="run on" id="sndBtn" title="sound">♪</button>
-          <button class="run" id="runBtn">▶ RE-ENGAGE</button>
+          <button class="run" id="runBtn">▶ ENGAGE</button>
         </span>
       </div>
 
@@ -623,6 +623,7 @@ async function engage(){
   $("#sb-spend").textContent="$0.0000"; HUD.cycle(0,4);
   await runHunt();
   running=false;
+  $("#runBtn").textContent="▶ RE-ENGAGE";   // first run done ~ subsequent runs are replays
 }
 
 (async function main(){
