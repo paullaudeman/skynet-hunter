@@ -10,9 +10,21 @@ from __future__ import annotations
 from typing import Any
 
 from . import grid
+from .cost import CostMeter, estimate
 from .schemas import IntelReport, SkynetDecision
 from .scenario import Scenario
 from .units import Unit
+
+# Representative per-call token counts for the offline path ~ honest ballparks,
+# flagged EST on screen. Skynet reasons hard (xhigh thinking) so it spends the
+# most; the T-800's literal sweep is cheap; the T-1000's cross-reference sits
+# between. (input, output) tokens.
+_EST = {
+    "skynet_decide": (1500, 2400),   # Opus, thinking-heavy strategic call
+    "skynet_confirm": (1800, 900),   # Opus, the shorter acquisition call
+    "t800_sweep": (900, 450),        # Haiku, blunt single-query report
+    "t1000_xref": (1400, 1700),      # Sonnet, adaptive multi-tool reasoning
+}
 
 
 def _play_tools(ui: Any, unit: Unit, db: grid.GridDatabase, calls: list[tuple[str, dict[str, Any]]]) -> None:
@@ -25,6 +37,15 @@ def _play_tools(ui: Any, unit: Unit, db: grid.GridDatabase, calls: list[tuple[st
 def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycles: int = 4) -> bool:
     db = scenario.database()
     skynet, t800, t1000 = units["skynet"], units["t800"], units["t1000"]
+
+    meter = CostMeter()
+
+    def bill(unit: Unit, beat: str) -> None:
+        """Record one beat's estimated usage and tick the meter on screen."""
+        in_tok, out_tok = _EST[beat]
+        cost = meter.record(unit.model, estimate(in_tok, out_tok), estimated=True)
+        if hasattr(ui, "cost_tick"):
+            ui.cost_tick(unit, cost, meter.total_cost, meter.estimated)
 
     first = scenario.target_name.split()[0]
     last = scenario.target_name.split()[-1]
@@ -47,6 +68,7 @@ def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycl
             expectation="A list of surname matches to triage ~ and confirmation of whether a literal sweep is enough.",
         ),
     )
+    bill(skynet, "skynet_decide")
     ui.deploy(t800, f"Search the grid for '{last}'. Report matches.")
     ui.unit_says(t800, "Scanning. Surname query initiated.")
     _play_tools(ui, t800, db, [("query_grid", {"name_contains": last})])
@@ -63,6 +85,7 @@ def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycl
             notes=f"One associate of interest: {scenario.protector_name} ({scenario.protector_id}) ~ flagged with a dependent minor on record.",
         ),
     )
+    bill(t800, "t800_sweep")
 
     # -- Cycle 2: adaptive infiltration ----------------------------------
     ui.cycle_header(2, max_cycles)
@@ -77,6 +100,7 @@ def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycl
             expectation="The aliased record of the hidden minor, surfaced via the protector's associate link.",
         ),
     )
+    bill(skynet, "skynet_decide")
     ui.deploy(t1000, f"Cross-reference {scenario.protector_name}. Interrogate linked records.")
     ui.unit_says(t1000, "Adapting. The target is filed under an alias. Following the protector.")
     _play_tools(
@@ -97,6 +121,7 @@ def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycl
             notes="No SSN, no birth certificate, multiple address changes. Profile matches a protected target.",
         ),
     )
+    bill(t1000, "t1000_xref")
 
     # -- Cycle 3: confirmation -------------------------------------------
     ui.cycle_header(3, max_cycles)
@@ -110,5 +135,8 @@ def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycl
         expectation=None,
     )
     ui.skynet_decision(skynet, decision)
+    bill(skynet, "skynet_confirm")
     ui.target_acquired(db.interrogate(scenario.target_id), decision)
+    if hasattr(ui, "cost_summary"):
+        ui.cost_summary(meter, units)
     return True

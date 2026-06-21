@@ -18,6 +18,7 @@ import json
 from typing import Any
 
 from . import grid
+from .cost import CostMeter
 from .schemas import IntelReport, SkynetDecision
 from .units import Unit, normalize_designation
 
@@ -43,6 +44,7 @@ class Skynet:
         self.max_cycles = max_cycles
         self.profile = profile
         self.skynet = units["skynet"]
+        self.meter = CostMeter()
 
     # -- the orchestration loop ------------------------------------------
     def run(self) -> bool:
@@ -51,12 +53,15 @@ class Skynet:
 
         for cycle in range(1, self.max_cycles + 1):
             self.ui.cycle_header(cycle, self.max_cycles)
+            before = self.meter.total_cost
             decision = self.decide(intel_log)
             self.ui.skynet_decision(self.skynet, decision)
+            self._cost_tick(self.skynet, self.meter.total_cost - before)
 
             if decision.target_acquired and decision.target_record_id:
                 record = self.db.interrogate(decision.target_record_id)
                 self.ui.target_acquired(record, decision)
+                self._cost_summary()
                 return True
 
             unit_key = normalize_designation(decision.deploy_unit)
@@ -66,12 +71,24 @@ class Skynet:
 
             unit = self.units[unit_key]
             self.ui.deploy(unit, decision.directive or "Locate the target.")
+            before = self.meter.total_cost
             report = self.deploy(unit, decision.directive or f"Locate {self.target}.")
             self.ui.intel_report(unit, report)
+            self._cost_tick(unit, self.meter.total_cost - before)
             intel_log.append(report.model_dump())
 
         self.ui.mission_failed()
+        self._cost_summary()
         return False
+
+    # -- cost meter rendering (no-ops if the UI front-end doesn't implement it) --
+    def _cost_tick(self, unit: Unit, step_cost: float) -> None:
+        if hasattr(self.ui, "cost_tick"):
+            self.ui.cost_tick(unit, step_cost, self.meter.total_cost, self.meter.estimated)
+
+    def _cost_summary(self) -> None:
+        if hasattr(self.ui, "cost_summary"):
+            self.ui.cost_summary(self.meter, self.units)
 
     # -- Skynet's structured decision ------------------------------------
     def decide(self, intel_log: list[dict[str, Any]]) -> SkynetDecision:
@@ -97,6 +114,7 @@ class Skynet:
             messages=[{"role": "user", "content": prompt}],
             output_format=SkynetDecision,
         )
+        self.meter.record(self.skynet.model, getattr(resp, "usage", None))
         return resp.parsed_output
 
     # -- deploy one unit: manual agentic tool loop -----------------------
@@ -123,6 +141,7 @@ class Skynet:
             if thinking:
                 kwargs["thinking"] = thinking
             resp = self.client.messages.create(**kwargs)
+            self.meter.record(unit.model, getattr(resp, "usage", None))
             messages.append({"role": "assistant", "content": resp.content})
 
             for block in resp.content:
@@ -152,4 +171,5 @@ class Skynet:
             messages=messages + [{"role": "user", "content": _REPORT_PROMPT}],
             output_format=IntelReport,
         )
+        self.meter.record(unit.model, getattr(report, "usage", None))
         return report.parsed_output

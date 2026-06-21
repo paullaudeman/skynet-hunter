@@ -167,3 +167,34 @@ class UI:
 
     def note(self, text: str) -> None:
         self._out(self.t.paint("dim", f"  {text}"))
+
+    # -- cost meter -------------------------------------------------------
+    def cost_tick(self, unit: Any, step_cost: float, running_total: float, estimated: bool = False) -> None:
+        tag = "est " if estimated else ""
+        self._out(
+            self.t.paint("dim", f"      ⌁ {tag}cost +${step_cost:.4f}  ")
+            + self.t.unit(unit.color, f"[{unit.designation}]")
+            + self.t.paint("dim", f"   running ${running_total:.4f}")
+        )
+        self._pause(0.05)
+
+    def cost_summary(self, meter: Any, units: dict[str, Any]) -> None:
+        self._out()
+        self._out(self.t.band("ENGAGEMENT COST ~ MODEL TIER = ARCHITECTURE"))
+        by_model = {u.model: u for u in units.values()}
+        for row in meter.rows():
+            u = by_model.get(row.model)
+            color = u.color if u else "silver"
+            desig = u.designation if u else row.model
+            calls = f"{row.calls} call" + ("" if row.calls == 1 else "s")
+            self._out(
+                self.t.unit(color, f"  {desig:<8}", bold=True)
+                + self.t.paint("dim", f" {row.model:<18} ")
+                + self.t.paint("accent", f"${row.cost:.4f}")
+                + self.t.paint("dim", f"   {row.input_tokens:,} in / {row.output_tokens:,} out ~ {calls}")
+            )
+        tag = self.t.paint("warn", "   (estimated ~ drop a key and run live for real figures)") if meter.estimated else ""
+        self._out(self.t.paint("ok", f"  {'TOTAL':<8} {'':<18} ${meter.total_cost:.4f}", bold=True) + tag)
+        self._out(self.t.paint("dim", "  The T-800 flails cheap. The T-1000 cross-references for real money."))
+        self._out(self.t.paint("dim", "  Burning Opus on a literal sweep is the bill you don't have to pay."))
+        self._out()
