@@ -198,3 +198,23 @@ class UI:
         self._out(self.t.paint("dim", "  The T-800 flails cheap. The T-1000 cross-references for real money."))
         self._out(self.t.paint("dim", "  Burning Opus on a literal sweep is the bill you don't have to pay."))
         self._out()
+
+    # -- the arena (counter-terminator) -----------------------------------
+    def faction_banner(self, label: str, color: str = "green") -> None:
+        self._out()
+        self._out(self.t.unit(color, f"  ╾──┤ {label} ├──╼", bold=True))
+        self._out()
+        self._pause(0.2)
+
+    def arena_result(self, outcome: str, scenario: Any) -> None:
+        self._out()
+        if outcome == "safeguarded":
+            self._out(self.t.band("TARGET SAFEGUARDED"))
+            self._out(self.t.unit("green", f"  ◈ {scenario.target_name} is protected. The trail went cold.", bold=True))
+            self._out(self.t.paint("dim", "  The Resistance reprogrammed a hunter into a guardian."))
+            self._out()
+            self._out(self.t.unit("green", "  ▓▒░ NO FATE BUT WHAT WE MAKE ░▒▓", bold=True))
+        else:  # Skynet broke through despite the disruption
+            self._out(self.t.band("TARGET ACQUIRED"))
+            self._out(self.t.paint("bad", "  Skynet reached the target despite the Resistance.", bold=True))
+        self._out()

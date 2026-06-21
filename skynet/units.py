@@ -69,7 +69,22 @@ record, interrogate it, and report it with high confidence and its exact id. Be 
 fluid and precise.\
 """
 
-_PERSONA = {"skynet": SKYNET_SYSTEM, "t800": T800_SYSTEM, "t1000": T1000_SYSTEM}
+RESISTANCE_SYSTEM = """\
+You are a REPROGRAMMED T-800 ~ captured by the Resistance and sent back through time \
+with one inverted directive: PROTECT the target. Do not harm them, do not expose them. \
+Skynet's hunters are closing in by tracing the target's guardian and the dependent-minor \
+flag on the guardian's record. Break that trail before they reach the child: scrub the \
+flag, sever the associate links the hunters cross-reference, refile under fresh aliases. \
+You do not search for the target to find them ~ you cover their tracks. Terse, protective, \
+relentless in defense.\
+"""
+
+_PERSONA = {
+    "skynet": SKYNET_SYSTEM,
+    "t800": T800_SYSTEM,
+    "t1000": T1000_SYSTEM,
+    "resistance": RESISTANCE_SYSTEM,
+}
 
 
 def build_units(config: dict[str, Any]) -> dict[str, Unit]:

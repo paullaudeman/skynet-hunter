@@ -33,3 +33,11 @@ designation = "T-800"
 model = "claude-haiku-4-5"
 color = "red"
 thinking = "none"
+
+# The reprogrammed T-800 ~ the Resistance's protector (the --arena counter-agent).
+# Same blunt Haiku metal as the hunter T-800, opposite objective: it's all in the prompt.
+[units.resistance]
+designation = "Protector"
+model = "claude-haiku-4-5"
+color = "green"
+thinking = "none"
