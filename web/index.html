@@ -251,7 +251,7 @@ body{
         CYBERDYNE // SKYNET TERMINAL <span class="dim">::</span>
         <span class="obj">OBJECTIVE: <b id="objective">—</b></span>
         <span class="ctrls">
-          <button class="run hint" id="sndBtn" title="sound">♪</button>
+          <button class="run on" id="sndBtn" title="sound">♪</button>
           <button class="run" id="runBtn">▶ RE-ENGAGE</button>
         </span>
       </div>
@@ -317,7 +317,7 @@ const SPIN = "⠋⠙⠹⠸⠼⠴⠦⠧";
    Opt-in (browser autoplay policy) via the ♪ toggle.
    ===================================================================== */
 const Aud = {
-  ctx:null, master:null, on:false, unlocked:false, droneOn:false, sched:null, step:0, next:0,
+  ctx:null, master:null, on:true, unlocked:false, droneOn:false, sched:null, step:0, next:0,
   PATTERN:[2,0,0,0, 1,0,1,0, 2,0,1, 0,1], STEP:0.155,  // the metallic clang ostinato (limp)
   ensure(){
     if(!this.ctx){ const AC=window.AudioContext||window.webkitAudioContext; this.ctx=new AC();
@@ -329,7 +329,7 @@ const Aud = {
     if(!this.ctx) return;
     const t=this.ctx.currentTime, g=this.master.gain;
     g.cancelScheduledValues(t); g.setValueAtTime(g.value,t); g.linearRampToValueAtTime(v?0.32:0, t+0.4);
-    if(v){ this.drone(); this.ostinato(); } else { clearInterval(this.sched); this.sched=null; }
+    if(v){ this.drone(); /* this.ostinato();  ~ clang commented out for now */ } else { clearInterval(this.sched); this.sched=null; }
   },
   unlock(){ if(this.unlocked) return; this.unlocked=true; this.ensure(); this.apply(this.on); },
   toggle(){ this.ensure(); this.unlocked=true; this.on=!this.on; this.apply(this.on); return this.on; },
@@ -621,8 +621,12 @@ async function engage(){
 
 (async function main(){
   HUD.init(); paintStatics();
-  $("#sndBtn").addEventListener("click", ()=>{ const on=Aud.toggle(); const b=$("#sndBtn"); b.classList.toggle("on",on); b.classList.remove("hint"); });
-  $("#runBtn").addEventListener("click", engage);
+  $("#sndBtn").addEventListener("click", ()=>{ const on=Aud.toggle(); $("#sndBtn").classList.toggle("on",on); });
+  $("#runBtn").addEventListener("click", ()=>{ Aud.unlock(); engage(); });
+  const unlockOnce=(e)=>{ if(e.target && e.target.closest && e.target.closest("#sndBtn")) return;
+    Aud.unlock(); document.removeEventListener("pointerdown",unlockOnce); document.removeEventListener("keydown",unlockOnce); };
+  document.addEventListener("pointerdown", unlockOnce);
+  document.addEventListener("keydown", unlockOnce);
   await bootSequence();
   await sleep(400);
   engage();
