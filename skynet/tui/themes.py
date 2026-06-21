@@ -1,5 +1,5 @@
 """Palette + Textual CSS for the TUI ~ the same CRT-red Terminator look as the
-HTML explainer."""
+HTML explainer. Multi-pane HUD: one bezel-framed column per agent."""
 
 # Per-unit + status colors (hex, for Rich markup in the log).
 PALETTE = {
@@ -35,26 +35,42 @@ Screen { background: #0a0706; color: #d9cfc9; hatch: horizontal #2a1210 22%; }
 
 #body { height: 1fr; }
 
-#units {
-    width: 28;
+/* one bezel-framed column per agent ~ the multi-pane HUD */
+.agentcol {
+    width: 1fr;
+    min-width: 24;
     border: heavy #8e1810;
-    padding: 1 1;
-    hatch: horizontal #1c0c0a 18%;
 }
 
-#log {
-    width: 1fr;
-    border: heavy #8e1810;
-    background: #0d0908;
+.colhdr {
+    height: 4;
     padding: 0 1;
+    background: #0c0807;
+    border-bottom: solid #8e1810;
+}
+
+.collog {
+    height: 1fr;
+    padding: 0 1;
+    background: #0d0908;
     scrollbar-color: #8e1810 #0a0706;
 }
 
-#scenario {
-    width: 34;
+#sidebar {
+    width: 32;
     border: heavy #8e1810;
-    padding: 1 1;
     hatch: horizontal #1c0c0a 18%;
+}
+
+#scenario {
+    height: auto;
+    padding: 1 1;
+    border-bottom: solid #8e1810;
+}
+
+#scoreboard {
+    height: 1fr;
+    padding: 1 1;
 }
 
 Footer { background: #150f0d; }

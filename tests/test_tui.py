@@ -25,11 +25,29 @@ class FakeApp:
     def call_from_thread(self, fn, *args):
         return fn(*args)
 
-    def log_line(self, markup: str) -> None:
+    def log_to(self, key: str, markup: str) -> None:
         self.lines.append(markup)
 
     def set_status(self, key: str, status: str) -> None:
         self.statuses.append((key, status))
+
+    def add_cost(self, key: str, delta: float) -> None:
+        pass
+
+    def set_conf(self, key: str, conf: float) -> None:
+        pass
+
+    def score_cycle(self, n: int) -> None:
+        pass
+
+    def score_conf(self, conf: float) -> None:
+        pass
+
+    def score_cost(self, cost: float) -> None:
+        pass
+
+    def score_state(self, state: str) -> None:
+        pass
 
     def mark_done(self) -> None:
         self.done = True
