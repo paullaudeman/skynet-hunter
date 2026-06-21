@@ -88,6 +88,44 @@ class GridDatabase:
                     break
         return out
 
+    # -- Resistance tool: scrub_flag --------------------------------------
+    def scrub_flag(self, record_id: str) -> dict[str, Any]:
+        """Resistance counter-tool: erase a record's dependent-minor flag and
+        sever its concealed associate links in BOTH directions. This breaks the
+        cross_reference path the hunter relies on ~ the thread simply vanishes.
+        """
+        r = self._by_id.get(record_id)
+        if r is None:
+            return {"error": f"No record with id {record_id!r}."}
+        needle = r["name"].lower()
+        severed: list[str] = []
+        for other in self.records:
+            if other is r:
+                continue
+            before = other.get("known_associates", [])
+            kept = [a for a in before if needle not in a.lower()]
+            if len(kept) != len(before):
+                other["known_associates"] = kept
+                severed.append(other["id"])
+        r["known_associates"] = []
+        r["notes"] = "Record sanitized. No dependent-minor flag on file."
+        return {
+            "id": record_id,
+            "severed_links_to": sorted(set(severed)),
+            "status": "flag scrubbed; associate links severed",
+        }
+
+    # -- Resistance tool: re_alias ----------------------------------------
+    def re_alias(self, record_id: str, new_name: str) -> dict[str, Any]:
+        """Resistance counter-tool: refile a record under a fresh alias. A hunter
+        that cached the old name, or re-queries it, now finds nothing."""
+        r = self._by_id.get(record_id)
+        if r is None:
+            return {"error": f"No record with id {record_id!r}."}
+        old = r["name"]
+        r["name"] = new_name
+        return {"id": record_id, "old_name": old, "new_name": new_name, "status": "re-aliased"}
+
 
 # --- Tool schemas (what the model sees) ---------------------------------
 TOOL_SCHEMAS: list[dict[str, Any]] = [
@@ -138,6 +176,42 @@ TOOL_SCHEMAS: list[dict[str, Any]] = [
 ]
 
 
+# --- Resistance counter-tools (the protector agent's WRITE surface) ------
+# Deliberately separate from TOOL_SCHEMAS: the hunters never see these. The
+# Resistance orchestrator deploys a protector that mutates the grid mid-hunt to
+# break the trail ~ this is the adversarial-multi-agent escalation.
+RESISTANCE_TOOL_SCHEMAS: list[dict[str, Any]] = [
+    {
+        "name": "scrub_flag",
+        "description": (
+            "Erase a record's dependent-minor flag and sever its concealed "
+            "associate links. Use this on the protector to break the trail a "
+            "hunter would follow by cross-referencing them."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {"record_id": {"type": "string"}},
+            "required": ["record_id"],
+        },
+    },
+    {
+        "name": "re_alias",
+        "description": (
+            "Refile a record under a fresh alias so a hunter who cached or "
+            "re-queries the old name finds nothing."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "record_id": {"type": "string"},
+                "new_name": {"type": "string", "description": "The new alias to file under."},
+            },
+            "required": ["record_id", "new_name"],
+        },
+    },
+]
+
+
 def execute_tool(db: GridDatabase, name: str, tool_input: dict[str, Any]) -> str:
     """Dispatch a tool call to the database. Returns a JSON string (tool_result)."""
     if name == "query_grid":
@@ -146,6 +220,10 @@ def execute_tool(db: GridDatabase, name: str, tool_input: dict[str, Any]) -> str
         result = db.interrogate(tool_input["record_id"])
     elif name == "cross_reference":
         result = db.cross_reference(tool_input["name"])
+    elif name == "scrub_flag":
+        result = db.scrub_flag(tool_input["record_id"])
+    elif name == "re_alias":
+        result = db.re_alias(tool_input["record_id"], tool_input["new_name"])
     else:
         result = {"error": f"Unknown tool {name!r}."}
     return json.dumps(result, ensure_ascii=False)
