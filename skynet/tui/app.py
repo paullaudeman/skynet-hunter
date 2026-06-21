@@ -29,10 +29,12 @@ from .themes import CSS, PALETTE
 from .widgets import AgentColumn, ScenarioPanel, ScoreboardPanel, TickerBar
 
 _BOOT = [
-    "CYBERDYNE MODEL 101 ~ NEURAL NET CPU ONLINE",
-    "uplink to defense grid ......... OK",
-    "civil records LA 1984 .......... OK",
-    "autonomous engagement .......... AUTHORIZED",
+    "CYBERDYNE MODEL 101 ~ NEURAL NET CPU … ONLINE",
+    "power-on self-test … ▓▒░ ERR ░▒▓ … retry … OK",
+    "uplink to defense grid … 11 NODES DOWN / DEGRADED",
+    "civil records LA 1984 … 2.1M / SEALED ARCHIVES MOUNTED",
+    "core thermal … +6% NOMINAL / COOLANT ADVISORY",
+    "autonomous engagement … AUTHORIZED ~ NO HUMAN OVERSIGHT",
 ]
 
 _ORDER = ["skynet", "t1000", "t800"]

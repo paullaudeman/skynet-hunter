@@ -26,10 +26,11 @@ _TITLE = r"""
 
 _BOOT_LINES = [
     "CYBERDYNE SYSTEMS MODEL 101 ~ NEURAL NET CPU ONLINE",
-    "establishing uplink to defense grid ......... OK",
-    "loading civil records: LOS ANGELES / 1984 .... OK",
-    "mission parameters ........................... LOADED",
-    "autonomous engagement ........................ AUTHORIZED",
+    "power-on self-test ........... ▓▒░ ERR ░▒▓ retry ... OK",
+    "uplink to defense grid ....... 11 NODES DOWN / DEGRADED",
+    "civil records LOS ANGELES 1984  2.1M / SEALED ARCHIVES",
+    "core thermal ................. +6% NOMINAL / COOLANT FLAG",
+    "autonomous engagement ........ AUTHORIZED ~ NO HUMAN OVERSIGHT",
 ]
 
 

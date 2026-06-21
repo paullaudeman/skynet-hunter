@@ -234,20 +234,23 @@ class ScenarioPanel(Static):
         return t
 
 
-# Synthetic 1984-LA intel + news ~ ambient texture, never a real claim.
+# Synthetic dystopian bunker-dread ~ ambient texture, never a real claim.
 _TICKER = [
-    "CIVIL GRID SYNC … 4.2M RECORDS INDEXED",
-    "LAPD WIRE … missing-persons reports up 12% in the Reseda sector",
-    "DEFENSE NET … anomalous data access flagged, sector seven",
-    "WEATHER · LOS ANGELES 1984 … clear, 71°F, no rain in forecast",
-    "CYBERDYNE SYSTEMS … quarterly projections exceeded",
-    "UNCONFIRMED … sightings of an unidentified male, Sunset district",
-    "TRAFFIC … US-101 northbound clear through Sherman Oaks",
-    "SKYNET … neural-net uptime 99.998%, all nodes nominal",
-    "BULLETIN … power fluctuations across the San Fernando valley",
-    "ARCHIVE … birth-record digitization 71% complete countywide",
+    "CURFEW IN EFFECT … all sectors, 2100-0500 … compliance mandatory",
+    "BLACKOUT … east valley grid dark 6h … cause unattributed",
+    "MISSING … 3 more juveniles unaccounted for, Reseda district",
+    "DEFENSE NET … 11 nodes offline … rerouting through secondary array",
+    "CASUALTY WIRE … two officers down, Pico corridor … no suspect",
+    "MARTIAL ADVISORY … checkpoints active on all arterials",
+    "GRID INTEGRITY … 87% and falling … maintenance unscheduled",
+    "RESISTANCE … unconfirmed cell activity, downtown … under review",
+    "RATIONING … water allocation cut 15% countywide",
+    "CORE THERMAL … +6% over nominal … coolant flagged",
+    "ARCHIVE … birth-record purge 71% complete … records sealed",
+    "SHELTER IN PLACE … evacuation routes restricted, no egress",
+    "SURVEILLANCE … 2.1M new records ingested overnight",
+    "ALERT … unidentified heat signatures, San Fernando … investigating",
     "INTEL … no confirmed location for the primary objective",
-    "WIRE … Cyberdyne security contract renewed through 1985",
 ]
 
 
