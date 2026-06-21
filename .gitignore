@@ -20,3 +20,9 @@ build/
 
 # Internal planning ~ not for the public repo
 where-to-go-next-plans.md
+
+# Local session context (encrypted) ~ never public
+.claude/
+
+# Draft positioning content (LinkedIn / Medium) ~ local until published
+content/
