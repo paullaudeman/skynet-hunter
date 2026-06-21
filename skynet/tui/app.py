@@ -15,6 +15,7 @@ the UI thread via `app.call_from_thread`. The engine is unchanged.
 from __future__ import annotations
 
 import json
+import random
 import time
 from typing import Any
 
@@ -25,7 +26,7 @@ from textual.containers import Horizontal, Vertical
 from textual.widgets import Footer, Static
 
 from .themes import CSS, PALETTE
-from .widgets import AgentColumn, ScenarioPanel, ScoreboardPanel
+from .widgets import AgentColumn, ScenarioPanel, ScoreboardPanel, TickerBar
 
 _BOOT = [
     "CYBERDYNE MODEL 101 ~ NEURAL NET CPU ONLINE",
@@ -167,7 +168,14 @@ class TextualUI:
 class SkynetApp(App):
     CSS = CSS
     TITLE = "Skynet Hunter"
-    BINDINGS = [("r", "run", "Run"), ("q", "quit", "Quit")]
+    BINDINGS = [
+        ("r", "run", "Run"),
+        ("1", "zoom('skynet')", "Skynet"),
+        ("2", "zoom('t1000')", "T-1000"),
+        ("3", "zoom('t800')", "T-800"),
+        ("escape", "unzoom", "Restore"),
+        ("q", "quit", "Quit"),
+    ]
 
     def __init__(self, units: dict[str, Any], scenario: Any, max_cycles: int) -> None:
         super().__init__()
@@ -195,12 +203,14 @@ class SkynetApp(App):
                 yield ScenarioPanel(self.scenario)
                 self.scoreboard = ScoreboardPanel(self.max_cycles)
                 yield self.scoreboard
+        yield TickerBar()
         yield Footer()
 
     def on_mount(self) -> None:
         for col in self.columns.values():
             col.write_line(f"[{PALETTE['dim']}]standby ~ press [bold {PALETTE['red']}]r[/] to engage[/]")
         self._power_on()
+        self.set_interval(0.4, self._idle_flicker)  # failing-tube grit
 
     def _power_on(self) -> None:
         """CRT warm-up flicker ~ ramp the screen opacity with a couple of dips."""
@@ -209,7 +219,20 @@ class SkynetApp(App):
             self.set_timer(delay, lambda v=value: self._screen_opacity(v))
 
     def _screen_opacity(self, value: float) -> None:
-        self.screen.styles.opacity = value
+        if self.screen_stack:  # guard: a flicker timer can fire after teardown
+            self.screen.styles.opacity = value
+
+    def _idle_flicker(self) -> None:
+        """A failing-tube blink ~ irregular dim dips, like 20-year-old hardware."""
+        if not self.screen_stack:
+            return
+        if random.random() < 0.16:
+            self.screen.styles.opacity = random.uniform(0.82, 0.95)
+            self.set_timer(random.uniform(0.04, 0.09), self._flicker_restore)
+
+    def _flicker_restore(self) -> None:
+        if self.screen_stack:
+            self.screen.styles.opacity = 1.0
 
     # -- thread-safe widget updates (called via call_from_thread) --
     def log_to(self, key: str, markup: str) -> None:
@@ -261,6 +284,15 @@ class SkynetApp(App):
         if self.scoreboard is not None:
             self.scoreboard.reset()
         self.run_pursuit()
+
+    def action_zoom(self, key: str) -> None:
+        """Maximize one agent column to full width ~ to read a clipped stream."""
+        col = self.columns.get(key)
+        if col is not None:
+            self.screen.maximize(col)
+
+    def action_unzoom(self) -> None:
+        self.screen.minimize()
 
     @work(thread=True)
     def run_pursuit(self) -> None:
