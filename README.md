@@ -77,6 +77,8 @@ uv run python -m skynet --simulate --no-art            # mute the BBS theater / 
 uv run python -m skynet --simulate --max-cycles 3
 ```
 
+> **Note ~ the live path can refuse, by design.** Run live, a worker model may cross-reference the target, *find* the record, then decline to compile the structured intel report ~ correctly reading the schema (`target_record_id` + `method` + `confidence`, an artifact for locating a concealed minor via guardian links) as a real people-locating methodology under the fictional paint. That refusal **is the dual-use boundary** the [explainer](docs/explainer.html) names ~ enforced by the model itself, not asserted in prose. It's the demo working, not breaking. `--simulate` keeps no model in the loop, so it's deterministic and always completes ~ that's the canonical run; **live is where you watch the boundary hold.**
+
 Named scenarios: `john-connor` (default), `danny-dyson`, `blair-brewster`, `eli-vega`, or `random`. Each run, Skynet narrates its **assessment → reasoning → expectation** and each unit reports its **method**, so the viewer sees the *why*, not just the verdict.
 
 Tests:
@@ -141,13 +143,14 @@ skynet-hunter/
 │   ├── scenario.py        # templates + builder: injects the target per run (randomiser)
 │   ├── units.py           # per-terminator model config + personas
 │   ├── schemas.py         # Pydantic: IntelReport, SkynetDecision (structured output)
+│   ├── cost.py            # cost meter: pricing table + CostMeter (model tier = $ on screen)
 │   ├── orchestrator.py    # live engine: Skynet's loop + each unit's manual tool loop
 │   ├── simulate.py        # deterministic offline mirror (no API)
 │   ├── theme.py / ui.py   # CLI front end: ANSI/BBS theater
 │   ├── tui/               # TUI front end: TextualUI adapter, app, widgets
 │   └── cli.py             # entry point (--simulate / --tui / --scenario)
 ├── docs/explainer.html    # self-contained visual explainer
-└── tests/                 # grid, scenario, simulate, tui adapter (14 tests)
+└── tests/                 # grid, scenario, simulate, tui adapter, cost meter (21 tests)
 ```
 
 **The three patterns worth internalizing:**
