@@ -235,7 +235,7 @@ body{
 
 /* header tooltip ~ the model-tier-as-architecture lesson on hover/focus. Lives at
    .tube level (z-index 12) so it clears the CRT overlays (z 4-9), under boot/gate. */
-.col .hd{ cursor:help; }
+.col .hd, .panel h2[data-tipkey]{ cursor:help; }
 #tip{ position:absolute; z-index:12; max-width:280px; opacity:0; pointer-events:none;
   background:rgba(14,8,1,.97); border:1px solid var(--amber-dim); border-radius:4px;
   padding:9px 11px; font-family:var(--body); font-size:12px; line-height:1.5; color:var(--amber2);
@@ -369,11 +369,11 @@ body{
 
         <div class="side">
           <div class="panel">
-            <h2>SCENARIO</h2>
+            <h2 tabindex="0" data-tipkey="scenario">SCENARIO</h2>
             <div class="kv" id="scenario"></div>
           </div>
           <div class="panel">
-            <h2>SCOREBOARD</h2>
+            <h2 tabindex="0" data-tipkey="scoreboard">SCOREBOARD</h2>
             <div class="sb-row"><span class="k">cycle</span><span class="v" id="sb-cycle">0/4</span></div>
             <div class="sb-row"><span class="k">best conf</span><span class="v" id="sb-conf">0%</span></div>
             <div class="gauge"><div class="fill" id="sb-fill"></div><div class="thr"></div></div>
@@ -382,7 +382,7 @@ body{
             <div class="state hunting" id="sb-state">STANDBY</div>
           </div>
           <div class="panel" style="min-height:0">
-            <h2>DIAGNOSTICS</h2>
+            <h2 tabindex="0" data-tipkey="diag">DIAGNOSTICS</h2>
             <div class="diag" id="diag"></div>
           </div>
         </div>
@@ -537,6 +537,24 @@ const UNIT_TIP = {
     defeat a target hidden under an alias.
     <span class="tl">tier = architecture: <em>Haiku is cheapest ($1 / $5)</em>, so the doctrine deploys it
     first to keep cost low before escalating.</span>`,
+};
+
+// the sidebar panels ~ what each readout means.
+const PANEL_TIP = {
+  scenario: `<b>SCENARIO</b>
+    <span class="mid">The synthetic case the agents work.</span>
+    <span class="tl"><em>key</em> the case id · <em>target</em> who Skynet is after · <em>alias</em> the false
+    identity concealing them · <em>protector</em> the guardian whose record links to the target ·
+    <em>relation</em> how they're tied. The alias is exactly why a literal sweep fails ~ the reason the tiers escalate.</span>`,
+  scoreboard: `<b>SCOREBOARD</b>
+    <span class="mid">Live mission state ~ the cost-vs-confidence tradeoff on screen.</span>
+    <span class="tl"><em>cycle</em> which engagement round · <em>best conf</em> highest confidence any unit reached ·
+    the gauge marks the <em>0.8 acquisition threshold</em> · <em>spend</em> total $ across every model call ·
+    <em>state</em> HUNTING / ACQUIRED / SAFEGUARDED.</span>`,
+  diag: `<b>DIAGNOSTICS</b>
+    <span class="mid">Ambient bunker telemetry ~ atmosphere, not engine state.</span>
+    <span class="tl">Grid integrity, node count, core thermals, power draw, sealed records, uplink status:
+    set dressing for the dying war machine humming around the hunt. Decorative, not driven by the run.</span>`,
 };
 
 function buildColumn(key){
@@ -969,14 +987,17 @@ async function streamHunt(){
 }
 
 /* ---- header tooltip ~ explain the model-tier lesson on hover/focus ---- */
-function showTip(hd, html){
+function showTip(el, html){
   const tip=$("#tip"), tube=document.querySelector(".tube");
   if(!tip||!html) return;
   tip.innerHTML=html;
-  const r=hd.getBoundingClientRect(), tr=tube.getBoundingClientRect();
+  const r=el.getBoundingClientRect(), tr=tube.getBoundingClientRect();
   const w=Math.min(280, tr.width-20);
   tip.style.left=Math.max(8, Math.min(r.left-tr.left, tr.width-w-8))+"px";
-  tip.style.top=(r.bottom-tr.top+4)+"px";
+  const th=tip.offsetHeight;
+  let top=r.bottom-tr.top+4;
+  if(top+th > tr.height-6) top=Math.max(6, r.top-tr.top-th-4);   // flip above if it'd overflow the bottom
+  tip.style.top=top+"px";
   tip.classList.add("on");
 }
 function hideTip(){ const t=$("#tip"); if(t) t.classList.remove("on"); }
@@ -1216,6 +1237,12 @@ function renderShot(){
   const updateSndBtn=()=> $("#sndBtn").classList.toggle("on", Aud.on);
   $("#sndBtn").addEventListener("click", ()=>{ Aud.toggle(); updateSndBtn(); });
   $("#runBtn").addEventListener("click", ()=>{ Aud.unlock(); engage(); });
+  // sidebar panel tooltips ~ same hover/focus pattern as the agent headers
+  document.querySelectorAll(".panel h2[data-tipkey]").forEach(h=>{ const key=h.dataset.tipkey;
+    h.addEventListener("mouseenter", ()=>showTip(h, PANEL_TIP[key]));
+    h.addEventListener("mouseleave", hideTip);
+    h.addEventListener("focus", ()=>showTip(h, PANEL_TIP[key]));
+    h.addEventListener("blur", hideTip); });
   await bootSequence();
   await sleep(300);
 
