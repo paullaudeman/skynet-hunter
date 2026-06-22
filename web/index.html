@@ -430,7 +430,7 @@ const Aud = {
     for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
     const ns=c.createBufferSource(); ns.buffer=nb;
     const f=c.createBiquadFilter(); f.type="bandpass"; f.frequency.value=2100+Math.random()*1000; f.Q.value=0.7;
-    const g=c.createGain(); g.gain.setValueAtTime(0.34,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.03);
+    const g=c.createGain(); g.gain.setValueAtTime(0.41,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.03);
     ns.connect(f); f.connect(g); g.connect(this.master); ns.start(t);
   },
   blip(){ this.voice("square", 1300, 0.03, 0.07); },
