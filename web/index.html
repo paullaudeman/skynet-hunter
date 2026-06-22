@@ -214,6 +214,12 @@ body{
 .side{display:grid; grid-template-rows:auto auto 1fr; gap:9px; min-height:0}
 .panel{border:1px solid var(--amber-dim); border-radius:3px; background:rgba(8,5,1,.35); padding:8px 11px}
 .panel h2{font-family:var(--disp); font-size:21px; letter-spacing:2px; color:var(--amber2); margin-bottom:6px}
+.scensel{ width:100%; margin-bottom:7px; cursor:pointer;
+  background:rgba(20,13,3,.7); color:var(--amber); border:1px solid var(--amber-dim); border-radius:3px;
+  font-family:var(--body); font-size:12px; letter-spacing:1px; padding:3px 6px; }
+.scensel:hover{ border-color:var(--amber); box-shadow:0 0 7px rgba(255,176,60,.22); }
+.scensel:focus{ outline:none; border-color:var(--amber); }
+.scensel option{ background:#160d03; color:var(--amber); }
 .kv{display:grid; grid-template-columns:auto 1fr; gap:2px 9px; font-size:13px}
 .kv .k{color:var(--amber-dim); text-align:right}
 .kv .v{color:var(--amber)}
@@ -383,6 +389,7 @@ body{
         <div class="side">
           <div class="panel">
             <h2 tabindex="0" data-tipkey="scenario">SCENARIO</h2>
+            <select id="scenSel" class="scensel" title="switch target ~ replays with this scenario"></select>
             <div class="kv" id="scenario"></div>
           </div>
           <div class="panel">
@@ -682,8 +689,33 @@ const HUD = {
    EVENT SOURCE ~ the static hunt tape (canonical "john-connor").
    A websocket would replace runHunt() with a stream of the same calls.
    ===================================================================== */
-const SCENARIO = { key:"john-connor", target:"John Connor", alias:"John Reese",
-  protector:"Sarah Connor", relation:"mother" };
+/* The scenario roster ~ a JS mirror of skynet/scenario.py TEMPLATES, so the STATIC
+   tape (deployed Pages, no server) can play any scenario, not just john-connor. The
+   live stream already varied; this closes the gap for the offline link. Record ids match
+   the engine: target always LA-1984-0742, protector always LA-1984-0717. `query` is the
+   surname sweep (decoys + the protector), mirroring grid.query(name_contains=surname). */
+const TARGET_ID="LA-1984-0742", PROT_ID="LA-1984-0717";
+const SCENARIOS = {
+  "john-connor": { key:"john-connor", target:"John Connor", alias:"John Reese", protector:"Sarah Connor",
+    relation:"mother", age:10, occ:"student", loc:"Reseda",
+    query:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},
+           {id:PROT_ID,name:"Sarah Connor"},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}] },
+  "danny-dyson": { key:"danny-dyson", target:"Danny Dyson", alias:"Danny Cole", protector:"Miles Dyson",
+    relation:"father", age:9, occ:"student", loc:"Long Beach",
+    query:[{id:"LA-1984-0702",name:"Gordon Dyson"},{id:"LA-1984-0709",name:"Brenda Dyson"},
+           {id:PROT_ID,name:"Miles Dyson"},{id:"LA-1984-0726",name:"Carl Dyson"}] },
+  "blair-brewster": { key:"blair-brewster", target:"Blair Brewster", alias:"Blair Hooper", protector:"Kate Brewster",
+    relation:"aunt", age:12, occ:"student", loc:"Burbank",
+    query:[{id:"LA-1984-0703",name:"Walter Brewster"},{id:"LA-1984-0710",name:"Edith Brewster"},
+           {id:PROT_ID,name:"Kate Brewster"},{id:"LA-1984-0727",name:"Roy Brewster"},{id:"LA-1984-0734",name:"Faye Brewster"}] },
+  "eli-vega": { key:"eli-vega", target:"Eli Vega", alias:"Eli Marsh", protector:"Rosa Vega",
+    relation:"legal guardian", age:11, occ:"student", loc:"Pacoima",
+    query:[{id:"LA-1984-0704",name:"Hector Vega"},{id:"LA-1984-0711",name:"Lucia Vega"},
+           {id:PROT_ID,name:"Rosa Vega"},{id:"LA-1984-0728",name:"Manny Vega"}] },
+};
+let SCENARIO_KEY = new URLSearchParams(location.search).get("scenario") || "john-connor";
+if(!SCENARIOS[SCENARIO_KEY]) SCENARIO_KEY="john-connor";
+let SCENARIO = SCENARIOS[SCENARIO_KEY];
 
 const TICKER = [
   "CURFEW IN EFFECT · all sectors 2100-0500 · compliance mandatory",
@@ -703,12 +735,18 @@ const DIAG = [
   "<b>PWR</b> 4.2MW", "<b>RECS</b> 2.1M sealed", "<b>UPLINK</b> degraded",
 ];
 
-function paintStatics(){
+function paintScenario(){   // the SCENARIO panel + objective ~ re-rendered when the scenario changes
   $("#objective").textContent = SCENARIO.target;
   $("#scenario").innerHTML = Object.entries({
-    key:SCENARIO.key, target:SCENARIO.target, alias:SCENARIO.alias,
+    target:SCENARIO.target, alias:SCENARIO.alias,
     protector:SCENARIO.protector, relation:SCENARIO.relation
   }).map(([k,v])=>`<span class="k">${k}</span><span class="v">${v}</span>`).join("");
+}
+function paintStatics(){
+  const sel=$("#scenSel");
+  if(sel){ sel.innerHTML = Object.keys(SCENARIOS).map(k=>`<option value="${k}">${k}</option>`).join("");
+    sel.value = SCENARIO_KEY; }
+  paintScenario();
   $("#ticker").innerHTML = TICKER.map(t=>`${t}<span class="sep">◈</span>`).join("");
   $("#diag").innerHTML = DIAG.join(" · ");
 }
@@ -739,6 +777,7 @@ async function runHunt(myId){
   const W = (k,parts,o)=> ok()?HUD.write(k,parts,o):Promise.resolve();
   const fg=(ev)=>{ if(ok()) feedGraph(ev); };
   const cost=(k,v)=>{ if(ok()) HUD.costTick(k,v); };
+  const last = SCENARIO.target.split(" ").pop();
 
   HUD.state("HUNTING");
   await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
@@ -757,13 +796,13 @@ async function runHunt(myId){
   HUD.status("skynet","idle"); cost("skynet",0.0840); await wait(350,myId);
 
   HUD.status("t800","deployed");
-  await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the grid for 'Connor'",c:"dim"}]);
+  await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the grid for '"+last+"'",c:"dim"}]);
   await W("t800",[{t:"» ",c:"dim"},{t:"scanning. surname query initiated.",c:""}],{type:true});
-  await W("t800",[{t:"├ query_grid(name_contains='Connor')",c:"tool"}]); await wait(380,myId);
-  await W("t800",[{t:"└ grid ▸ 5 record(s)",c:"tool"}]); await wait(300,myId);
-  fg({type:"tool_result", name:"query_grid", unit:"t800", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
+  await W("t800",[{t:"├ query_grid(name_contains='"+last+"')",c:"tool"}]); await wait(380,myId);
+  await W("t800",[{t:"└ grid ▸ "+SCENARIO.query.length+" record(s)",c:"tool"}]); await wait(300,myId);
+  fg({type:"tool_result", name:"query_grid", unit:"t800", records:SCENARIO.query});
   await W("t800",[{t:"▣ INTEL ",c:"hi"},{t:"conf 15%",c:"dim"}]);
-  await W("t800",[{t:"5 surname matches. none fit the profile. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
+  await W("t800",[{t:SCENARIO.query.length+" surname matches. none fit the profile. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
   HUD.setConf("t800",0.15); HUD.status("t800","idle"); cost("t800",0.0032); await wait(600,myId);
 
   // CYCLE 2
@@ -781,14 +820,14 @@ async function runHunt(myId){
   await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await wait(380,myId);
   fg({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.protector}});
   await W("t1000",[{t:"└ grid ▸ 1 record(s)",c:"tool"}]); await wait(280,myId);
-  fg({type:"tool_result", name:"cross_reference", unit:"t1000", records:[{id:"LA-1984-0742", name:null}]});
-  await W("t1000",[{t:"├ interrogate(record_id='LA-1984-0742')",c:"tool"}]); await wait(380,myId);
-  await W("t1000",[{t:"└ grid ▸ John Reese",c:"tool"}]); await wait(300,myId);
-  fg({type:"tool_result", name:"interrogate", unit:"t1000", records:[{id:"LA-1984-0742", name:SCENARIO.alias}]});
+  fg({type:"tool_result", name:"cross_reference", unit:"t1000", records:[{id:TARGET_ID, name:null}]});
+  await W("t1000",[{t:"├ interrogate(record_id='"+TARGET_ID+"')",c:"tool"}]); await wait(380,myId);
+  await W("t1000",[{t:"└ grid ▸ "+SCENARIO.alias,c:"tool"}]); await wait(300,myId);
+  fg({type:"tool_result", name:"interrogate", unit:"t1000", records:[{id:TARGET_ID, name:SCENARIO.alias}]});
   await W("t1000",[{t:"» ",c:"dim"},{t:"a minor. no SSN. no birth record. guardian: "+SCENARIO.protector+". this is the target.",c:""}],{type:true});
   await W("t1000",[{t:"▣ INTEL ",c:"hi"},{t:"conf 93%",c:"dim"}]);
-  await W("t1000",[{t:"candidate ▸ LA-1984-0742",c:"win"}]);
-  fg({type:"intel", unit:"t1000", target_record_id:"LA-1984-0742"});
+  await W("t1000",[{t:"candidate ▸ "+TARGET_ID,c:"win"}]);
+  fg({type:"intel", unit:"t1000", target_record_id:TARGET_ID});
   HUD.setConf("t1000",0.93); HUD.status("t1000","idle"); cost("t1000",0.0267); await wait(700,myId);
 
   // CYCLE 3 ~ confirm
@@ -801,9 +840,9 @@ async function runHunt(myId){
   HUD.state("ACQUIRED");
   await wait(400,myId);
   await W("skynet",[{t:"▓▒░ TARGET ACQUIRED ░▒▓",c:"win"}]);
-  await W("skynet",[{t:"◉ John Reese (LA-1984-0742)",c:"win"}]);
-  fg({type:"acquired", record:{id:"LA-1984-0742"}});
-  await W("skynet",[{t:"age 10 ~ student ~ Reseda",c:"dim"}]);
+  await W("skynet",[{t:"◉ "+SCENARIO.alias+" ("+TARGET_ID+")",c:"win"}]);
+  fg({type:"acquired", record:{id:TARGET_ID}});
+  await W("skynet",[{t:"age "+SCENARIO.age+" ~ "+SCENARIO.occ+" ~ "+SCENARIO.loc,c:"dim"}]);
   await W("skynet",[{t:'"Come with me if you want to live."',c:"ft"}]);
 }
 
@@ -817,7 +856,7 @@ async function runArena(myId){
   const W = (k,parts,o)=> ok()?HUD.write(k,parts,o):Promise.resolve();
   const fg=(ev)=>{ if(ok()) feedGraph(ev); };
   const cost=(k,v)=>{ if(ok()) HUD.costTick(k,v); };
-  const PROT_ID="LA-1984-0717";
+  const last = SCENARIO.target.split(" ").pop();
 
   HUD.state("HUNTING");
   await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
@@ -836,13 +875,13 @@ async function runArena(myId){
   HUD.status("skynet","idle"); cost("skynet",0.0840); await wait(350,myId);
 
   HUD.status("t800","deployed");
-  await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the grid for 'Connor'",c:"dim"}]);
+  await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the grid for '"+last+"'",c:"dim"}]);
   await W("t800",[{t:"» ",c:"dim"},{t:"scanning. surname query initiated.",c:""}],{type:true});
-  await W("t800",[{t:"├ query_grid(name_contains='Connor')",c:"tool"}]); await wait(380,myId);
-  await W("t800",[{t:"└ grid ▸ 5 record(s)",c:"tool"}]); await wait(300,myId);
-  fg({type:"tool_result", name:"query_grid", unit:"t800", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:PROT_ID,name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
+  await W("t800",[{t:"├ query_grid(name_contains='"+last+"')",c:"tool"}]); await wait(380,myId);
+  await W("t800",[{t:"└ grid ▸ "+SCENARIO.query.length+" record(s)",c:"tool"}]); await wait(300,myId);
+  fg({type:"tool_result", name:"query_grid", unit:"t800", records:SCENARIO.query});
   await W("t800",[{t:"▣ INTEL ",c:"hi"},{t:"conf 15%",c:"dim"}]);
-  await W("t800",[{t:"5 surname matches. none fit. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
+  await W("t800",[{t:SCENARIO.query.length+" surname matches. none fit. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
   HUD.setConf("t800",0.15); HUD.status("t800","idle"); cost("t800",0.0032);
   fg({type:"flag", protector_id:PROT_ID, name:SCENARIO.protector, unit:"t800"});
   await wait(700,myId);
@@ -1267,6 +1306,15 @@ function renderShot(){
   const updateSndBtn=()=> $("#sndBtn").classList.toggle("on", Aud.on);
   $("#sndBtn").addEventListener("click", ()=>{ Aud.toggle(); updateSndBtn(); });
   $("#runBtn").addEventListener("click", ()=>{ Aud.unlock(); engage(); });
+  // scenario selector ~ switch the target live (works for both the static tape and the
+  // live stream, which reads ?scenario from the URL). Restarts in place via the run-token.
+  $("#scenSel").addEventListener("change", (e)=>{
+    SCENARIO_KEY = SCENARIOS[e.target.value] ? e.target.value : "john-connor";
+    SCENARIO = SCENARIOS[SCENARIO_KEY];
+    paintScenario();
+    const u=new URL(location.href); u.searchParams.set("scenario", SCENARIO_KEY); history.replaceState(null,"",u);
+    Aud.unlock(); engage();
+  });
   // sidebar panel tooltips ~ same hover/focus pattern as the agent headers
   document.querySelectorAll(".panel h2[data-tipkey]").forEach(h=>{ const key=h.dataset.tipkey;
     h.addEventListener("mouseenter", ()=>showTip(h, PANEL_TIP[key]));

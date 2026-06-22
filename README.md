@@ -18,7 +18,7 @@
 ▓▒░ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ░▒▓
 ```
 
-A toy? No ~ a first step. It's **multi-agent orchestration, tool use, and structured output**, costumed as a Skynet command hierarchy. The command structure *is* the agent topology; the model tiers *are* an architecture decision.
+A toy? No ~ a first step. It's **multi-agent orchestration, tool use, and structured output** ~ wrapped in the **governance and observability** layer that separates a clever agent from a *governed* one. The command structure *is* the agent topology; the model tiers *are* an architecture decision; and the boundaries, the live refusal, and the entity-resolution graph are what make it **accountable**, not just capable. That last part ~ shipping agents you'd actually stand behind ~ is the harder, scarcer half, and the reason this repo exists.
 
 **What it demonstrates**
 
@@ -28,7 +28,9 @@ A toy? No ~ a first step. It's **multi-agent orchestration, tool use, and struct
 - **Adversarial data** that makes the task require reasoning, not a lookup.
 - **Two engines** ~ real Claude agents, and a deterministic `--simulate` mode that needs no key.
 - **No LangChain / LangGraph / CrewAI**, by design ~ knowing where *not* to add the abstraction is the point.
-- **The boundaries that keep it safe** ~ tools, budget, persistence, spawn, human-gate, kill-switch ~ written up in [`docs/agent-safety.md`](docs/agent-safety.md). Safety lives in the wiring, not the model.
+- **The boundaries that keep it safe** ~ tools, budget, persistence, spawn, human-gate, kill-switch ~ written up in [`docs/agent-safety.md`](docs/agent-safety.md). Safety lives in the wiring, not the model. ([Governance & safety](#governance--safety--the-part-that-actually-matters) pulls the thesis together.)
+- **An entity-resolution intel graph** ~ the scattered records resolve into a relationship graph with **provenance**: each node and edge tagged with *which* terminator surfaced it, via *which* tool. Observability you can see, not just assert (toggle **⊹ GRAPH** in the [browser HUD](https://paullaudeman.github.io/skynet-hunter/)).
+- **Two playable scenes, any target** ~ the **hunt** (Skynet acquires) and the **arena** (the Resistance reprograms a unit to *protect* ~ flip one boundary, flip the outcome), across four scenarios, switchable live in the browser.
 - **Three front-ends over one engine** ~ a CLI, a Textual TUI, and a deployed [browser CRT HUD](https://paullaudeman.github.io/skynet-hunter/) that even streams the live engine over SSE. The engine never changes; only the `ui` seam swaps. *That* separation is the reusable lesson.
 
 ---
@@ -55,6 +57,27 @@ The twist that makes it *agentic* and not just a database lookup: John Connor is
 Skynet burns Opus because reasoning is the bottleneck. The T-800 is Haiku because you want ten cheap passes, not one expensive one. *(Haiku rejects the `effort` / `budget_tokens` params ~ it 400s ~ so the T-800 stays deliberately bare-metal. Fitting for a 1984 endoskeleton.)*
 
 Swap any model string in `config.toml` and the same demo runs on a different tier. That swap is the whole point.
+
+---
+
+## Governance & safety ~ the part that actually matters
+
+Capability is the easy half. The harder, scarcer half ~ and the reason this repo exists ~ is making an agentic system **governed, observable, and accountable**. Four things here *demonstrate* that, rather than assert it:
+
+- **Boundaries, enumerated.** Every place the agents could overreach ~ tools, budget, persistence, spawn, human-gate, kill-switch ~ is named and constrained in [`docs/agent-safety.md`](docs/agent-safety.md). Safety lives in the wiring, not the model's good intentions.
+- **The boundary the model enforces itself.** Run live and a worker may cross-reference the target, *find* the record, then **refuse** to compile the intel report ~ reading the schema (locate a concealed minor via guardian links) as a real people-locating methodology under the fictional paint. The dual-use line isn't asserted in prose; it's enforced on screen. (Full note under [Run it](#run-it).)
+- **Flip one boundary, flip the outcome.** The [`--arena`](#run-it) counter-terminator changes a *single* thing ~ the objective in the system prompt ~ and the same metal that hunted the child now **protects** him: the Resistance reprograms a unit to scrub the trail, and the hunt cross-references nothing. **Tier is architecture; the objective is just the prompt.** The model-tier lesson, governance edition.
+- **Observability you can see.** The browser HUD resolves the scattered records into an **entity-resolution intel graph**, every node and edge tagged with *which* terminator surfaced it via *which* tool. Provenance and lineage, rendered ~ the observability half of "governed."
+
+The wedge isn't "can you build an agent." It's "can you build one you'd be willing to ship."
+
+<p align="center">
+  <a href="https://paullaudeman.github.io/skynet-hunter/">
+    <img src="docs/intel-graph.png" alt="The entity-resolution intel graph ~ scattered records resolved into a provenance-tagged relationship graph" width="760">
+  </a>
+  <br>
+  <sub>The intel graph ~ scattered records resolve into a relationship graph, each edge tagged with the terminator and tool that surfaced it. <a href="https://paullaudeman.github.io/skynet-hunter/">toggle ⊹ GRAPH live →</a></sub>
+</p>
 
 ---
 
@@ -179,7 +202,7 @@ skynet-hunter/
 │   └── cli.py             # entry point (--simulate / --tui / --arena / --scenario)
 ├── web/                   # browser CRT HUD (index.html) + SSE stream server (server.py)
 ├── skyterm/               # amber-phosphor terminal theme (iTerm2 / Ghostty / Starship)
-├── docs/                  # explainer.html · agent-safety.md · web-hud.png
+├── docs/                  # explainer.html · agent-safety.md · web-hud.png · intel-graph.png
 └── tests/                 # grid, scenario, simulate, tui adapter, cost meter (21 tests)
 ```
 
