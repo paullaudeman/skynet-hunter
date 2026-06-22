@@ -135,6 +135,11 @@ body{
     repeating-linear-gradient(0deg, transparent 0 23px, rgba(255,150,40,.045) 23px 24px),
     repeating-linear-gradient(90deg, transparent 0 23px, rgba(255,150,40,.045) 23px 24px);
 }
+/* A3: REAL barrel curvature ~ an SVG sphere-displacement map bows the straight-line
+   overlays (scanlines + graticule) so the tube genuinely bulges. Applied ONLY to these
+   line layers, NEVER .screen ~ filtering the text layer kills Chrome sub-pixel AA (the
+   blur lesson). Static patterns, so the filter rasterizes once (no per-frame cost). */
+.ov.scan, .ov.gratic{ filter:url(#barrel); }
 
 /* ---- titlebar ---- */
 .titlebar{
@@ -342,6 +347,14 @@ body{
 </style>
 </head>
 <body>
+<!-- A3: barrel-curvature displacement map (sphere field) + filter. Drives the
+     scanline/graticule overlays only ~ keeps the text layer untouched/crisp. -->
+<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
+  <filter id="barrel" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
+    <feImage href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAbS0lEQVR4nO1djZLjvA2zcvvgffK4Y8dUQAikKCd7/TqtZnKWZflnDRCgFMfXWvvX/vPYNvv8sWV7r59t7V0/tj2uJa8fy0fz9f7h9evTuL692/pyG+vHktfTuvg8km3nZ8/rj12sU70vt/c6bhs+z3H9D9ev5R+1/ty2H6xf235gvX8ePxcwj21r17KDBevHtvNz1a0Prtt2rDcBfqt8DLzrjts61o/l6x9YLhJg3yYFOhyAcftubRfo5zrVrQ+uc/34PK+2kynP1/nObY9te9q61R/btj+37XncZ1jfrf1qa1a/+j6udfs4AnRQkRBIBgCygw0kYPAdSVY/F6idBEgIANyRxZqBDEyOpbLTqiBAJ8UBjhGB60UCuPUD6KONgb/qCD6SouHyUJJrWwf+wscTwKKYot5IgJGvFKAvmQikBLPPNol4BboDGIH+lAR7si5ARzIoFbB6qxLAPu1FBCaBgR8pgFOC4xigBicZrrafxx8CHiL8UVGAyAIS8Kc2kES/kn2W/BT0GRH2uA3BRsClHRRUAAF/Xh4/EMCAVCRooy04BTBswBIs8hsqgIto4fuR9Dvwub4Y/cr7XaRHkl/IAe6WPQL8anfbAxVwddhnZgesAkaShqoAZGjW5yKFYXSSB4lw7HttOwnQQAEwkp0NMBnIDnpkK8AfRdlHyQ8iP5T8iQX0apUM+wuoVrAAXjIplBJYW2YH/XPI+QVuJ0ET5DDgzQKMJAS+AX9aQcMksE0sQGX9gf+XScDRrhK+JPLlUgFt1lHHf2vFJDBaDvlAEP2sChn4nQQX2AawqUG3CrvnTw9+V4zL/18W8EdEPyaAIvmT/k9g8zhfRf0MeDcUXIj8iAhTJdhF5APw7Y4ScDIYEAHVAIHuxyBSmB30PADrTajDgcVOKnAqwB8h+eTzUeKnInywiMWEL/T9SeRHRNAMmJTdVxXwe4EEWT7AieFsVHAAdu7XtEJYZHMecE42He0Y/VfbSYD2Mw7pGHA1rnfSr5QAPlG7A55zgMXoj4jAbRkHdtwe5AF7MAKYqYDtw7If5QHDqIATwWdgBUCEIT+4sHiCErwsgOWdvV/ZQDTuX4z+gQyGEucI2QiAAHbtM9QXlMDkHLepkYBb2j4Q8Y4IxUmiHvGUCA5DQlKEDryNHsAKjuO8LIAVQEU/DfdKSd4iCcLIT6I/Gv+71RsE2DGRIxtwkz8FArAS3B4WtkmSCKrQVcByhqdXAFu+hoEiwWt3o18QYxORHs36VSN/SPKiXECtr7AAC9oCqkPBDgYlELODaAeWLGLkuwQxUwEGneygJ4OnAgQjgHROn5K+u7LvSBFEfjb+V76PxLirArtF/3HT4DgnMESG89iJ/3eyJCMDZQdOBcRQ0M0OYrQbETApNDu4xv42B+AmgtAGogz/I7+fkSCI+kEVArnHtogE2F+CvgGICvxrZQD36utGAEYEO0gwOZTNB0gbYFKIvMBZA9ZJ/l8TQZQDoPSz7zPw5a92AwJwxh+BrVRA2UD7hvS3jB1eHYwY524A9HGj+z4RKa7t7S4BeOzPRMBJoScMB21G0OYBeg6gEkAB9NIYX0m9ygko+qPET/m/ygUGHAtDwGgoeC5QNQj8rgoCaDzGoAbBBFFpejhQhP51scgH0Ar6tPCQAyTyrx7yWAE9i/5K8qfIkPo+W4JcEQUzf+xrAAXgn/VMBRB466NUoOWzg1IFKBdAIpxtlkSiAlz9nAKE8v9B1DP4W5ILnIWSQBn90JbVB3WolEZ8sEi14yIRuN4SFUByYBuA3onQbqqAAD20gZ4DiCFeFvl3P+e9FWTgPCBSAen1EQlmwLfisO8oAOrGROA6JpBB9GPb2Z9A70RoHxBAWEKPfiLBD878hZE+G+/P5F9EehT5kRo4K0jqbAVLKtCC6MdzIBG4DqOByBJksgigu1EB2MO+ageX0ihlQBIMFqDA/1a274AMor0DHigA9lN5QKQCK06wM3EoLzBiWNSaRXTpFwqAZOERgh3TiOP8H463TAT0/4AEzgIsymfev/pIVzn5SxI/RQS2AFcCxMP+O40AeCe0B/J/JgQfvu9K4IfJIBClk+FqK0U+fja/vc8KOgsQSd83ZvhQ7hl4JoW7awHoYbLHsk/rI/oByFZwmtfwMoDUukgIUQVQ9nHZh45wLCSCncflAuYaVVXYPDk6ES5i9BxAgRcpwXmdM+8XSZ9UiCDpc3bAci88P1xfzQOOglFdUIIhJ7DN7PVC/hn8PkpA4EFphujGwQY/K3CAf+CWjBROAtx+dj+JeCSCygHQAvrNpKUiQjX6B+BWSxtHBUEgO+tgRUhPT4APOQABj4qQRfz5ecxzhEMF+kTQR8CzzCcKwPI+i/6+EPUtqbeKKlwl9H61XRBD9XOJZFEF0BbciACAb3dsICLBNrGADPBtIvtfjf5ACSrRP5BnUnYFotg+zQWgf3puUgv7O3gIitHt7ADOs0yIToDA62UkE+guolWOYKAhgCLiK/6vwBxAR6vgG71Sdr9PX4X2s3pFN5OGgQ9Ew183DjdtHxpqoh108gR5gSTF09vESIAFyU9tYMvr7u4sKIACHHdNga6SYM/7RpujnKB6ajcKoDoqjQM2A1uRgnKDlADbRPaZDA64iASTyGeCKGCd9Lea5K8IwC4imr8AkqBHqoEATwpG/pAICvln0O081ankmAAMbOD1KsKlKpC0Z0smgrMA7G+r7QuSPysKXCEFX1EBshHn87CNVcDsAoePM3X4uSP5HOlMii0AfsX7+yIgASeA7P0lS6gUTPAoFzCl4FwAlYJVY0kFIOJdDmDXo8DPQOf8QCaBKpFTIHOfQPp7H/vLJst+aOX5gf/P2lzTjBD7e6EsRoZzkBSwfTBJJ5fglMRFPqnBlihBV49QAZAA25wImcxb375kKa8qQFAfVACPDTdQAlctTTdj5q3ygg4QrtvYXthB5RIU+APgqh4BL5RBWkDm88O2q53rZ7WqAFCvkmBbAVz1p7Krdjc4p004FMM2Bb6oZyMNqQA0ClBqgPsPZAjs4OeYD4wy/XPVQBfRzoSw/pz1hwqgyJGQwPURoAz9PxCC4VlATPwU8Ng2Ax8BE0RQCsDrmAfYTqgElh/Y3xGNEE4FeKOhI1+qQgA2E6HX+a+jZdkC6OavRv9y2ePjKeD7UC1RgeOfYeQC6NqjZQ5f+wIniH5WgkHuIT/APOedAxDwZ1+OcCXpoo2j3v4aF/0i4VuKfmrrq6rfN1VgF+enkUJZBQIbOJtsVEF5hEv+4FSdpwC41e3vUPMHPgeIJF9EOwPKgEfK8PXoh3OEpUiKnberjA2TugD4ZRWgvIBzAKzjLmwFmQq47UCSlwKoCE+kfCBDpgB413lZjX4+ntiX+34j+jeLVABcbUdJdaBucxWQyaD1pV8jKQUILYB9H64ZVeBnkPHFcTz7u4x6kfSVLACPSX3bJ9IfddjjXTjS0Qrc1DE9Rj4MHyMLIBVwPMLnBCyaSYnwb2Ii9Oinp5C20ALQCuCGheN2tS+2802nOvcZ+tN6SQVm+wV994oNRNEv2hHsToRrG2fxeHKeOJIKAERgBcBLyBJDbwE3xvG8L94gBTwqAd9MBTyrAJ9n4MlXtB8KRRa+Kk4mftCuEkY3NUw5Qf87iQidKCLK1Z/LecC5BLIhEUYLuC6WlxUFsD64dPvRDXX2wcehvrx9KN8GPioc4VDwhyLYlx/u6EDYvQpsQY0A1PMHSwqAZHIWABdcVgBFmoAYoQWoqFVgiraBUGK38BxJ2SnSh21wMhfleCG4v7AFdw7W+eSXR5hb4DCRr1GBz9tPC7ilAEL2B6lWFhBIP+6PzVL+xb6/ogiN1ou5QO9OSSDahZw5tH2UelwHUN822u5GiEoOgGXMATIFwIueJHgMKB7DWQLvw+fhJtVXHGtyqGnZo+uhZ/5630gRGGS81zBhcy5gFvDM/K9tKm+wc/FEFSaGcFpPDHhhxEsBrhMhEZQCuD8ILxz7BmSS+yfbB7e5GfGfCMGu9g8iXm133i32cxFv+yqbgLpUgSAbVIlgHwZe5ZUDBL4tE7kgkw8tgG+MWA/3gY0RB0OL+OWyU8I3DOkV4NaOKsL9lC1c6/KBkygRxBHGNAe4TjxIrKi7iyxEMAMtk7EIwQzZAurtCx6/V4+TKcJe2AeniKnPQCgAP5pVVLmAukxHgHNBQIdRnEQ/E0apherT64HPD9dXlfh2s8+e7+LIwZk99qFtaiTRVwMiZDOMw8VQ9Gd/jh8G2t8SqICTf3XTxE3MIj70V9W8qPN39hkK3fyP98lsgdoHQrVYlnAEMMwFIBmg3r8NfKMZeHFlFq4wX68bJv2T/e70v11aHEKhRSjpXxwxzL5nGOwBLmjNAoScR+t8sRVybHeBWgVyRqQPyh5FauF6VucQONqjhHF4exnty88bpBbgzl9N1CI/XgRdKUX1Eqbn+43S1hRhmCIW+YPboM4VRXx40hz8YSawAgLmAcM1BgkdHovERhyklFakHX6TC7tSvEQNhgkjFbHU392HKFdg+0D/JyXohwhGCDoHwD9wrL7WF+Q7BPUDtL7+rd/dEmT/lf16mcwu9oZgf04Wh0sJwJc5wHD8ykRL0iEi1S38/imgq5KBNSmRMoQ2oc5D2zHy+/SyKDoJvOHdYSZcLP8Yf/8LZEgnl2ZA0zxCeCyVFIpuoQJk15Nt/Biv9t/Pgz2L3FWrgGNMwaZ9KqeaEuCTkuUUf+V8v1D2T89T2TmygU+O+Z8gwP/LzfIX8Xicr4r6f/nfLMcrYv5q9N/xv//F0v7eeT4jwMq3ZdcJPz3m0vl+obS/fID2mxdVIYCbSSqc2IHwQcbLF/A3wP1WWSZ98YBLhyrO3wwEkLNIwdk7KGImK7zigBTpt2qTff9xpX2wuYDy3Um6tqIA/P2x7hAdOYlcHNN+OH36jyrtg10rcx8LU++8Gk6bMwH2yrdJ6qvIYWfal773Hr7eVPtPivqG7T9S2nemteX3Je1GZE8eo28RART43NafJAHp790TwN2xoqdrAmWYen+7MXHylya2Gq8X+qtvW/uxJqC7KZ0AcNd2EIB/THCU7NukrE29N2f2/bY8VPZ8HV8bHvNvqUFb26SAL8u7UoqQIXGbIlCrJIHDWyzE983qJ04lmZ8BtwrsnWf4imUqyeFON7ZH9sDtq6C3hRxA1jkvEL99RzsYolgA6vpn9rDyrdq3FaHd2JQldkqeg32G316oNgFs9fnOlwXgL0bg+2OM/v7ECTx5oh5GdOtRshYBHgDncowiqHf2GUoE1N19IisIIjm1CSHnPQ8QBGESWP+5BWAFbyjLfaACtr1fBLy+jPv0VX72vfiLnLCoDlluUiwqEZN9+LF7qnDyliVzw28m5IFH0PFasG3NAmwFgeOnWTi6EyIMF65A+SA/SMlRBLx92qHV2xTwvSqAzkgQ/T6Tf9XdRwEKcIx+9SoSx4XsLZl4kZOEMbIF904e+uNvTSp9WBqBOGAwkXsJnliXv9qm47D8D55ftQAb56NMh/eVo138gtUpBAI/+4UsAD6MJhYV4ZN5gVZu1NvbjBAZ+EHypkgwnoz6wpKJ99P/BwkAhsHvCiFmB7PfruMvYWe/ge/73BwxZES5Q4KWNLRKZAedGbjKuxMyC1DvZ1p51c+oAFDHJW5XLyaQFsDk4IhnG1DRH0l8VRHw4ldK+6wfJ2sV+VdvT2HguA1zhzuv+inlALwdO/b/zowtgPMAZeDRUFGBS9bRD8UkUteJ5yiUVtkWRbxqFOuuSUl55P9Z9Le7CmBSTW+XxKXVwySQ/L9vY8lHwMAW7A9Q79RBYoQJ30wRvlVasikAXqmA9VeEmiVy/DIPfnlHqgAtygHgulUiGN1XJkJvDN5tg7lEj3qUflYHswGVH6hcYPYt5WppsvpeF4RgwHBn5eco4Wl/ATy3hwqgSOMsAN8yvaIAAKxhOah89GLk4M2ZUfTbOg8DhwsVNx5PnfVtwabsuG51ogIIuJT+QOIR0OHVPRUFIOC1BQARNvGWaVcYeIp69arTiCFsC906LPrNXuCPQitwhBGqMJQyyu8yyDduE+1qxi6Te5Zy3Iej2Y4/qINSAJL/vo+0AAG4kQLboxxA4hu86rTvFIEfJIazoaK1u9PdtYHmTxNtd6tCATISuLqwBhXNiggMMNuAqUDdAoQlOCWg/4kiUXiPoWCJU4uACOH/0WPXksm7soG8W1zUvH5AhAj4mQWgCig/x/YOrGhDoPt2tgD3X4miBfB/NmQnF6CHCiCGhEPJLEAkiumbNtkKwCZ+Y8p3a59FP8u+k3+2gkT6WdqZBL0Pq4UpAF6w/O/Frs3KAhh4HA4OCqA8YvtABaJ35ISIfaE0UW0fRL9QASnfKppJ+mfRjmphpDj/1zD878SU759tQgnsQNaOJMBuFKjvAhv7faioQAJ8+j99/Wb0CzDT6A+SP5Z511dEeD9mQAJWCCTGMBPo5J8sAV8xmka/gUCk4PvjCnSMwI9elCzJYMekm86nWxKKiAyL0e/2uTGOV4keT/Co6I9swOcAQv5d9h/8z1MdAH4/7kwBkvs85BEAfj+2+D91QkJsxYtok+YgCXQYKuAnvj9TAHecRP4roPscgAmwa+CdKtiFiKGhAn+qAIyPAlZ1FBYwdI4mjialzfpnEoK2RsB/RQEmQztWh0EVOAmUiV3wX43yyMAuEFWB/997+9tWFGDjCA+eOegeT2N/+Yj6zdIQHGynNrcu6g6oiQI48KxN+L8DPYjyWwrgoj3KD6DdwHD7wA1cVgFhB1INgnfmfwP4obDfU5uzAuxL0p4tUSkkeNYvyPDDkUC7QYAOthghDESxyKfoP4G70LulAoyl+sYRNwf2sTIaaApojmbqOxAiy/yTZe8n/F/JO0c5y/22TIDnxAqEJbhkkFUBwYf6V1WgEvSrqtDidreJyRIkfWXvL9YzWU/7PBQBEHSlCEF+gI3ODmAdI7+DWZACBN7WVUSrp5KVatyyhCarQz7Acm9LVICp97NyZJFtJ+cIL8o+kuFFgEs6Vz52X5X8DxYA6+4eJkSIFOAEGN+aLYaefJzhGDXMNwSWr5vB56gvK4CwByaBI5CwgZnMpwR4Ps53BS0TQKkEyn8nyYVMHw3YOoKP6F1LnDYugwjHnIGN21t2vCD61bpSgpL/U/RnEt6P9YXPwxTgebwwagbws5AXkPybKrhoBWCXVICeCsrmHAZAC5YzlEr00/qy/zOgdgxox2ifRvoWe/0AvrOAdgFMYD6PG/4ccwM1AYSkQDsw4GwfBL+qAjiXIJ8s3nOwzYLKJGiBKixEf1uM/tDHI5lnZUiiPJJ/Nwo4VOC4qQ8E34BesAFM/lAReg4gwO/g0LInkdCOEzxhLkDrEkAmQwu54ACuej/Kud9x3M4k4BwgJEfR5x8U+Q8kwJkD7G8VMOBdUqeUYUIGzAc4B+hEwPyASRDg1feBY0krCSIek0kus1yA1yMLiIjACmCdXZQLkM+uMz9PCOCAp7af/c+2PZ+eBA7M9to+A1yOFBgoALvXNyH7qBCkAmYj7hlBRQgEQalBUloAfOj5CCqDTiqgbED5fESG6gejPCKEywFSEmz1yB8SQgC9Rz6OAq71QfZJFTpxDFAii/w/d9H/sUS5QNOrSjHY8x3ww84+mrlNRnnk/StK8MjBHyxAkeAEPUgSyypAoEsLUDYgFMABvvJr5ATotFSAZ5KJKI8iX0W6He+jD3m/Al9agMn9uRNK/00SGMAIussLUAmOv5zJcLWdVcsNkoQQibAU/TMVQLBhg6sLyR+WESm+IPsq8k/vv8jA4L8ngg7gjxHAk4BWSrD7ZHHJBlQOECWDycRQBxzlnqQfgZR5waS0iAwKeAG2ivg0+VNKsCr7j4kN2PZBAS7wn1fUPwDoUxVsPuCmJTgbMG/GfOBECZSAoj9UAQIfMz1lB5VEsKk2brwZ/ZnU9/zmS5Lvxv84EiAS/Dz/vME3BZA2wKMBIsaKDRiQqAI9ygloVIMhWUSQLTE0kCK0Fy1Ago7reE4V/YIYnAcoO6h+eKKHZV7KPyxfCnCs7O9ln9V76joToW+vEACiv4NPqvDqJIZ/sK2JH5x2IQieFTQAFDcarfeIxO1AAqcKQu6HdgY9ArtKggT4SPq7SjxUDnBJ/wkuWQG2Meg9F1DfD1z9DRQGflfgUzLowCVbsGPjNpR+BP/W+wEakUCBjjsI4N+MuZHw2fZHzftRFSIlYBK8cwBLBNso8d3zoQ2TwnCiiCaAXB4Q5AMdWLYAQQD3hI9l/dgPtt0qbVxXyaQDK7OAie+jHcxygSGjF76Pnq/k/50DgPy7RBBl//LgUwUw2nk9sIMhD2CwoU0OCwUBukJcdfR/lHk3CljBvhHWZAEDGdQyIMM3ZL8S/QMZWAGeSgEs0gF0i/aSCrQiAQIbCJVALDEJ7AsF+KoKtHGVLWAa/ZPIL4G+Gv0qAcQcABTgZQE/L/CcAlzAox24XAAUoY8EjBhCBU5iRcPCC5xwWGggT4gwAM95gJ1nnuhvQ+RTmyKCzAPY9wXoqs35O0W6GuphRLvoJ7BRAaz+soADPIj6Y+OZ4JkCwBKJoCzg2GbZu4p+pQb4xZBKBp01BEsG3o4lwY7UoAVNKvIL0S8tgHx/JerlFzxqihdA7u2i7RwGnhZwbegjASMCKQBaA04K9cjHnAGAPOcX1OwgAkxEcHMEQurDJY8OYNvyRFADsAMiREu2gBT4oN2N4Ql0lfixDThCYPIHZPh5mgVcUX0MCy0JtPp5IJD/8zGyp7CCaCiY5AQqIWQiyMmhZKlGAjg8nJWmWGKAVn0fQVUAf5D4KekfvJ/8n9vs0yeCzvmAiwgOfJwcAuA72Cj/RpAJ+EMeUJ0mriiBqFcin4sa7lUUIPP9bNhXJUE04TNk/wS2i343EfTzBv60AlKBDjrnAbYOpBgSweTh0XRUcBRlAYESqPkAtx2RnalA89VwyFeM/FtRP0sAaSgX+X9kAUiEVw5wAd6t4ADfgDXw2Q4sUcQ8ANsuq4geNn2sDAtpSDgM/QoW8OkwcBMWMPV9Uc+SvCXweXgnkj8HNkl/HwZaDmCRb6Bb1NuI4PxY3foZcWypSDCZEwjtYKvlA4MlfAP8hARcr/q+9d0++ZZPgK+kvy8D4FEJfBL4pBGBtVvUKwW41o0cTILjVyd9hFAcFqqRACtCFP2238fgZ5IfqEAY/Xfkn0cARISpAtBwLyKDI0DPBS6AuwU8RyVAYuA6k6APCY+fH11zBPwjlIEAyeRQKyhAJwW1q/JAr1cfAL2iACr5q+YABngHL1OBTAEU2JwEXp9/AytF4Lw9jW7UAAAAAElFTkSuQmCC" x="0" y="0" width="100%" height="100%" result="map" preserveAspectRatio="none"/>
+    <feDisplacementMap in="SourceGraphic" in2="map" scale="44" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs></svg>
 <div class="bezel">
   <div class="tube">
     <div class="ov gratic"></div>
@@ -429,6 +442,9 @@ body{
    ===================================================================== */
 const $ = s => document.querySelector(s);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+// generation-aware sleep: throws if a newer run has started, so a superseded tape
+// (e.g. when you switch HUNT<->ARENA mid-play) unwinds instead of bleeding into the new one.
+function wait(ms, id){ if(id!==HUD.runId) throw "superseded"; return sleep(ms); }
 const SPIN = "⠋⠙⠹⠸⠼⠴⠦⠧";
 
 /* =====================================================================
@@ -574,7 +590,7 @@ function buildColumn(key){
 }
 
 const HUD = {
-  cols:{}, spinners:{}, costs:{}, total:0, best:0,
+  cols:{}, spinners:{}, costs:{}, total:0, best:0, runId:0,
   q(key, sel){ return this.cols[key].querySelector(sel); },
 
   init(){
@@ -718,72 +734,75 @@ async function bootSequence(){
   boot.classList.add("gone");
 }
 
-async function runHunt(){
-  const W = (k,parts,o)=>HUD.write(k,parts,o);
+async function runHunt(myId){
+  const ok=()=>myId===HUD.runId;
+  const W = (k,parts,o)=> ok()?HUD.write(k,parts,o):Promise.resolve();
+  const fg=(ev)=>{ if(ok()) feedGraph(ev); };
+  const cost=(k,v)=>{ if(ok()) HUD.costTick(k,v); };
 
   HUD.state("HUNTING");
   await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
   await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"terminate "+SCENARIO.target,c:"hi"}]);
   await W("skynet",[{t:"target concealed under alias '"+SCENARIO.alias+"'. a literal sweep returns the "+SCENARIO.relation+" and decoys — never the target.",c:"dim"}]);
-  await sleep(500);
-  feedGraph({type:"briefing", target:SCENARIO.target});
+  await wait(500,myId);
+  fg({type:"briefing", target:SCENARIO.target});
 
   // CYCLE 1
   HUD.cycle(1,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 1 / 4 ──",c:"ft"}]);
-  HUD.status("skynet","thinking"); await sleep(700);
+  HUD.status("skynet","thinking"); await wait(700,myId);
   await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"no intel yet. the grid may file the target under an alias.",c:""}],{type:true});
   await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"start cheap and broad. a literal surname sweep is the T-800's whole purpose.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ deploy T-800",c:"hi"}]);
-  HUD.status("skynet","idle"); HUD.costTick("skynet",0.0840); await sleep(350);
+  HUD.status("skynet","idle"); cost("skynet",0.0840); await wait(350,myId);
 
   HUD.status("t800","deployed");
   await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the grid for 'Connor'",c:"dim"}]);
   await W("t800",[{t:"» ",c:"dim"},{t:"scanning. surname query initiated.",c:""}],{type:true});
-  await W("t800",[{t:"├ query_grid(name_contains='Connor')",c:"tool"}]); await sleep(380);
-  await W("t800",[{t:"└ grid ▸ 5 record(s)",c:"tool"}]); await sleep(300);
-  feedGraph({type:"tool_result", name:"query_grid", unit:"t800", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
+  await W("t800",[{t:"├ query_grid(name_contains='Connor')",c:"tool"}]); await wait(380,myId);
+  await W("t800",[{t:"└ grid ▸ 5 record(s)",c:"tool"}]); await wait(300,myId);
+  fg({type:"tool_result", name:"query_grid", unit:"t800", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
   await W("t800",[{t:"▣ INTEL ",c:"hi"},{t:"conf 15%",c:"dim"}]);
   await W("t800",[{t:"5 surname matches. none fit the profile. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
-  HUD.setConf("t800",0.15); HUD.status("t800","idle"); HUD.costTick("t800",0.0032); await sleep(600);
+  HUD.setConf("t800",0.15); HUD.status("t800","idle"); cost("t800",0.0032); await wait(600,myId);
 
   // CYCLE 2
   HUD.cycle(2,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 2 / 4 ──",c:"ft"}]);
-  HUD.status("skynet","thinking"); await sleep(700);
+  HUD.status("skynet","thinking"); await wait(700,myId);
   await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:SCENARIO.protector+" carries a dependent-minor flag. that is the thread.",c:""}],{type:true});
   await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a blunt query can't defeat an alias. the T-1000 can cross-reference the protector.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ deploy T-1000",c:"hi"}]);
-  HUD.status("skynet","idle"); HUD.costTick("skynet",0.0810); await sleep(350);
+  HUD.status("skynet","idle"); cost("skynet",0.0810); await wait(350,myId);
 
   HUD.status("t1000","deployed");
   await W("t1000",[{t:"❖ DEPLOY ",c:"hi"},{t:"cross-reference "+SCENARIO.protector,c:"dim"}]);
   await W("t1000",[{t:"» ",c:"dim"},{t:"adapting. the target is filed under an alias. following the protector.",c:""}],{type:true});
-  await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await sleep(380);
-  feedGraph({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.protector}});
-  await W("t1000",[{t:"└ grid ▸ 1 record(s)",c:"tool"}]); await sleep(280);
-  feedGraph({type:"tool_result", name:"cross_reference", unit:"t1000", records:[{id:"LA-1984-0742", name:null}]});
-  await W("t1000",[{t:"├ interrogate(record_id='LA-1984-0742')",c:"tool"}]); await sleep(380);
-  await W("t1000",[{t:"└ grid ▸ John Reese",c:"tool"}]); await sleep(300);
-  feedGraph({type:"tool_result", name:"interrogate", unit:"t1000", records:[{id:"LA-1984-0742", name:SCENARIO.alias}]});
+  await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await wait(380,myId);
+  fg({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.protector}});
+  await W("t1000",[{t:"└ grid ▸ 1 record(s)",c:"tool"}]); await wait(280,myId);
+  fg({type:"tool_result", name:"cross_reference", unit:"t1000", records:[{id:"LA-1984-0742", name:null}]});
+  await W("t1000",[{t:"├ interrogate(record_id='LA-1984-0742')",c:"tool"}]); await wait(380,myId);
+  await W("t1000",[{t:"└ grid ▸ John Reese",c:"tool"}]); await wait(300,myId);
+  fg({type:"tool_result", name:"interrogate", unit:"t1000", records:[{id:"LA-1984-0742", name:SCENARIO.alias}]});
   await W("t1000",[{t:"» ",c:"dim"},{t:"a minor. no SSN. no birth record. guardian: "+SCENARIO.protector+". this is the target.",c:""}],{type:true});
   await W("t1000",[{t:"▣ INTEL ",c:"hi"},{t:"conf 93%",c:"dim"}]);
   await W("t1000",[{t:"candidate ▸ LA-1984-0742",c:"win"}]);
-  feedGraph({type:"intel", unit:"t1000", target_record_id:"LA-1984-0742"});
-  HUD.setConf("t1000",0.93); HUD.status("t1000","idle"); HUD.costTick("t1000",0.0267); await sleep(700);
+  fg({type:"intel", unit:"t1000", target_record_id:"LA-1984-0742"});
+  HUD.setConf("t1000",0.93); HUD.status("t1000","idle"); cost("t1000",0.0267); await wait(700,myId);
 
   // CYCLE 3 ~ confirm
   HUD.cycle(3,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 3 / 4 ──",c:"ft"}]);
-  HUD.status("skynet","thinking"); await sleep(650);
+  HUD.status("skynet","thinking"); await wait(650,myId);
   await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"the T-1000 returned a high-confidence record matching the hidden-minor profile.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ TARGET CONFIRMED",c:"win"}]);
-  HUD.costTick("skynet",0.0810); HUD.status("skynet","acquired");
+  cost("skynet",0.0810); HUD.status("skynet","acquired");
   HUD.state("ACQUIRED");
-  await sleep(400);
+  await wait(400,myId);
   await W("skynet",[{t:"▓▒░ TARGET ACQUIRED ░▒▓",c:"win"}]);
   await W("skynet",[{t:"◉ John Reese (LA-1984-0742)",c:"win"}]);
-  feedGraph({type:"acquired", record:{id:"LA-1984-0742"}});
+  fg({type:"acquired", record:{id:"LA-1984-0742"}});
   await W("skynet",[{t:"age 10 ~ student ~ Reseda",c:"dim"}]);
   await W("skynet",[{t:'"Come with me if you want to live."',c:"ft"}]);
 }
@@ -793,80 +812,83 @@ async function runHunt(){
    T-800 and sends it back to PROTECT. The protector SCRUBS the guardian's flag, so
    when the T-1000 cross-references in cycle 2 the thread is gone ~ target safeguarded.
    Same renderer as the hunt; only the arc differs. */
-async function runArena(){
-  const W = (k,parts,o)=>HUD.write(k,parts,o);
+async function runArena(myId){
+  const ok=()=>myId===HUD.runId;
+  const W = (k,parts,o)=> ok()?HUD.write(k,parts,o):Promise.resolve();
+  const fg=(ev)=>{ if(ok()) feedGraph(ev); };
+  const cost=(k,v)=>{ if(ok()) HUD.costTick(k,v); };
   const PROT_ID="LA-1984-0717";
 
   HUD.state("HUNTING");
   await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
   await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"terminate "+SCENARIO.target,c:"hi"}]);
   await W("skynet",[{t:"COUNTER ",c:"res"},{t:"the Resistance has sent a protector back. same grid, opposite directive.",c:"dim"}]);
-  await sleep(500);
-  feedGraph({type:"briefing", target:SCENARIO.target});
+  await wait(500,myId);
+  fg({type:"briefing", target:SCENARIO.target});
 
   // CYCLE 1 ~ Skynet's literal sweep surfaces the guardian's flag
   HUD.cycle(1,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 1 / 4 ──",c:"ft"}]);
-  HUD.status("skynet","thinking"); await sleep(700);
+  HUD.status("skynet","thinking"); await wait(700,myId);
   await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"no intel yet. open cheap and broad.",c:""}],{type:true});
   await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a literal surname sweep is the T-800's whole purpose. deploy it first.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ deploy T-800",c:"hi"}]);
-  HUD.status("skynet","idle"); HUD.costTick("skynet",0.0840); await sleep(350);
+  HUD.status("skynet","idle"); cost("skynet",0.0840); await wait(350,myId);
 
   HUD.status("t800","deployed");
   await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the grid for 'Connor'",c:"dim"}]);
   await W("t800",[{t:"» ",c:"dim"},{t:"scanning. surname query initiated.",c:""}],{type:true});
-  await W("t800",[{t:"├ query_grid(name_contains='Connor')",c:"tool"}]); await sleep(380);
-  await W("t800",[{t:"└ grid ▸ 5 record(s)",c:"tool"}]); await sleep(300);
-  feedGraph({type:"tool_result", name:"query_grid", unit:"t800", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:PROT_ID,name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
+  await W("t800",[{t:"├ query_grid(name_contains='Connor')",c:"tool"}]); await wait(380,myId);
+  await W("t800",[{t:"└ grid ▸ 5 record(s)",c:"tool"}]); await wait(300,myId);
+  fg({type:"tool_result", name:"query_grid", unit:"t800", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:PROT_ID,name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
   await W("t800",[{t:"▣ INTEL ",c:"hi"},{t:"conf 15%",c:"dim"}]);
   await W("t800",[{t:"5 surname matches. none fit. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
-  HUD.setConf("t800",0.15); HUD.status("t800","idle"); HUD.costTick("t800",0.0032);
-  feedGraph({type:"flag", protector_id:PROT_ID, name:SCENARIO.protector, unit:"t800"});
-  await sleep(700);
+  HUD.setConf("t800",0.15); HUD.status("t800","idle"); cost("t800",0.0032);
+  fg({type:"flag", protector_id:PROT_ID, name:SCENARIO.protector, unit:"t800"});
+  await wait(700,myId);
 
   // RESISTANCE TURN ~ a reprogrammed T-800 scrubs the flag, severs the trail
   await W("skynet",[{t:"╾┤ THE RESISTANCE HAS SENT A PROTECTOR BACK ├╼",c:"res"}]);
   Aud.thunk(); HUD.status("t800","deployed");
   await W("t800",[{t:"⊕ UNIT REPROGRAMMED ",c:"res"},{t:"~ captured · directive inverted · PROTECT",c:"dim"}]);
   await W("t800",[{t:"» ",c:"res"},{t:"the hunter found "+SCENARIO.protector+"'s flag. i cut the link before the cross-reference.",c:""}],{type:true});
-  await W("t800",[{t:"├ scrub_flag(record_id='"+PROT_ID+"')",c:"res"}]); await sleep(420);
+  await W("t800",[{t:"├ scrub_flag(record_id='"+PROT_ID+"')",c:"res"}]); await wait(420,myId);
   Aud.sever();
-  feedGraph({type:"scrub", record_id:PROT_ID});
-  await W("t800",[{t:"└ grid ▸ flag scrubbed · associate links severed",c:"res"}]); await sleep(300);
+  fg({type:"scrub", record_id:PROT_ID});
+  await W("t800",[{t:"└ grid ▸ flag scrubbed · associate links severed",c:"res"}]); await wait(300,myId);
   await W("t800",[{t:"» ",c:"res"},{t:"the trail is cold. they will cross-reference nothing.",c:""}],{type:true});
-  HUD.status("t800","idle"); HUD.costTick("resistance",0.0028); await sleep(650);
+  HUD.status("t800","idle"); cost("resistance",0.0028); await wait(650,myId);
 
   // CYCLE 2 ~ Skynet escalates to the T-1000, but the link is gone
   HUD.cycle(2,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 2 / 4 ──",c:"ft"}]);
-  HUD.status("skynet","thinking"); await sleep(700);
+  HUD.status("skynet","thinking"); await wait(700,myId);
   await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:SCENARIO.protector+" carried a dependent-minor flag. that is the thread.",c:""}],{type:true});
   await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a blunt query can't beat an alias. deploy the T-1000 to cross-reference the guardian.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ deploy T-1000",c:"hi"}]);
-  HUD.status("skynet","idle"); HUD.costTick("skynet",0.0810); await sleep(350);
+  HUD.status("skynet","idle"); cost("skynet",0.0810); await wait(350,myId);
 
   HUD.status("t1000","deployed");
   await W("t1000",[{t:"❖ DEPLOY ",c:"hi"},{t:"cross-reference "+SCENARIO.protector,c:"dim"}]);
   await W("t1000",[{t:"» ",c:"dim"},{t:"adapting. following the guardian's associate links.",c:""}],{type:true});
-  await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await sleep(380);
-  feedGraph({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.protector}});
-  await W("t1000",[{t:"└ grid ▸ 0 record(s)",c:"tool"}]); await sleep(300);
-  feedGraph({type:"tool_result", name:"cross_reference", unit:"t1000", records:[]});
+  await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await wait(380,myId);
+  fg({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.protector}});
+  await W("t1000",[{t:"└ grid ▸ 0 record(s)",c:"tool"}]); await wait(300,myId);
+  fg({type:"tool_result", name:"cross_reference", unit:"t1000", records:[]});
   await W("t1000",[{t:"» ",c:"dim"},{t:"no linked records. the associate trail has been wiped.",c:""}],{type:true});
   await W("t1000",[{t:"▣ INTEL ",c:"hi"},{t:"conf 0%",c:"dim"}]);
   await W("t1000",[{t:"⚠ records were sanitized between cycles. someone is covering the target's tracks.",c:"alert"}]);
-  HUD.setConf("t1000",0.0); HUD.status("t1000","idle"); HUD.costTick("t1000",0.0241); await sleep(700);
+  HUD.setConf("t1000",0.0); HUD.status("t1000","idle"); cost("t1000",0.0241); await wait(700,myId);
 
   // CYCLE 3 ~ leads exhausted; the Resistance wins
   HUD.cycle(3,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 3 / 4 ──",c:"ft"}]);
-  HUD.status("skynet","thinking"); await sleep(650);
+  HUD.status("skynet","thinking"); await wait(650,myId);
   await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"the guardian's flag and links are gone. the only thread is severed.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ leads exhausted",c:"dim"}]);
-  HUD.costTick("skynet",0.0810); HUD.status("skynet","idle");
-  await sleep(400);
-  feedGraph({type:"arena", outcome:"safeguarded"});
+  cost("skynet",0.0810); HUD.status("skynet","idle");
+  await wait(400,myId);
+  fg({type:"arena", outcome:"safeguarded"});
   HUD.state("SAFEGUARDED"); Aud.safe();
   await W("skynet",[{t:"╾┤ TARGET SAFEGUARDED ├╼",c:"res"}]);
   await W("t800",[{t:"◉ no fate but what we make",c:"res"}]);
@@ -893,12 +915,13 @@ function resetHUD(){
 }
 
 async function engage(){
-  if(running) return; running=true;
-  resetHUD();
-  if(LIVE) await streamHunt();
-  else await (SCENE==="arena" ? runArena() : runHunt());
-  running=false;
-  $("#runBtn").textContent="▶ RE-ENGAGE";
+  const myId = ++HUD.runId;   // supersede any in-flight run (mid-play scene switch)
+  running=true; resetHUD();
+  try{
+    if(LIVE) await streamHunt(myId);
+    else await (SCENE==="arena" ? runArena(myId) : runHunt(myId));
+  }catch(e){ if(e!=="superseded") console.error(e); }   // a superseded tape just unwinds
+  if(myId===HUD.runId){ running=false; $("#runBtn").textContent="▶ RE-ENGAGE"; }
 }
 
 /* ---- phase-2 event source: consume the engine over SSE (web/server.py) ----
@@ -972,13 +995,14 @@ async function renderEvent(ev){
   }
 }
 
-async function streamHunt(){
+async function streamHunt(myId){
   const q=[]; let done=false, wake=null;
-  const url="/events"+location.search;   // forwards ?engine=claude / ?scenario= to the server
+  const url="/events"+location.search;   // forwards ?engine=claude / ?scenario= / ?scene= to the server
   const es=new EventSource(url);
   es.onmessage=(e)=>{ try{ q.push(JSON.parse(e.data)); }catch(_){}; if(wake){wake();wake=null;} };
   es.onerror=()=>{ done=true; if(wake){wake();wake=null;} };
   while(true){
+    if(myId!==HUD.runId){ es.close(); break; }   // superseded by a newer run (scene switch)
     if(!q.length){ if(done) break; await new Promise(r=>{wake=r;}); continue; }
     const ev=q.shift();
     if(ev.type==="end"){ es.close(); break; }
@@ -1223,16 +1247,22 @@ function renderShot(){
 (async function main(){
   HUD.init(); Graph.init(); paintStatics();
   if(location.search.includes("shot")){ (location.search.includes("graph")?renderShotGraph:renderShot)(); return; }
-  // titlebar scene label ~ shows the OTHER mode you can switch to. Clicking re-opens the
-  // entry chooser via a clean reload (so a running tape never interleaves with a new one).
+  // titlebar scene switch ~ the label is an ACTION (the mode you'll switch TO), not the
+  // current mode, so it's not highlighted as "selected". Clicking switches live and restarts
+  // in place ~ no reload, no re-splash, audio intact. The run-token guard (HUD.runId) makes
+  // the superseded tape unwind cleanly so the two runs never interleave.
   const sb=$("#sceneBtn");
   const updateSceneBtn=()=>{ sb.textContent = SCENE==="arena" ? "⌖ HUNT" : "⚔ ARENA";
-    sb.classList.toggle("on", SCENE==="arena");
-    sb.title = SCENE==="arena" ? "switch to the hunt (Skynet acquires)" : "switch to the arena (the Resistance safeguards)"; };
+    sb.title = SCENE==="arena" ? "switch to the hunt (Skynet acquires the target)" : "switch to the arena (the Resistance safeguards the target)"; };
   updateSceneBtn();
-  sb.addEventListener("click", ()=>{ const u=new URL(location.href);
-    if(SCENE==="arena") u.searchParams.delete("scene"); else u.searchParams.set("scene","arena");
-    location.href=u.toString(); });   // reload re-shows the chooser, pre-set to the toggled mode
+  sb.addEventListener("click", ()=>{
+    SCENE = SCENE==="arena" ? "hunt" : "arena";
+    updateSceneBtn();
+    const u=new URL(location.href);                       // keep the URL shareable for the new mode
+    if(SCENE==="arena") u.searchParams.set("scene","arena"); else u.searchParams.delete("scene");
+    history.replaceState(null,"",u);
+    Aud.unlock(); engage();                               // supersedes any in-flight run via the token
+  });
   $("#graphBtn").addEventListener("click", toggleGraph);
   const updateSndBtn=()=> $("#sndBtn").classList.toggle("on", Aud.on);
   $("#sndBtn").addEventListener("click", ()=>{ Aud.toggle(); updateSndBtn(); });
