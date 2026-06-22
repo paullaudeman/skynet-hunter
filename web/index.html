@@ -235,7 +235,9 @@ body{
 /* ---- intel graph ---- */
 #graphView{ grid-row:2; grid-column:1; display:none; flex-direction:column; min-height:0;
   border:1px solid var(--amber-dim); border-radius:3px; background:rgba(8,5,1,.35); position:relative; }
-#graph{ flex:1; min-height:0; width:100%; }
+#graph{ flex:1; min-height:0; width:100%; cursor:grab; }
+#graph.panning{ cursor:grabbing; }
+.glegend .ghint{ margin-left:auto; color:var(--amber-ft); }
 .glegend{ display:flex; gap:18px; padding:5px 14px; font-size:12px; border-top:1px solid var(--amber-dim);
   background:rgba(20,13,3,.5); color:var(--amber-dim); }
 .glegend .dec{color:var(--amber-ft)} .glegend .prot{color:var(--amber)} .glegend .ali{color:var(--green)}
@@ -265,6 +267,7 @@ body{
 .gelabel.guardian{ fill:var(--amber); } .gelabel.alias{ fill:var(--green); }
 .gunit{ font-family:var(--body); font-size:10px; text-anchor:middle; fill:var(--amber-ft); }
 #graph text{ text-shadow:none; }   /* crisp ~ the phosphor glow blurs small SVG labels */
+.gelabelbg{ fill:#0c0a05; opacity:.95; rx:3; }
 
 /* ---- boot overlay ---- */
 .boot{position:absolute; inset:0; z-index:20; background:var(--bg2);
@@ -333,12 +336,13 @@ body{
       <!-- intel graph (toggled) -->
       <div id="graphView">
         <svg id="graph" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid meet">
-          <g class="edges"></g><g class="nodes"></g>
+          <g class="vp"><g class="edges"></g><g class="nodes"></g><g class="labels"></g></g>
         </svg>
         <div class="glegend">
           <span class="dec">○ decoy</span><span class="prot">◆ protector</span>
           <span class="ali">● alias</span><span class="grd">— guardian link</span>
           <span class="win">— resolves → target</span>
+          <span class="ghint">scroll zoom · drag pan · dbl-click reset</span>
         </div>
       </div>
 
@@ -780,9 +784,21 @@ function toggleMax(key){
 /* ---- intel graph ~ a third renderer over the same event stream ---- */
 const SVGNS="http://www.w3.org/2000/svg";
 const Graph={
-  svg:null, edges:null, nodes:null, N:{}, E:[], _prot:null, _cand:null, _raf:0, W:1200, H:760,
-  init(){ this.svg=$("#graph"); this.edges=this.svg.querySelector(".edges"); this.nodes=this.svg.querySelector(".nodes"); },
-  reset(){ this.N={}; this.E=[]; this._prot=null; this._cand=null; if(this.edges) this.edges.innerHTML=""; if(this.nodes) this.nodes.innerHTML=""; },
+  svg:null, vp:null, edges:null, nodes:null, labels:null, N:{}, E:[], _prot:null, _cand:null, _raf:0, W:1200, H:760, scale:1, tx:0, ty:0,
+  init(){ this.svg=$("#graph"); this.vp=this.svg.querySelector(".vp"); this.edges=this.svg.querySelector(".edges"); this.nodes=this.svg.querySelector(".nodes"); this.labels=this.svg.querySelector(".labels"); this.setupZoom(); },
+  applyVP(){ if(this.vp) this.vp.setAttribute("transform",`translate(${this.tx.toFixed(1)},${this.ty.toFixed(1)}) scale(${this.scale.toFixed(3)})`); },
+  setupZoom(){
+    const g=this.svg, self=this;
+    const toVB=(e)=>{ const r=g.getBoundingClientRect(); return r.width?[(e.clientX-r.left)/r.width*self.W,(e.clientY-r.top)/r.height*self.H]:[0,0]; };
+    g.addEventListener("wheel",(e)=>{ e.preventDefault(); const [mx,my]=toVB(e); const f=e.deltaY<0?1.12:1/1.12; const ns=Math.max(0.5,Math.min(6,self.scale*f));
+      self.tx=mx-(mx-self.tx)*(ns/self.scale); self.ty=my-(my-self.ty)*(ns/self.scale); self.scale=ns; self.applyVP(); },{passive:false});
+    let pan=false,sx,sy,stx,sty;
+    g.addEventListener("mousedown",(e)=>{ pan=true; sx=e.clientX; sy=e.clientY; stx=self.tx; sty=self.ty; g.classList.add("panning"); });
+    window.addEventListener("mousemove",(e)=>{ if(!pan) return; const r=g.getBoundingClientRect(); if(!r.width) return; self.tx=stx+(e.clientX-sx)/r.width*self.W; self.ty=sty+(e.clientY-sy)/r.height*self.H; self.applyVP(); });
+    window.addEventListener("mouseup",()=>{ pan=false; g.classList.remove("panning"); });
+    g.addEventListener("dblclick",()=>{ self.scale=1; self.tx=0; self.ty=0; self.applyVP(); });
+  },
+  reset(){ this.N={}; this.E=[]; this._prot=null; this._cand=null; this._cu=null; if(this.edges) this.edges.innerHTML=""; if(this.nodes) this.nodes.innerHTML=""; if(this.labels) this.labels.innerHTML=""; },
   add(id,label,kind,unit){
     if(!id) return null;
     if(this.N[id]) return this.N[id];
@@ -804,9 +820,14 @@ const Graph={
     if(this.E.some(e=>e.from===from&&e.to===to)) return;
     const l=document.createElementNS(SVGNS,"line"); l.setAttribute("class","gedge "+kind);
     this.edges.appendChild(l);
-    let lbl=null;
-    if(label){ lbl=document.createElementNS(SVGNS,"text"); lbl.setAttribute("class","gelabel "+kind); lbl.textContent=label; this.edges.appendChild(lbl); }
-    this.E.push({from,to,kind,el:l,lbl,lpos: kind==="guardian"?0.3:0.5}); this.layout();
+    let lbl=null, bg=null, ew=0, eh=0, ey=0;
+    if(label){
+      bg=document.createElementNS(SVGNS,"rect"); bg.setAttribute("class","gelabelbg");
+      lbl=document.createElementNS(SVGNS,"text"); lbl.setAttribute("class","gelabel "+kind); lbl.textContent=label;
+      this.labels.appendChild(bg); this.labels.appendChild(lbl);
+      const bb=lbl.getBBox(); ew=bb.width; eh=bb.height; ey=bb.y;
+    }
+    this.E.push({from,to,kind,el:l,lbl,bg,ew,eh,ey,lpos: kind==="guardian"?0.3:0.5}); this.layout();
   },
   target(name){ this.add("TARGET", name, "target"); const n=this.N["TARGET"]; if(n) n.el.classList.add("concealed"); },
   acquire(id){ const n=this.N[id]; if(n) n.el.classList.add("acquired"); const t=this.N["TARGET"]; if(t) t.el.classList.add("acquired");
@@ -831,7 +852,9 @@ const Graph={
       for(const e of this.E){ const a=this.N[e.from], b=this.N[e.to]; if(!a||!b) continue;
         e.el.setAttribute("x1",a.x.toFixed(1)); e.el.setAttribute("y1",a.y.toFixed(1));
         e.el.setAttribute("x2",b.x.toFixed(1)); e.el.setAttribute("y2",b.y.toFixed(1));
-        if(e.lbl){ const f=e.lpos||0.5; e.lbl.setAttribute("x",(a.x+(b.x-a.x)*f).toFixed(1)); e.lbl.setAttribute("y",(a.y+(b.y-a.y)*f-6).toFixed(1)); } }
+        if(e.lbl){ const f=e.lpos||0.5, lx=a.x+(b.x-a.x)*f, ly=a.y+(b.y-a.y)*f-6, p=5;
+          e.lbl.setAttribute("x",lx.toFixed(1)); e.lbl.setAttribute("y",ly.toFixed(1));
+          if(e.bg){ e.bg.setAttribute("x",(lx-e.ew/2-p).toFixed(1)); e.bg.setAttribute("y",(ly+e.ey-p).toFixed(1)); e.bg.setAttribute("width",(e.ew+p*2).toFixed(1)); e.bg.setAttribute("height",(e.eh+p*2).toFixed(1)); } } }
       if(moving) this._raf=requestAnimationFrame(step);
     };
     this._raf=requestAnimationFrame(step);
