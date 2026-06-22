@@ -22,6 +22,7 @@ A toy? No ~ a first step. It's **multi-agent orchestration, tool use, and struct
 - **Adversarial data** that makes the task require reasoning, not a lookup.
 - **Two engines** ~ real Claude agents, and a deterministic `--simulate` mode that needs no key.
 - **No LangChain / LangGraph / CrewAI**, by design ~ knowing where *not* to add the abstraction is the point.
+- **The boundaries that keep it safe** ~ tools, budget, persistence, spawn, human-gate, kill-switch ~ written up in [`docs/agent-safety.md`](docs/agent-safety.md). Safety lives in the wiring, not the model.
 
 ---
 
@@ -70,6 +71,10 @@ uv run python -m skynet --tui --scenario random
 uv run python -m skynet --simulate --scenario random        # reroll a fresh target
 uv run python -m skynet --simulate --scenario random --seed 11   # reproducible reroll
 uv run python -m skynet --simulate --scenario danny-dyson   # or pick a named one
+
+# Arena ~ Skynet hunts, the Resistance reprograms a hunter to disrupt it (offline).
+# One boundary changed (grid integrity), opposite outcome ~ see docs/agent-safety.md.
+uv run python -m skynet --arena
 
 # Options
 uv run python -m skynet --simulate --theme amber       # platinum | silver | amber
