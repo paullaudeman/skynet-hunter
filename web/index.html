@@ -146,6 +146,7 @@ body{
 
 /* ---- body grid ---- */
 .body{display:grid; grid-template-columns:1fr 1fr 1fr 300px; gap:9px; min-height:0}
+.body.maxed{grid-template-columns:1fr}
 
 /* ---- agent columns ---- */
 .col{
@@ -156,8 +157,9 @@ body{
 }
 .col .hd{
   border-bottom:1px solid var(--amber-dim);
-  padding:5px 9px; background:rgba(20,13,3,.5);
+  padding:5px 9px; background:rgba(20,13,3,.5); cursor:pointer; user-select:none;
 }
+.col .hd:hover{background:rgba(40,26,6,.6)}
 .col .nm{font-family:var(--disp); font-size:23px; letter-spacing:1px; line-height:1; color:var(--amber)}
 .col .nm .gl{color:var(--amber2)}
 .col .md{font-size:11px; color:var(--amber-dim); letter-spacing:1px}
@@ -168,9 +170,12 @@ body{
 .col .st .cf.hit{color:var(--green)}
 .col .st .cost{color:var(--amber-ft)}
 .col .log{
-  padding:7px 9px; overflow:hidden; font-size:13.5px; line-height:1.5;
-  position:relative; min-height:0;
+  padding:7px 9px; overflow-y:auto; overflow-x:hidden; font-size:13.5px; line-height:1.5;
+  position:relative; min-height:0; scrollbar-width:thin; scrollbar-color:var(--amber-dim) transparent;
 }
+.col .log::-webkit-scrollbar{width:7px}
+.col .log::-webkit-scrollbar-thumb{background:var(--amber-dim); border-radius:4px}
+.col .log::-webkit-scrollbar-track{background:rgba(0,0,0,.25)}
 .col .log .ln{opacity:0; animation:appear .18s forwards}
 @keyframes appear{to{opacity:1}}
 .dim{color:var(--amber-dim)}
@@ -404,7 +409,7 @@ function buildColumn(key){
   const u = UNITS[key];
   const c = $("#col-"+key);
   c.innerHTML = `
-    <div class="hd">
+    <div class="hd" title="double-click to maximize / restore">
       <div class="nm"><span class="gl">${u.gl}</span> ${u.name}</div>
       <div class="md">${u.model}</div>
       <div class="st" data-st>
@@ -422,28 +427,29 @@ const HUD = {
 
   init(){
     ["skynet","t1000","t800"].forEach(k => this.cols[k]=buildColumn(k));
+    ["skynet","t1000","t800"].forEach(k => this.cols[k].querySelector(".hd").addEventListener("dblclick", ()=>toggleMax(k)));
   },
 
   async write(key, parts, {type=false}={}){
     if(parts[0] && /^[├└]/.test((parts[0].t||"").trim())) Aud.blip();
     const log = this.q(key,"[data-log]");
     const ln = document.createElement("div"); ln.className="ln";
+    // full scrollback: keep every line; auto-follow only if the user is already at the bottom
+    const follow = log.scrollHeight - log.scrollTop - log.clientHeight < 40;
     log.appendChild(ln);
-    // keep panes from overflowing
-    while(log.scrollHeight > log.clientHeight && log.firstChild!==ln) log.removeChild(log.firstChild);
+    if(follow) log.scrollTop = log.scrollHeight;
     if(type){
-      // typed reveal of the last part
       for(const p of parts.slice(0,-1)) ln.insertAdjacentHTML("beforeend", `<span class="${p.c||''}">${p.t}</span>`);
       const last = parts[parts.length-1];
       const span = document.createElement("span"); span.className=last.c||''; ln.appendChild(span);
       const cur = document.createElement("span"); cur.className="cursor"; ln.appendChild(cur);
       for(const ch of last.t){ span.textContent += ch; if(ch!==" ") Aud.tick(); await sleep(11);
-        while(log.scrollHeight>log.clientHeight && log.firstChild!==ln) log.removeChild(log.firstChild); }
+        if(follow) log.scrollTop = log.scrollHeight; }
       cur.remove();
     } else {
       ln.innerHTML = parts.map(p=>`<span class="${p.c||''}">${p.t}</span>`).join("");
-      while(log.scrollHeight>log.clientHeight && log.firstChild!==ln) log.removeChild(log.firstChild);
     }
+    if(follow) log.scrollTop = log.scrollHeight;
   },
 
   status(key, s){
@@ -698,6 +704,20 @@ async function streamHunt(){
     const ev=q.shift();
     if(ev.type==="end"){ es.close(); break; }
     try{ await renderEvent(ev); }catch(err){ console.error(err); }
+  }
+}
+
+/* ---- double-click a pane header to maximize it (hide the others) ~ TUI parity ---- */
+let maximized=null;
+function toggleMax(key){
+  const body=document.querySelector(".body"), side=document.querySelector(".side");
+  if(maximized===key){
+    body.classList.remove("maxed");
+    ["skynet","t1000","t800"].forEach(k=>HUD.cols[k].style.display="");
+    side.style.display=""; maximized=null;
+  } else {
+    ["skynet","t1000","t800"].forEach(k=>HUD.cols[k].style.display=(k===key?"":"none"));
+    side.style.display="none"; body.classList.add("maxed"); maximized=key;
   }
 }
 
