@@ -1,0 +1,34 @@
+# skyterm ~ amber-phosphor Starship preset (Skynet Hunter)
+# install: back up your ~/.config/starship.toml, then copy this over it.
+
+add_newline = true
+
+[character]
+success_symbol = "[▸](bold #ffb43c)"
+error_symbol = "[▸](bold #c0531c)"
+vimcmd_symbol = "[◂](bold #7df06a)"
+
+[directory]
+style = "bold #ffb43c"
+truncation_length = 3
+read_only = " "
+read_only_style = "#c0531c"
+
+[git_branch]
+symbol = " "
+style = "#c0801f"
+
+[git_status]
+style = "#d9632a"
+
+[cmd_duration]
+style = "#8a6018"
+format = "[ $duration]($style)"
+
+[hostname]
+ssh_only = true
+style = "#e09228"
+
+[username]
+style_user = "#c0801f"
+style_root = "#c0531c"

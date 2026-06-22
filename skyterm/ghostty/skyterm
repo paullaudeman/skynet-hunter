@@ -1,0 +1,33 @@
+# skyterm ~ amber-phosphor monochrome (Skynet Hunter palette)
+# install: cp this to ~/.config/ghostty/config (or `theme = skyterm` if placed in themes/)
+
+background = 160d03
+foreground = ffb43c
+cursor-color = ffb43c
+cursor-text = 160d03
+selection-background = 3a2a12
+selection-foreground = ffd98a
+cursor-style = block
+
+palette = 0=#160d03
+palette = 1=#c0531c
+palette = 2=#7df06a
+palette = 3=#ffb43c
+palette = 4=#c0801f
+palette = 5=#e09228
+palette = 6=#d9a441
+palette = 7=#e6cfa0
+palette = 8=#5c3c10
+palette = 9=#d9632a
+palette = 10=#9bf58a
+palette = 11=#ffc864
+palette = 12=#d9a040
+palette = 13=#f0a838
+palette = 14=#f0c060
+palette = 15=#fff0d0
+
+# Optional CRT feel (Ghostty supports GLSL custom shaders):
+#   custom-shader = ~/.config/ghostty/shaders/crt.glsl
+#   custom-shader-animation = true
+# Find a CRT/retro GLSL shader and drop it in; dial it subtle for daily use.
+
