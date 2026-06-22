@@ -82,7 +82,14 @@ class StreamUI:
         self._pause(0.35)
 
     def tool_result(self, unit: Any, name: str, out: str) -> None:
-        self._emit(type="tool_result", unit=unit.key, name=name, summary=_summary(out))
+        records = []
+        try:
+            data = json.loads(out)
+            items = data if isinstance(data, list) else ([data] if isinstance(data, dict) and "error" not in data else [])
+            records = [{"id": r.get("id"), "name": r.get("name")} for r in items if isinstance(r, dict)][:8]
+        except (json.JSONDecodeError, TypeError):
+            pass
+        self._emit(type="tool_result", unit=unit.key, name=name, summary=_summary(out), records=records)
         self._pause(0.25)
 
     def intel_report(self, unit: Any, report: Any) -> None:

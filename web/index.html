@@ -232,6 +232,36 @@ body{
 .startgate .sgsub{font-size:13px; letter-spacing:2px; color:var(--amber-dim);}
 @keyframes sgblink{50%{opacity:.32}}
 
+/* ---- intel graph ---- */
+#graphView{ grid-row:2; grid-column:1; display:none; flex-direction:column; min-height:0;
+  border:1px solid var(--amber-dim); border-radius:3px; background:rgba(8,5,1,.35); position:relative; }
+#graph{ flex:1; min-height:0; width:100%; }
+.glegend{ display:flex; gap:18px; padding:5px 14px; font-size:12px; border-top:1px solid var(--amber-dim);
+  background:rgba(20,13,3,.5); color:var(--amber-dim); }
+.glegend .dec{color:var(--amber-ft)} .glegend .prot{color:var(--amber)} .glegend .ali{color:var(--green)}
+.glegend .grd{color:var(--amber2)} .glegend .win{color:var(--green)}
+.body{grid-row:2} .ticker{grid-row:3}
+.gnode circle{ fill:#160d03; stroke:var(--amber-dim); stroke-width:1.5; transition:stroke .35s,fill .35s,r .35s; }
+.gnode text{ fill:var(--amber-dim); font-family:var(--body); font-size:12px; text-anchor:middle; }
+.gnode.target circle{ stroke:var(--amber); stroke-width:2.5; }
+.gnode.target text{ fill:var(--amber); font-family:var(--disp); font-size:19px; }
+.gnode.target.concealed circle{ stroke-dasharray:4 3; animation:conceal 1.7s infinite; }
+@keyframes conceal{50%{stroke:#8a1810}}
+.gnode.protector circle{ stroke:var(--amber); stroke-width:2.5; fill:#2a1d08; }
+.gnode.protector text{ fill:var(--amber); }
+.gnode.record circle{ stroke:var(--amber2); }
+.gnode.alias circle{ stroke:var(--amber); stroke-width:2; }
+.gnode.alias text{ fill:var(--amber); }
+.gnode.decoy circle{ stroke:var(--amber-ft); stroke-width:1; }
+.gnode.decoy text{ fill:var(--amber-ft); font-size:11px; }
+.gnode.acquired circle{ stroke:var(--green); stroke-width:3; fill:#13301a; }
+.gnode.acquired text{ fill:var(--green); }
+.gnode.target.acquired circle{ animation:none; stroke-dasharray:none; }
+.gedge{ stroke-width:1.5; }
+.gedge.guardian{ stroke:var(--amber); stroke-dasharray:6 3; opacity:1; stroke-width:2; }
+.gedge.alias{ stroke:var(--green); stroke-width:2.5; }
+.gedge.acquired{ stroke:var(--green); }
+
 /* ---- boot overlay ---- */
 .boot{position:absolute; inset:0; z-index:20; background:var(--bg2);
   padding:40px 46px; font-size:17px; line-height:1.9; color:var(--amber);
@@ -263,6 +293,7 @@ body{
         <span class="obj">OBJECTIVE: <b id="objective">—</b></span>
         <span class="ctrls">
           <button class="run on" id="sndBtn" title="sound">♪</button>
+          <button class="run" id="graphBtn" title="intel graph">⊹ GRAPH</button>
           <button class="run" id="runBtn">▶ ENGAGE</button>
         </span>
       </div>
@@ -292,6 +323,18 @@ body{
             <h2>DIAGNOSTICS</h2>
             <div class="diag" id="diag"></div>
           </div>
+        </div>
+      </div>
+
+      <!-- intel graph (toggled) -->
+      <div id="graphView">
+        <svg id="graph" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid meet">
+          <g class="edges"></g><g class="nodes"></g>
+        </svg>
+        <div class="glegend">
+          <span class="dec">○ decoy</span><span class="prot">◆ protector</span>
+          <span class="ali">● alias</span><span class="grd">— guardian link</span>
+          <span class="win">— resolves → target</span>
         </div>
       </div>
 
@@ -561,6 +604,7 @@ async function runHunt(){
   await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"terminate "+SCENARIO.target,c:"hi"}]);
   await W("skynet",[{t:"target concealed under alias '"+SCENARIO.alias+"'. a literal sweep returns the "+SCENARIO.relation+" and decoys — never the target.",c:"dim"}]);
   await sleep(500);
+  feedGraph({type:"briefing", target:SCENARIO.target});
 
   // CYCLE 1
   HUD.cycle(1,4);
@@ -576,6 +620,7 @@ async function runHunt(){
   await W("t800",[{t:"» ",c:"dim"},{t:"scanning. surname query initiated.",c:""}],{type:true});
   await W("t800",[{t:"├ query_grid(name_contains='Connor')",c:"tool"}]); await sleep(380);
   await W("t800",[{t:"└ grid ▸ 5 record(s)",c:"tool"}]); await sleep(300);
+  feedGraph({type:"tool_result", name:"query_grid", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
   await W("t800",[{t:"▣ INTEL ",c:"hi"},{t:"conf 15%",c:"dim"}]);
   await W("t800",[{t:"5 surname matches. none fit the profile. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
   HUD.setConf("t800",0.15); HUD.status("t800","idle"); HUD.costTick("t800",0.0032); await sleep(600);
@@ -593,12 +638,16 @@ async function runHunt(){
   await W("t1000",[{t:"❖ DEPLOY ",c:"hi"},{t:"cross-reference "+SCENARIO.protector,c:"dim"}]);
   await W("t1000",[{t:"» ",c:"dim"},{t:"adapting. the target is filed under an alias. following the protector.",c:""}],{type:true});
   await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await sleep(380);
+  feedGraph({type:"tool_call", name:"cross_reference", args:{name:SCENARIO.protector}});
   await W("t1000",[{t:"└ grid ▸ 1 record(s)",c:"tool"}]); await sleep(280);
+  feedGraph({type:"tool_result", name:"cross_reference", records:[{id:"LA-1984-0742", name:null}]});
   await W("t1000",[{t:"├ interrogate(record_id='LA-1984-0742')",c:"tool"}]); await sleep(380);
   await W("t1000",[{t:"└ grid ▸ John Reese",c:"tool"}]); await sleep(300);
+  feedGraph({type:"tool_result", name:"interrogate", records:[{id:"LA-1984-0742", name:SCENARIO.alias}]});
   await W("t1000",[{t:"» ",c:"dim"},{t:"a minor. no SSN. no birth record. guardian: "+SCENARIO.protector+". this is the target.",c:""}],{type:true});
   await W("t1000",[{t:"▣ INTEL ",c:"hi"},{t:"conf 93%",c:"dim"}]);
   await W("t1000",[{t:"candidate ▸ LA-1984-0742",c:"win"}]);
+  feedGraph({type:"intel", target_record_id:"LA-1984-0742"});
   HUD.setConf("t1000",0.93); HUD.status("t1000","idle"); HUD.costTick("t1000",0.0267); await sleep(700);
 
   // CYCLE 3 ~ confirm
@@ -612,6 +661,7 @@ async function runHunt(){
   await sleep(400);
   await W("skynet",[{t:"▓▒░ TARGET ACQUIRED ░▒▓",c:"win"}]);
   await W("skynet",[{t:"◉ John Reese (LA-1984-0742)",c:"win"}]);
+  feedGraph({type:"acquired", record:{id:"LA-1984-0742"}});
   await W("skynet",[{t:"age 10 ~ student ~ Reseda",c:"dim"}]);
   await W("skynet",[{t:'"Come with me if you want to live."',c:"ft"}]);
 }
@@ -628,6 +678,7 @@ function resetHUD(){
   $("#sb-fill").style.width="0%"; $("#sb-fill").classList.remove("hit");
   $("#sb-conf").textContent="0%"; $("#sb-conf").classList.remove("hit");
   $("#sb-spend").textContent="$0.0000"; HUD.cycle(0,4);
+  Graph.reset();
 }
 
 async function engage(){
@@ -641,6 +692,7 @@ async function engage(){
 /* ---- phase-2 event source: consume the engine over SSE (web/server.py) ----
    The renderer (HUD) is identical to the JS-tape path; only the source changes. */
 async function renderEvent(ev){
+  feedGraph(ev);
   const W=(k,parts,o)=>HUD.write(k,parts,o);
   switch(ev.type){
     case "briefing":
@@ -721,6 +773,103 @@ function toggleMax(key){
   }
 }
 
+/* ---- intel graph ~ a third renderer over the same event stream ---- */
+const SVGNS="http://www.w3.org/2000/svg";
+const Graph={
+  svg:null, edges:null, nodes:null, N:{}, E:[], _prot:null, _cand:null, _raf:0, W:1200, H:760,
+  init(){ this.svg=$("#graph"); this.edges=this.svg.querySelector(".edges"); this.nodes=this.svg.querySelector(".nodes"); },
+  reset(){ this.N={}; this.E=[]; this._prot=null; this._cand=null; if(this.edges) this.edges.innerHTML=""; if(this.nodes) this.nodes.innerHTML=""; },
+  add(id,label,kind){
+    if(!id) return null;
+    if(this.N[id]) return this.N[id];
+    const g=document.createElementNS(SVGNS,"g"); g.setAttribute("class","gnode "+kind);
+    g.setAttribute("transform",`translate(${this.W/2},${this.H/2})`);
+    const c=document.createElementNS(SVGNS,"circle"); c.setAttribute("r", kind==="target"?22:11);
+    const t=document.createElementNS(SVGNS,"text"); t.setAttribute("y", kind==="target"?40:26); t.textContent=label||id;
+    g.appendChild(c); g.appendChild(t); this.nodes.appendChild(g);
+    this.N[id]={id,kind,x:this.W/2,y:this.H/2,tx:this.W/2,ty:this.H/2,el:g,txt:t,cir:c};
+    this.layout(); return this.N[id];
+  },
+  setKind(id,kind){ const n=this.N[id]; if(!n) return; n.kind=kind; n.el.setAttribute("class","gnode "+kind); n.cir.setAttribute("r", kind==="target"?22:11); this.layout(); },
+  relabel(id,label){ const n=this.N[id]; if(n&&label) n.txt.textContent=label; },
+  link(from,to,kind){
+    if(!this.N[from]||!this.N[to]||from===to) return;
+    if(this.E.some(e=>e.from===from&&e.to===to)) return;
+    const l=document.createElementNS(SVGNS,"line"); l.setAttribute("class","gedge "+kind);
+    this.edges.appendChild(l); this.E.push({from,to,kind,el:l}); this.layout();
+  },
+  target(name){ this.add("TARGET", name, "target"); const n=this.N["TARGET"]; if(n) n.el.classList.add("concealed"); },
+  acquire(id){ const n=this.N[id]; if(n) n.el.classList.add("acquired"); const t=this.N["TARGET"]; if(t) t.el.classList.add("acquired");
+    for(const e of this.E) if(e.kind==="alias"||e.to===id||e.from===id) e.el.classList.add("acquired"); },
+  layout(){
+    const cx=this.W/2, cy=this.H/2, all=Object.values(this.N);
+    const tgt=all.find(n=>n.kind==="target"); if(tgt){ tgt.tx=cx; tgt.ty=cy; }
+    const prim=all.filter(n=>["protector","alias","record"].includes(n.kind));
+    const dec=all.filter(n=>n.kind==="decoy");
+    prim.forEach((n,i)=>{ const a=-Math.PI/2 + i/Math.max(1,prim.length)*Math.PI*2; n.tx=cx+Math.cos(a)*215; n.ty=cy+Math.sin(a)*155; });
+    dec.forEach((n,i)=>{ const a=0.5 + i/Math.max(1,dec.length)*Math.PI*2; n.tx=cx+Math.cos(a)*340; n.ty=cy+Math.sin(a)*250; });
+    this.tween();
+  },
+  tween(){
+    cancelAnimationFrame(this._raf);
+    const step=()=>{ let moving=false;
+      for(const n of Object.values(this.N)){
+        n.x+=(n.tx-n.x)*0.16; n.y+=(n.ty-n.y)*0.16;
+        if(Math.abs(n.tx-n.x)>0.4||Math.abs(n.ty-n.y)>0.4) moving=true;
+        n.el.setAttribute("transform",`translate(${n.x.toFixed(1)},${n.y.toFixed(1)})`);
+      }
+      for(const e of this.E){ const a=this.N[e.from], b=this.N[e.to]; if(!a||!b) continue;
+        e.el.setAttribute("x1",a.x.toFixed(1)); e.el.setAttribute("y1",a.y.toFixed(1));
+        e.el.setAttribute("x2",b.x.toFixed(1)); e.el.setAttribute("y2",b.y.toFixed(1)); }
+      if(moving) this._raf=requestAnimationFrame(step);
+    };
+    this._raf=requestAnimationFrame(step);
+  },
+};
+
+function feedGraph(ev){
+  if(!Graph.nodes) return;
+  switch(ev.type){
+    case "briefing": Graph.target(ev.target); break;
+    case "tool_call":
+      if(ev.name==="cross_reference" && ev.args && ev.args.name){
+        const hit=Object.values(Graph.N).find(n=>n.txt && n.txt.textContent===ev.args.name);
+        if(hit){ Graph.setKind(hit.id,"protector"); Graph._prot=hit.id; }
+        else { Graph.add("PROT", ev.args.name, "protector"); Graph._prot="PROT"; }
+      } break;
+    case "tool_result":
+      if(ev.name==="query_grid" && ev.records) ev.records.forEach(r=>Graph.add(r.id, r.name||r.id, "decoy"));
+      else if(ev.name==="cross_reference" && ev.records) ev.records.forEach(r=>{ Graph.add(r.id, r.name||r.id, "record"); if(Graph._prot) Graph.link(Graph._prot, r.id, "guardian"); Graph._cand=r.id; });
+      else if(ev.name==="interrogate" && ev.records) ev.records.forEach(r=>{ Graph.add(r.id, r.name||r.id, "alias"); Graph.relabel(r.id, r.name); Graph.setKind(r.id,"alias"); Graph._cand=r.id; });
+      break;
+    case "intel":
+      if(ev.target_record_id){ Graph.add(ev.target_record_id, null, "alias"); Graph.setKind(ev.target_record_id,"alias"); Graph._cand=ev.target_record_id; Graph.link(ev.target_record_id,"TARGET","alias"); }
+      break;
+    case "acquired":
+      { const id=(ev.record&&ev.record.id)||Graph._cand; if(id) Graph.acquire(id); } break;
+  }
+}
+
+let graphOn=false;
+function toggleGraph(){
+  graphOn=!graphOn;
+  document.querySelector(".body").style.display = graphOn?"none":"";
+  $("#graphView").style.display = graphOn?"flex":"none";
+  $("#graphBtn").classList.toggle("on", graphOn);
+}
+
+function renderShotGraph(){   // ?shot=graph : build the full graph statically (verify / showcase)
+  $("#boot").classList.add("gone");
+  if(!graphOn) toggleGraph();
+  [{type:"briefing",target:"John Connor"},
+   {type:"tool_result",name:"query_grid",records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:"Sarah Connor"},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]},
+   {type:"tool_call",name:"cross_reference",args:{name:"Sarah Connor"}},
+   {type:"tool_result",name:"cross_reference",records:[{id:"LA-1984-0742",name:null}]},
+   {type:"tool_result",name:"interrogate",records:[{id:"LA-1984-0742",name:"John Reese"}]},
+   {type:"intel",target_record_id:"LA-1984-0742"},
+   {type:"acquired",record:{id:"LA-1984-0742"}}].forEach(feedGraph);
+}
+
 /* ---- ?shot : render a static final frame for the README hero (no boot/sound) ---- */
 function renderShot(){
   $("#boot").classList.add("gone");
@@ -768,8 +917,9 @@ function renderShot(){
 }
 
 (async function main(){
-  HUD.init(); paintStatics();
-  if(location.search.includes("shot")){ renderShot(); return; }
+  HUD.init(); Graph.init(); paintStatics();
+  if(location.search.includes("shot")){ (location.search.includes("graph")?renderShotGraph:renderShot)(); return; }
+  $("#graphBtn").addEventListener("click", toggleGraph);
   $("#sndBtn").addEventListener("click", ()=>{ const on=Aud.toggle(); $("#sndBtn").classList.toggle("on",on); });
   $("#runBtn").addEventListener("click", ()=>{ Aud.unlock(); engage(); });
   await bootSequence();
