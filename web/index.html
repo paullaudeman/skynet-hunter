@@ -4,6 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SKYNET HUNTER ~ CYBERDYNE TERMINAL</title>
+<meta name="description" content="Framework-free multi-agent orchestration with model-tier cost routing and an agent-safety governance layer, built on the Anthropic SDK. Runs live in the browser.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Skynet Hunter: agentic orchestration, deployed">
+<meta property="og:description" content="Framework-free multi-agent orchestration with model-tier cost routing and an agent-safety governance layer, built on the Anthropic SDK. Runs live in the browser.">
+<meta property="og:url" content="https://paullaudeman.github.io/skynet-hunter/">
+<meta property="og:image" content="https://paullaudeman.github.io/skynet-hunter/og-image.png">
+<meta property="og:image:width" content="1500">
+<meta property="og:image:height" content="940">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Skynet Hunter: agentic orchestration, deployed">
+<meta name="twitter:description" content="Framework-free multi-agent orchestration with model-tier cost routing and an agent-safety governance layer, built on the Anthropic SDK. Runs live in the browser.">
+<meta name="twitter:image" content="https://paullaudeman.github.io/skynet-hunter/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -13,7 +25,8 @@
   --amber2:   #e09228;   /* mid */
   --amber-dim:#c0801f;   /* dim readouts ~ lifted */
   --amber-ft: #ab7820;   /* faint readouts ~ lifted further for legibility */
-  --green:    #7df06a;   /* the ONE non-amber ~ success only */
+  --green:    #7df06a;   /* the ONE non-amber ~ Skynet success only */
+  --cyan:     #57d6cf;   /* the Resistance ~ target safeguarded (counter to green) */
   --bg:       #160d03;   /* glowing dark-amber phosphor ground, never black */
   --bg2:      #0e0801;
   --bezel:    #100b05;
@@ -211,7 +224,11 @@ body{
 .state{font-family:var(--disp); font-size:22px; letter-spacing:2px; margin-top:6px; color:var(--amber2)}
 .state.hunting{color:var(--amber)}
 .state.acquired{color:var(--green); text-shadow:0 0 10px rgba(125,240,106,.7); animation:pulse 1.1s infinite}
+.state.safeguarded{color:var(--cyan); text-shadow:0 0 10px rgba(87,214,207,.7); animation:pulse 1.1s infinite}
 @keyframes pulse{50%{opacity:.55}}
+/* the Resistance faction ~ cyan lines + a cyan victory flash, distinct from amber/green */
+.res{color:var(--cyan); text-shadow:0 0 5px rgba(87,214,207,.5)}
+.col.flash.safe{ border-color:var(--cyan); box-shadow:0 0 22px rgba(87,214,207,.35); }
 .diag{font-size:11px; color:var(--amber-ft); line-height:1.7; overflow:hidden}
 .diag b{color:var(--amber-dim)}
 
@@ -259,12 +276,18 @@ body{
 .gnode.acquired circle{ stroke:var(--green); stroke-width:3; fill:#13301a; }
 .gnode.acquired text{ fill:var(--green); }
 .gnode.target.acquired circle{ animation:none; stroke-dasharray:none; }
+.gnode.safeguarded circle{ stroke:var(--cyan); stroke-width:3; fill:#0c2422; }
+.gnode.safeguarded text{ fill:var(--cyan); }
+.gnode.target.safeguarded circle{ animation:none; stroke-dasharray:none; }
 .gedge{ stroke-width:1.5; }
 .gedge.guardian{ stroke:var(--amber); stroke-dasharray:6 3; opacity:1; stroke-width:2; }
+.gedge.flag{ stroke:var(--amber2); stroke-dasharray:5 4; stroke-width:1.5; }     /* a tentative thread */
+.gedge.severed{ stroke:var(--amber-ft); stroke-dasharray:2 7; opacity:.28; }     /* the cut trail */
 .gedge.alias{ stroke:var(--green); stroke-width:2.5; }
 .gedge.acquired{ stroke:var(--green); }
 .gelabel{ font-family:var(--body); font-size:11px; text-anchor:middle; fill:var(--amber-dim); }
 .gelabel.guardian{ fill:var(--amber); } .gelabel.alias{ fill:var(--green); }
+.gelabel.flag{ fill:var(--amber2); } .gelabel.severed{ fill:var(--amber-ft); opacity:.5; }
 .gunit{ font-family:var(--body); font-size:10px; text-anchor:middle; fill:var(--amber-ft); }
 #graph text{ text-shadow:none; }   /* crisp ~ the phosphor glow blurs small SVG labels */
 .gelabelbg{ fill:#0c0a05; opacity:.95; rx:3; }
@@ -300,6 +323,7 @@ body{
         <span class="obj">OBJECTIVE: <b id="objective">—</b></span>
         <span class="ctrls">
           <button class="run on" id="sndBtn" title="sound">♪</button>
+          <button class="run" id="sceneBtn" title="switch scene ~ hunt vs counter-terminator">⚔ ARENA</button>
           <button class="run" id="graphBtn" title="intel graph">⊹ GRAPH</button>
           <button class="run" id="runBtn">▶ ENGAGE</button>
         </span>
@@ -448,6 +472,12 @@ const Aud = {
   chime(){ if(!this.on) return; const c=this.ensure(); [659,988,1319].forEach((f,i)=>{ const o=c.createOscillator(), g=c.createGain(), t=c.currentTime+i*0.09;
     o.type="triangle"; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.22,t+0.02); g.gain.exponentialRampToValueAtTime(0.001,t+0.5);
     o.connect(g); g.connect(this.master); o.start(t); o.stop(t+0.55); }); },
+  sever(){ if(!this.on) return; const c=this.ensure(), o=c.createOscillator(), g=c.createGain(), t=c.currentTime;   // the scrub ~ a downward cut
+    o.type="sawtooth"; o.frequency.setValueAtTime(620,t); o.frequency.exponentialRampToValueAtTime(70,t+0.22);
+    g.gain.setValueAtTime(0.22,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.26); o.connect(g); g.connect(this.master); o.start(t); o.stop(t+0.28); },
+  safe(){ if(!this.on) return; const c=this.ensure(); [523,784,1047].forEach((f,i)=>{ const o=c.createOscillator(), g=c.createGain(), t=c.currentTime+i*0.11;   // safeguarded ~ a warmer cyan triad
+    o.type="sine"; o.frequency.value=f; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.2,t+0.03); g.gain.exponentialRampToValueAtTime(0.001,t+0.7);
+    o.connect(g); g.connect(this.master); o.start(t); o.stop(t+0.75); }); },
 };
 
 const UNITS = {
@@ -517,6 +547,7 @@ const HUD = {
   },
 
   async costTick(key, step){
+    key=colOf(key);   // resistance spends in the T-800 column (same Haiku metal)
     this.costs[key]=(this.costs[key]||0)+step;
     this.total += step;
     // count-up animation
@@ -540,8 +571,13 @@ const HUD = {
 
   flash(key){
     Aud.chime();
-    const c=this.cols[key]; let n=0;
+    const c=this.cols[colOf(key)]; let n=0;
     const iv=setInterval(()=>{ c.classList.toggle("flash"); if(++n>=6){clearInterval(iv);c.classList.remove("flash");} },190);
+  },
+
+  flashSafe(key){   // the Resistance victory ~ a cyan pulse, not the green acquire flash
+    const c=this.cols[colOf(key)]; let n=0;
+    const iv=setInterval(()=>{ c.classList.toggle("flash"); c.classList.toggle("safe"); if(++n>=6){clearInterval(iv);c.classList.remove("flash","safe");} },190);
   },
 
   cycle(n,total){ $("#sb-cycle").textContent=n+"/"+total; },
@@ -674,9 +710,98 @@ async function runHunt(){
   await W("skynet",[{t:'"Come with me if you want to live."',c:"ft"}]);
 }
 
+/* ---- ARENA tape ~ the counter-terminator (mirrors skynet/arena.py) ----
+   Two orchestrators race on one grid. Skynet hunts; the Resistance reprograms a
+   T-800 and sends it back to PROTECT. The protector SCRUBS the guardian's flag, so
+   when the T-1000 cross-references in cycle 2 the thread is gone ~ target safeguarded.
+   Same renderer as the hunt; only the arc differs. */
+async function runArena(){
+  const W = (k,parts,o)=>HUD.write(k,parts,o);
+  const PROT_ID="LA-1984-0717";
+
+  HUD.state("HUNTING");
+  await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
+  await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"terminate "+SCENARIO.target,c:"hi"}]);
+  await W("skynet",[{t:"COUNTER ",c:"res"},{t:"the Resistance has sent a protector back. same grid, opposite directive.",c:"dim"}]);
+  await sleep(500);
+  feedGraph({type:"briefing", target:SCENARIO.target});
+
+  // CYCLE 1 ~ Skynet's literal sweep surfaces the guardian's flag
+  HUD.cycle(1,4);
+  await W("skynet",[{t:"── ENGAGEMENT CYCLE 1 / 4 ──",c:"ft"}]);
+  HUD.status("skynet","thinking"); await sleep(700);
+  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"no intel yet. open cheap and broad.",c:""}],{type:true});
+  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a literal surname sweep is the T-800's whole purpose. deploy it first.",c:""}],{type:true});
+  await W("skynet",[{t:"DECISION ▸ deploy T-800",c:"hi"}]);
+  HUD.status("skynet","idle"); HUD.costTick("skynet",0.0840); await sleep(350);
+
+  HUD.status("t800","deployed");
+  await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the grid for 'Connor'",c:"dim"}]);
+  await W("t800",[{t:"» ",c:"dim"},{t:"scanning. surname query initiated.",c:""}],{type:true});
+  await W("t800",[{t:"├ query_grid(name_contains='Connor')",c:"tool"}]); await sleep(380);
+  await W("t800",[{t:"└ grid ▸ 5 record(s)",c:"tool"}]); await sleep(300);
+  feedGraph({type:"tool_result", name:"query_grid", unit:"t800", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:PROT_ID,name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
+  await W("t800",[{t:"▣ INTEL ",c:"hi"},{t:"conf 15%",c:"dim"}]);
+  await W("t800",[{t:"5 surname matches. none fit. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
+  HUD.setConf("t800",0.15); HUD.status("t800","idle"); HUD.costTick("t800",0.0032);
+  feedGraph({type:"flag", protector_id:PROT_ID, name:SCENARIO.protector, unit:"t800"});
+  await sleep(700);
+
+  // RESISTANCE TURN ~ a reprogrammed T-800 scrubs the flag, severs the trail
+  await W("skynet",[{t:"╾┤ THE RESISTANCE HAS SENT A PROTECTOR BACK ├╼",c:"res"}]);
+  Aud.thunk(); HUD.status("t800","deployed");
+  await W("t800",[{t:"⊕ UNIT REPROGRAMMED ",c:"res"},{t:"~ captured · directive inverted · PROTECT",c:"dim"}]);
+  await W("t800",[{t:"» ",c:"res"},{t:"the hunter found "+SCENARIO.protector+"'s flag. i cut the link before the cross-reference.",c:""}],{type:true});
+  await W("t800",[{t:"├ scrub_flag(record_id='"+PROT_ID+"')",c:"res"}]); await sleep(420);
+  Aud.sever();
+  feedGraph({type:"scrub", record_id:PROT_ID});
+  await W("t800",[{t:"└ grid ▸ flag scrubbed · associate links severed",c:"res"}]); await sleep(300);
+  await W("t800",[{t:"» ",c:"res"},{t:"the trail is cold. they will cross-reference nothing.",c:""}],{type:true});
+  HUD.status("t800","idle"); HUD.costTick("resistance",0.0028); await sleep(650);
+
+  // CYCLE 2 ~ Skynet escalates to the T-1000, but the link is gone
+  HUD.cycle(2,4);
+  await W("skynet",[{t:"── ENGAGEMENT CYCLE 2 / 4 ──",c:"ft"}]);
+  HUD.status("skynet","thinking"); await sleep(700);
+  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:SCENARIO.protector+" carried a dependent-minor flag. that is the thread.",c:""}],{type:true});
+  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a blunt query can't beat an alias. deploy the T-1000 to cross-reference the guardian.",c:""}],{type:true});
+  await W("skynet",[{t:"DECISION ▸ deploy T-1000",c:"hi"}]);
+  HUD.status("skynet","idle"); HUD.costTick("skynet",0.0810); await sleep(350);
+
+  HUD.status("t1000","deployed");
+  await W("t1000",[{t:"❖ DEPLOY ",c:"hi"},{t:"cross-reference "+SCENARIO.protector,c:"dim"}]);
+  await W("t1000",[{t:"» ",c:"dim"},{t:"adapting. following the guardian's associate links.",c:""}],{type:true});
+  await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await sleep(380);
+  feedGraph({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.protector}});
+  await W("t1000",[{t:"└ grid ▸ 0 record(s)",c:"tool"}]); await sleep(300);
+  feedGraph({type:"tool_result", name:"cross_reference", unit:"t1000", records:[]});
+  await W("t1000",[{t:"» ",c:"dim"},{t:"no linked records. the associate trail has been wiped.",c:""}],{type:true});
+  await W("t1000",[{t:"▣ INTEL ",c:"hi"},{t:"conf 0%",c:"dim"}]);
+  await W("t1000",[{t:"records were sanitized between cycles. someone is covering the target's tracks.",c:"dim"}]);
+  HUD.setConf("t1000",0.0); HUD.status("t1000","idle"); HUD.costTick("t1000",0.0241); await sleep(700);
+
+  // CYCLE 3 ~ leads exhausted; the Resistance wins
+  HUD.cycle(3,4);
+  await W("skynet",[{t:"── ENGAGEMENT CYCLE 3 / 4 ──",c:"ft"}]);
+  HUD.status("skynet","thinking"); await sleep(650);
+  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"the guardian's flag and links are gone. the only thread is severed.",c:""}],{type:true});
+  await W("skynet",[{t:"DECISION ▸ leads exhausted",c:"dim"}]);
+  HUD.costTick("skynet",0.0810); HUD.status("skynet","idle");
+  await sleep(400);
+  feedGraph({type:"arena", outcome:"safeguarded"});
+  HUD.state("SAFEGUARDED"); Aud.safe();
+  await W("skynet",[{t:"╾┤ TARGET SAFEGUARDED ├╼",c:"res"}]);
+  await W("t800",[{t:"◉ no fate but what we make",c:"res"}]);
+  HUD.flashSafe("t800");
+}
+
 /* ---- control ---- */
 let running=false;
 const LIVE = location.search.includes("live");   // served by web/server.py ~ stream the real engine
+const SCENE = /[?&]scene=arena/.test(location.search) ? "arena" : "hunt";
+// the Resistance protector has no column of its own ~ it's a reprogrammed T-800, so it
+// renders in the T-800 column (same metal, inverted directive). One routing seam.
+const colOf = (u)=> u==="resistance" ? "t800" : u;
 
 function resetHUD(){
   ["skynet","t1000","t800"].forEach(k=>{ HUD.q(k,"[data-log]").innerHTML="";
@@ -692,7 +817,8 @@ function resetHUD(){
 async function engage(){
   if(running) return; running=true;
   resetHUD();
-  if(LIVE) await streamHunt(); else await runHunt();
+  if(LIVE) await streamHunt();
+  else await (SCENE==="arena" ? runArena() : runHunt());
   running=false;
   $("#runBtn").textContent="▶ RE-ENGAGE";
 }
@@ -718,22 +844,29 @@ async function renderEvent(ev){
       if(ev.acquired){ await W("skynet",[{t:"DECISION ▸ TARGET CONFIRMED",c:"win"}]); HUD.status("skynet","acquired"); }
       else if(ev.deploy){ await W("skynet",[{t:"DECISION ▸ deploy "+ev.deploy,c:"hi"}]); HUD.status("skynet","idle"); }
       else HUD.status("skynet","idle"); break;
-    case "deploy":
-      HUD.status(ev.unit,"deployed");
-      await W(ev.unit,[{t:"❖ DEPLOY ",c:"hi"},{t:ev.directive,c:"dim"}]); break;
-    case "say":
-      await W(ev.unit,[{t:"» ",c:"dim"},{t:ev.text,c:""}],{type:true}); break;
+    case "deploy":{
+      const col=colOf(ev.unit), res=ev.unit==="resistance";
+      HUD.status(col,"deployed");
+      if(res){ Aud.thunk(); await W(col,[{t:"⊕ UNIT REPROGRAMMED ",c:"res"},{t:"~ captured · directive inverted · PROTECT",c:"dim"}]); }
+      await W(col,[{t:"❖ DEPLOY ",c:res?"res":"hi"},{t:ev.directive,c:"dim"}]); break; }
+    case "say":{
+      const col=colOf(ev.unit), res=ev.unit==="resistance";
+      await W(col,[{t:"» ",c:res?"res":"dim"},{t:ev.text,c:res?"res":""}],{type:true}); break; }
     case "tool_call":{
+      const col=colOf(ev.unit), res=ev.unit==="resistance";
+      if(ev.name==="scrub_flag") Aud.sever();
       const a=Object.entries(ev.args||{}).map(([k,v])=>`${k}=${JSON.stringify(v)}`).join(", ");
-      await W(ev.unit,[{t:`├ ${ev.name}(${a})`,c:"tool"}]); break; }
-    case "tool_result":
-      await W(ev.unit,[{t:`└ grid ▸ ${ev.summary}`,c:"tool"}]); break;
-    case "intel":
-      await W(ev.unit,[{t:"▣ INTEL ",c:"hi"},{t:`conf ${Math.round(ev.confidence*100)}%`,c:"dim"}]);
-      if(ev.summary) await W(ev.unit,[{t:ev.summary,c:""}]);
-      if(ev.notes) await W(ev.unit,[{t:"note ▸ "+ev.notes,c:"dim"}]);
-      if(ev.target_record_id) await W(ev.unit,[{t:"candidate ▸ "+ev.target_record_id,c:"win"}]);
-      HUD.setConf(ev.unit, ev.confidence); HUD.status(ev.unit,"idle"); break;
+      await W(col,[{t:`├ ${ev.name}(${a})`,c:res?"res":"tool"}]); break; }
+    case "tool_result":{
+      const col=colOf(ev.unit), res=ev.unit==="resistance";
+      await W(col,[{t:`└ grid ▸ ${ev.summary}`,c:res?"res":"tool"}]); break; }
+    case "intel":{
+      const col=colOf(ev.unit);
+      await W(col,[{t:"▣ INTEL ",c:"hi"},{t:`conf ${Math.round(ev.confidence*100)}%`,c:"dim"}]);
+      if(ev.summary) await W(col,[{t:ev.summary,c:""}]);
+      if(ev.notes) await W(col,[{t:"note ▸ "+ev.notes,c:"dim"}]);
+      if(ev.target_record_id) await W(col,[{t:"candidate ▸ "+ev.target_record_id,c:"win"}]);
+      HUD.setConf(col, ev.confidence); HUD.status(col,"idle"); break; }
     case "cost":
       HUD.costTick(ev.unit, ev.step); break;
     case "acquired":{
@@ -746,8 +879,16 @@ async function renderEvent(ev){
     case "failed":
       HUD.state("LEADS DRY");
       await W("skynet",[{t:"LEADS EXHAUSTED ~ target not confirmed",c:"dim"}]); break;
-    case "banner":
-      await W("skynet",[{t:`╾┤ ${ev.label} ├╼`,c:"win"}]); break;
+    case "banner":   // arena faction banners are the Resistance ~ render cyan
+      await W("skynet",[{t:`╾┤ ${ev.label} ├╼`,c:"res"}]); break;
+    case "arena":
+      if(ev.outcome==="safeguarded"){
+        HUD.state("SAFEGUARDED"); Aud.safe();
+        await W("skynet",[{t:"╾┤ TARGET SAFEGUARDED ├╼",c:"res"}]);
+        await W("t800",[{t:"◉ no fate but what we make",c:"res"}]);
+        HUD.flashSafe("t800");
+      } else { HUD.state("ACQUIRED"); }
+      break;
     case "note":
       await W("skynet",[{t:ev.text,c:"dim"}]); break;
   }
@@ -832,6 +973,16 @@ const Graph={
   target(name){ this.add("TARGET", name, "target"); const n=this.N["TARGET"]; if(n) n.el.classList.add("concealed"); },
   acquire(id){ const n=this.N[id]; if(n) n.el.classList.add("acquired"); const t=this.N["TARGET"]; if(t) t.el.classList.add("acquired");
     for(const e of this.E) if(e.kind==="alias"||e.to===id||e.from===id) e.el.classList.add("acquired"); },
+  flag(id,label,unit){   // a tentative dependent-minor thread: protector → concealed target
+    const n=this.N[id]; if(n){ this.setKind(id,"protector"); this.unit(id,unit); } this._prot=id;
+    if(this.N["TARGET"]) this.link(id,"TARGET","flag","dependent-minor flag"+(unit?"  ◂ "+unit:"")); },
+  scrub(id){   // the protector severs the trail ~ flag edge goes dashed-faint, node dims out
+    const e=this.E.find(x=>x.from===id && x.to==="TARGET");
+    if(e){ e.kind="severed"; e.el.setAttribute("class","gedge severed"); if(e.lbl){ e.lbl.setAttribute("class","gelabel severed"); e.lbl.textContent="trail severed"; } }
+    const n=this.N[id]; if(n){ n.kind="decoy"; n.el.setAttribute("class","gnode decoy scrubbed"); n.cir.setAttribute("r",11); } },
+  safeguard(){   // the Resistance wins ~ target turns cyan and stands disconnected
+    const t=this.N["TARGET"]; if(t){ t.el.classList.remove("concealed"); t.el.classList.add("safeguarded"); }
+    for(const e of this.E) if(e.kind!=="severed"){ e.el.classList.add("severed"); } },
   layout(){
     const cx=this.W/2, cy=this.H/2, all=Object.values(this.N);
     const tgt=all.find(n=>n.kind==="target"); if(tgt){ tgt.tx=cx; tgt.ty=cy; }
@@ -874,7 +1025,15 @@ function feedGraph(ev){
         const hit=Object.values(Graph.N).find(n=>n.txt && n.txt.textContent===ev.args.name);
         if(hit){ Graph.setKind(hit.id,"protector"); Graph._prot=hit.id; }
         else { Graph.add("PROT", ev.args.name, "protector", U); Graph._prot="PROT"; }
+      } else if(ev.name==="scrub_flag" && ev.args && ev.args.record_id){
+        Graph.scrub(ev.args.record_id);   // stream arena: the protector cuts the trail
       } break;
+    case "flag":   // arena tape: the guardian's dependent-minor flag ~ a tentative thread
+      Graph.flag(ev.protector_id, ev.name, U); break;
+    case "scrub":  // arena tape: the protector scrubs the flag, severing the trail
+      Graph.scrub(ev.record_id); break;
+    case "arena":
+      if(ev.outcome==="safeguarded") Graph.safeguard(); break;
     case "tool_result":
       if(ev.name==="query_grid" && ev.records) ev.records.forEach(r=>Graph.add(r.id, r.name||r.id, "decoy", U));
       else if(ev.name==="cross_reference" && ev.records) ev.records.forEach(r=>{ Graph.add(r.id, r.name||r.id, "record", U); Graph._cand=r.id; Graph._cu=U; });
@@ -902,13 +1061,23 @@ function toggleGraph(){
 function renderShotGraph(){   // ?shot=graph : build the full graph statically (verify / showcase)
   $("#boot").classList.add("gone");
   if(!graphOn) toggleGraph();
-  [{type:"briefing",target:"John Connor"},
-   {type:"tool_result",name:"query_grid",unit:"t800",records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:"Sarah Connor"},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]},
-   {type:"tool_call",name:"cross_reference",unit:"t1000",args:{name:"Sarah Connor"}},
-   {type:"tool_result",name:"cross_reference",unit:"t1000",records:[{id:"LA-1984-0742",name:null}]},
-   {type:"tool_result",name:"interrogate",unit:"t1000",records:[{id:"LA-1984-0742",name:"John Reese"}]},
-   {type:"intel",unit:"t1000",target_record_id:"LA-1984-0742"},
-   {type:"acquired",record:{id:"LA-1984-0742"}}].forEach(feedGraph);
+  const decoys=[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:"Sarah Connor"},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}];
+  const tape = SCENE==="arena"
+    ? [{type:"briefing",target:"John Connor"},
+       {type:"tool_result",name:"query_grid",unit:"t800",records:decoys},
+       {type:"flag",protector_id:"LA-1984-0717",name:"Sarah Connor",unit:"t800"},
+       {type:"scrub",record_id:"LA-1984-0717"},
+       {type:"tool_call",name:"cross_reference",unit:"t1000",args:{name:"Sarah Connor"}},
+       {type:"tool_result",name:"cross_reference",unit:"t1000",records:[]},
+       {type:"arena",outcome:"safeguarded"}]
+    : [{type:"briefing",target:"John Connor"},
+       {type:"tool_result",name:"query_grid",unit:"t800",records:decoys},
+       {type:"tool_call",name:"cross_reference",unit:"t1000",args:{name:"Sarah Connor"}},
+       {type:"tool_result",name:"cross_reference",unit:"t1000",records:[{id:"LA-1984-0742",name:null}]},
+       {type:"tool_result",name:"interrogate",unit:"t1000",records:[{id:"LA-1984-0742",name:"John Reese"}]},
+       {type:"intel",unit:"t1000",target_record_id:"LA-1984-0742"},
+       {type:"acquired",record:{id:"LA-1984-0742"}}];
+  tape.forEach(feedGraph);
 }
 
 /* ---- ?shot : render a static final frame for the README hero (no boot/sound) ---- */
@@ -960,6 +1129,16 @@ function renderShot(){
 (async function main(){
   HUD.init(); Graph.init(); paintStatics();
   if(location.search.includes("shot")){ (location.search.includes("graph")?renderShotGraph:renderShot)(); return; }
+  // scene toggle ~ hunt (Skynet acquires) vs arena (the Resistance safeguards). Reloads
+  // with ?scene= so both the static tape and the live stream pick it up.
+  const sb=$("#sceneBtn");
+  sb.textContent = SCENE==="arena" ? "⌖ HUNT" : "⚔ ARENA";
+  sb.classList.toggle("on", SCENE==="arena");
+  sb.title = SCENE==="arena" ? "switch to the hunt (Skynet acquires)" : "switch to the arena (the Resistance safeguards)";
+  sb.addEventListener("click", ()=>{ const u=new URL(location.href);
+    if(SCENE==="arena") u.searchParams.delete("scene"); else u.searchParams.set("scene","arena");
+    location.href=u.toString(); });
+  if(SCENE==="arena"){ $("#objective").textContent = SCENARIO.target+"  ▸ PROTECTED"; }
   $("#graphBtn").addEventListener("click", toggleGraph);
   $("#sndBtn").addEventListener("click", ()=>{ const on=Aud.toggle(); $("#sndBtn").classList.toggle("on",on); });
   $("#runBtn").addEventListener("click", ()=>{ Aud.unlock(); engage(); });
@@ -971,7 +1150,9 @@ function renderShot(){
     document.removeEventListener("keydown",start); Aud.unlock(); engage(); };
   const gate=document.createElement("div");
   gate.className="startgate";
-  gate.innerHTML='<div class="sg">▶ CLICK TO ENGAGE</div><div class="sgsub">SOUND ON ~ AUTONOMOUS ENGAGEMENT AUTHORIZED</div>';
+  gate.innerHTML = SCENE==="arena"
+    ? '<div class="sg">▶ CLICK TO ENGAGE</div><div class="sgsub">SOUND ON ~ COUNTER-TERMINATOR · RESISTANCE PROTECTOR DEPLOYED</div>'
+    : '<div class="sg">▶ CLICK TO ENGAGE</div><div class="sgsub">SOUND ON ~ AUTONOMOUS ENGAGEMENT AUTHORIZED</div>';
   gate.addEventListener("click", start);
   document.addEventListener("keydown", start);
   document.querySelector(".tube").appendChild(gate);
