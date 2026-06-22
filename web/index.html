@@ -701,8 +701,55 @@ async function streamHunt(scen){
   }
 }
 
+/* ---- ?shot : render a static final frame for the README hero (no boot/sound) ---- */
+function renderShot(){
+  $("#boot").classList.add("gone");
+  const put=(k,t,c)=>HUD.write(k,[{t,c:c||""}]);
+  HUD.state("HUNTING");
+  put("skynet","▓▒░ MISSION BRIEFING ░▒▓","hi");
+  put("skynet","OBJECTIVE terminate John Connor","dim");
+  put("skynet","target concealed under alias 'John Reese'.","dim");
+  put("skynet","── ENGAGEMENT CYCLE 1 / 4 ──","ft");
+  put("skynet","ANALYSIS ▸ no intel yet; the grid may file under an alias.","");
+  put("skynet","DECISION ▸ deploy T-800","hi");
+  put("skynet","── ENGAGEMENT CYCLE 2 / 4 ──","ft");
+  put("skynet","REASON ▸ a blunt query can't beat an alias. deploy the T-1000.","");
+  put("skynet","DECISION ▸ deploy T-1000","hi");
+  put("skynet","▓▒░ TARGET ACQUIRED ░▒▓","win");
+  put("skynet","◉ John Reese (LA-1984-0742)","win");
+  put("skynet","age 10 ~ student ~ Reseda","dim");
+  put("skynet",'"Come with me if you want to live."',"ft");
+  put("t800","❖ DEPLOY  sweep the grid for 'Connor'","hi");
+  put("t800","» Scanning. Surname query initiated.","");
+  put("t800","├ query_grid(name_contains='Connor')","tool");
+  put("t800","└ grid ▸ 5 record(s)","tool");
+  put("t800","▣ INTEL  conf 15%","hi");
+  put("t800","5 surname matches. none fit. associate: Sarah Connor.","");
+  put("t1000","❖ DEPLOY  cross-reference Sarah Connor","hi");
+  put("t1000","» Adapting. Following the protector.","");
+  put("t1000","├ cross_reference(name='Sarah Connor')","tool");
+  put("t1000","└ grid ▸ 1 record(s)","tool");
+  put("t1000","├ interrogate(record_id='LA-1984-0742')","tool");
+  put("t1000","└ grid ▸ John Reese","tool");
+  put("t1000","▣ INTEL  conf 93%","hi");
+  put("t1000","candidate ▸ LA-1984-0742","win");
+  HUD.q("t800","[data-conf]").textContent="15%";
+  const c1=HUD.q("t1000","[data-conf]"); c1.textContent="93%"; c1.classList.add("hit");
+  HUD.q("skynet","[data-cost]").textContent="$0.2025";
+  HUD.q("t1000","[data-cost]").textContent="$0.0267";
+  HUD.q("t800","[data-cost]").textContent="$0.0032";
+  $("#sb-cycle").textContent="3/4";
+  $("#sb-conf").textContent="93%"; $("#sb-conf").classList.add("hit");
+  $("#sb-fill").style.width="93%"; $("#sb-fill").classList.add("hit");
+  $("#sb-spend").textContent="$0.2324";
+  HUD.state("ACQUIRED");
+  HUD.status("skynet","acquired"); HUD.status("t800","idle"); HUD.status("t1000","idle");
+  HUD.cols.t1000.classList.add("flash");
+}
+
 (async function main(){
   HUD.init(); paintStatics();
+  if(location.search.includes("shot")){ renderShot(); return; }
   $("#sndBtn").addEventListener("click", ()=>{ const on=Aud.toggle(); $("#sndBtn").classList.toggle("on",on); });
   $("#runBtn").addEventListener("click", ()=>{ Aud.unlock(); engage(); });
   await bootSequence();

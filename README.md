@@ -3,9 +3,15 @@
 > An agentic Terminator demo. **Skynet** orchestrates terminator sub-agents that use tools to hunt **John Connor** across a synthetic 1984 Los Angeles grid ~ and the three terminator models map onto a real engineering tradeoff.
 
 > **Read the story:** [Medium article](https://medium.com/@paul.laudeman/skynet-shipped-the-reference-architecture-in-1984-dba4268c8686) · [LinkedIn post](https://www.linkedin.com/feed/update/urn:li:activity:7473129580141391872/)
+>
+> **▶ [Watch it live](https://paullaudeman.github.io/skynet-hunter/)** ~ no install, just click ENGAGE.
 
 <p align="center">
-  <img src="docs/skynet-hunter.gif" alt="Skynet Hunter ~ animated splash" width="720">
+  <a href="https://paullaudeman.github.io/skynet-hunter/">
+    <img src="docs/web-hud.png" alt="Skynet Hunter ~ the browser CRT HUD" width="840">
+  </a>
+  <br>
+  <sub>The hunt in a dying 1980s bunker CRT ~ <a href="https://paullaudeman.github.io/skynet-hunter/">watch it live →</a></sub>
 </p>
 
 ```
@@ -23,6 +29,7 @@ A toy? No ~ a first step. It's **multi-agent orchestration, tool use, and struct
 - **Two engines** ~ real Claude agents, and a deterministic `--simulate` mode that needs no key.
 - **No LangChain / LangGraph / CrewAI**, by design ~ knowing where *not* to add the abstraction is the point.
 - **The boundaries that keep it safe** ~ tools, budget, persistence, spawn, human-gate, kill-switch ~ written up in [`docs/agent-safety.md`](docs/agent-safety.md). Safety lives in the wiring, not the model.
+- **Three front-ends over one engine** ~ a CLI, a Textual TUI, and a deployed [browser CRT HUD](https://paullaudeman.github.io/skynet-hunter/) that even streams the live engine over SSE. The engine never changes; only the `ui` seam swaps. *That* separation is the reusable lesson.
 
 ---
 
@@ -81,6 +88,20 @@ uv run python -m skynet --simulate --theme amber       # platinum | silver | amb
 uv run python -m skynet --simulate --no-art            # mute the BBS theater / typewriter
 uv run python -m skynet --simulate --max-cycles 3
 ```
+
+### In the browser
+
+The [deployed link](https://paullaudeman.github.io/skynet-hunter/) plays a baked event tape. To stream the **real engine** into the same CRT HUD over SSE (stdlib only, no key):
+
+```bash
+uv run python web/server.py     # then open http://localhost:8000/?live
+```
+
+Same renderer, a live event source ~ `skynet/stream.py` is the seam. Swap the deterministic engine for the live orchestrator and it's real Claude agents hunting in the CRT.
+
+### Themed terminal
+
+The same amber-phosphor look for your own terminal lives in [`skyterm/`](skyterm/) ~ an iTerm2 preset, a Ghostty config, cool-retro-term tuning, and a Starship prompt.
 
 > **Note ~ the live path can refuse, by design.** Run live, a worker model may cross-reference the target, *find* the record, then decline to compile the structured intel report ~ correctly reading the schema (`target_record_id` + `method` + `confidence`, an artifact for locating a concealed minor via guardian links) as a real people-locating methodology under the fictional paint. That refusal **is the dual-use boundary** the [explainer](docs/explainer.html) names ~ enforced by the model itself, not asserted in prose. It's the demo working, not breaking. `--simulate` keeps no model in the loop, so it's deterministic and always completes ~ that's the canonical run; **live is where you watch the boundary hold.**
 
@@ -151,10 +172,14 @@ skynet-hunter/
 │   ├── cost.py            # cost meter: pricing table + CostMeter (model tier = $ on screen)
 │   ├── orchestrator.py    # live engine: Skynet's loop + each unit's manual tool loop
 │   ├── simulate.py        # deterministic offline mirror (no API)
+│   ├── arena.py           # counter-terminator: the Resistance disrupts the hunt (--arena)
+│   ├── stream.py          # phase-2: serialize engine events for the web HUD (SSE)
 │   ├── theme.py / ui.py   # CLI front end: ANSI/BBS theater
 │   ├── tui/               # TUI front end: TextualUI adapter, app, widgets
-│   └── cli.py             # entry point (--simulate / --tui / --scenario)
-├── docs/explainer.html    # self-contained visual explainer
+│   └── cli.py             # entry point (--simulate / --tui / --arena / --scenario)
+├── web/                   # browser CRT HUD (index.html) + SSE stream server (server.py)
+├── skyterm/               # amber-phosphor terminal theme (iTerm2 / Ghostty / Starship)
+├── docs/                  # explainer.html · agent-safety.md · web-hud.png
 └── tests/                 # grid, scenario, simulate, tui adapter, cost meter (21 tests)
 ```
 
