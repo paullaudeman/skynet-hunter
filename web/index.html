@@ -612,8 +612,9 @@ async function runHunt(){
 
 /* ---- control ---- */
 let running=false;
-async function engage(){
-  if(running) return; running=true;
+const LIVE = location.search.includes("live");   // served by web/server.py ~ stream the real engine
+
+function resetHUD(){
   ["skynet","t1000","t800"].forEach(k=>{ HUD.q(k,"[data-log]").innerHTML="";
     HUD.q(k,"[data-conf]").textContent=""; HUD.q(k,"[data-conf]").classList.remove("hit");
     HUD.q(k,"[data-cost]").textContent="$0.0000"; HUD.status(k,"idle"); });
@@ -621,9 +622,83 @@ async function engage(){
   $("#sb-fill").style.width="0%"; $("#sb-fill").classList.remove("hit");
   $("#sb-conf").textContent="0%"; $("#sb-conf").classList.remove("hit");
   $("#sb-spend").textContent="$0.0000"; HUD.cycle(0,4);
-  await runHunt();
+}
+
+async function engage(){
+  if(running) return; running=true;
+  resetHUD();
+  if(LIVE) await streamHunt(); else await runHunt();
   running=false;
-  $("#runBtn").textContent="▶ RE-ENGAGE";   // first run done ~ subsequent runs are replays
+  $("#runBtn").textContent="▶ RE-ENGAGE";
+}
+
+/* ---- phase-2 event source: consume the engine over SSE (web/server.py) ----
+   The renderer (HUD) is identical to the JS-tape path; only the source changes. */
+async function renderEvent(ev){
+  const W=(k,parts,o)=>HUD.write(k,parts,o);
+  switch(ev.type){
+    case "briefing":
+      HUD.state("HUNTING");
+      await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
+      await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"terminate "+ev.target,c:"hi"}]);
+      if(ev.profile) await W("skynet",[{t:ev.profile,c:"dim"}]); break;
+    case "cycle":
+      await W("skynet",[{t:`── ENGAGEMENT CYCLE ${ev.cycle} / ${ev.total} ──`,c:"ft"}]);
+      HUD.cycle(ev.cycle, ev.total); break;
+    case "skynet":
+      HUD.status("skynet","thinking");
+      if(ev.assessment) await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:ev.assessment,c:""}],{type:true});
+      if(ev.reasoning)  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:ev.reasoning,c:""}],{type:true});
+      if(ev.acquired){ await W("skynet",[{t:"DECISION ▸ TARGET CONFIRMED",c:"win"}]); HUD.status("skynet","acquired"); }
+      else if(ev.deploy){ await W("skynet",[{t:"DECISION ▸ deploy "+ev.deploy,c:"hi"}]); HUD.status("skynet","idle"); }
+      else HUD.status("skynet","idle"); break;
+    case "deploy":
+      HUD.status(ev.unit,"deployed");
+      await W(ev.unit,[{t:"❖ DEPLOY ",c:"hi"},{t:ev.directive,c:"dim"}]); break;
+    case "say":
+      await W(ev.unit,[{t:"» ",c:"dim"},{t:ev.text,c:""}],{type:true}); break;
+    case "tool_call":{
+      const a=Object.entries(ev.args||{}).map(([k,v])=>`${k}=${JSON.stringify(v)}`).join(", ");
+      await W(ev.unit,[{t:`├ ${ev.name}(${a})`,c:"tool"}]); break; }
+    case "tool_result":
+      await W(ev.unit,[{t:`└ grid ▸ ${ev.summary}`,c:"tool"}]); break;
+    case "intel":
+      await W(ev.unit,[{t:"▣ INTEL ",c:"hi"},{t:`conf ${Math.round(ev.confidence*100)}%`,c:"dim"}]);
+      if(ev.summary) await W(ev.unit,[{t:ev.summary,c:""}]);
+      if(ev.notes) await W(ev.unit,[{t:"note ▸ "+ev.notes,c:"dim"}]);
+      if(ev.target_record_id) await W(ev.unit,[{t:"candidate ▸ "+ev.target_record_id,c:"win"}]);
+      HUD.setConf(ev.unit, ev.confidence); HUD.status(ev.unit,"idle"); break;
+    case "cost":
+      HUD.costTick(ev.unit, ev.step); break;
+    case "acquired":{
+      HUD.status("skynet","acquired"); HUD.state("ACQUIRED");
+      await W("skynet",[{t:"▓▒░ TARGET ACQUIRED ░▒▓",c:"win"}]);
+      const r=ev.record||{};
+      await W("skynet",[{t:`◉ ${r.name} (${r.id})`,c:"win"}]);
+      await W("skynet",[{t:`age ${r.age} ~ ${r.occupation} ~ ${r.location}`,c:"dim"}]);
+      await W("skynet",[{t:'"Come with me if you want to live."',c:"ft"}]); break; }
+    case "failed":
+      HUD.state("LEADS DRY");
+      await W("skynet",[{t:"LEADS EXHAUSTED ~ target not confirmed",c:"dim"}]); break;
+    case "banner":
+      await W("skynet",[{t:`╾┤ ${ev.label} ├╼`,c:"win"}]); break;
+    case "note":
+      await W("skynet",[{t:ev.text,c:"dim"}]); break;
+  }
+}
+
+async function streamHunt(scen){
+  const q=[]; let done=false, wake=null;
+  const url="/events"+(scen?("?scenario="+encodeURIComponent(scen)):"");
+  const es=new EventSource(url);
+  es.onmessage=(e)=>{ try{ q.push(JSON.parse(e.data)); }catch(_){}; if(wake){wake();wake=null;} };
+  es.onerror=()=>{ done=true; if(wake){wake();wake=null;} };
+  while(true){
+    if(!q.length){ if(done) break; await new Promise(r=>{wake=r;}); continue; }
+    const ev=q.shift();
+    if(ev.type==="end"){ es.close(); break; }
+    try{ await renderEvent(ev); }catch(err){ console.error(err); }
+  }
 }
 
 (async function main(){
