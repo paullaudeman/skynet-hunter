@@ -261,6 +261,9 @@ body{
 .gedge.guardian{ stroke:var(--amber); stroke-dasharray:6 3; opacity:1; stroke-width:2; }
 .gedge.alias{ stroke:var(--green); stroke-width:2.5; }
 .gedge.acquired{ stroke:var(--green); }
+.gelabel{ font-family:var(--body); font-size:11px; text-anchor:middle; paint-order:stroke; stroke:#0e0801; stroke-width:3px; fill:var(--amber-dim); }
+.gelabel.guardian{ fill:var(--amber); } .gelabel.alias{ fill:var(--green); }
+.gunit{ font-family:var(--body); font-size:10px; text-anchor:middle; fill:var(--amber-ft); }
 
 /* ---- boot overlay ---- */
 .boot{position:absolute; inset:0; z-index:20; background:var(--bg2);
@@ -620,7 +623,7 @@ async function runHunt(){
   await W("t800",[{t:"» ",c:"dim"},{t:"scanning. surname query initiated.",c:""}],{type:true});
   await W("t800",[{t:"├ query_grid(name_contains='Connor')",c:"tool"}]); await sleep(380);
   await W("t800",[{t:"└ grid ▸ 5 record(s)",c:"tool"}]); await sleep(300);
-  feedGraph({type:"tool_result", name:"query_grid", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
+  feedGraph({type:"tool_result", name:"query_grid", unit:"t800", records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:SCENARIO.protector},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]});
   await W("t800",[{t:"▣ INTEL ",c:"hi"},{t:"conf 15%",c:"dim"}]);
   await W("t800",[{t:"5 surname matches. none fit the profile. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
   HUD.setConf("t800",0.15); HUD.status("t800","idle"); HUD.costTick("t800",0.0032); await sleep(600);
@@ -638,16 +641,16 @@ async function runHunt(){
   await W("t1000",[{t:"❖ DEPLOY ",c:"hi"},{t:"cross-reference "+SCENARIO.protector,c:"dim"}]);
   await W("t1000",[{t:"» ",c:"dim"},{t:"adapting. the target is filed under an alias. following the protector.",c:""}],{type:true});
   await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await sleep(380);
-  feedGraph({type:"tool_call", name:"cross_reference", args:{name:SCENARIO.protector}});
+  feedGraph({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.protector}});
   await W("t1000",[{t:"└ grid ▸ 1 record(s)",c:"tool"}]); await sleep(280);
-  feedGraph({type:"tool_result", name:"cross_reference", records:[{id:"LA-1984-0742", name:null}]});
+  feedGraph({type:"tool_result", name:"cross_reference", unit:"t1000", records:[{id:"LA-1984-0742", name:null}]});
   await W("t1000",[{t:"├ interrogate(record_id='LA-1984-0742')",c:"tool"}]); await sleep(380);
   await W("t1000",[{t:"└ grid ▸ John Reese",c:"tool"}]); await sleep(300);
-  feedGraph({type:"tool_result", name:"interrogate", records:[{id:"LA-1984-0742", name:SCENARIO.alias}]});
+  feedGraph({type:"tool_result", name:"interrogate", unit:"t1000", records:[{id:"LA-1984-0742", name:SCENARIO.alias}]});
   await W("t1000",[{t:"» ",c:"dim"},{t:"a minor. no SSN. no birth record. guardian: "+SCENARIO.protector+". this is the target.",c:""}],{type:true});
   await W("t1000",[{t:"▣ INTEL ",c:"hi"},{t:"conf 93%",c:"dim"}]);
   await W("t1000",[{t:"candidate ▸ LA-1984-0742",c:"win"}]);
-  feedGraph({type:"intel", target_record_id:"LA-1984-0742"});
+  feedGraph({type:"intel", unit:"t1000", target_record_id:"LA-1984-0742"});
   HUD.setConf("t1000",0.93); HUD.status("t1000","idle"); HUD.costTick("t1000",0.0267); await sleep(700);
 
   // CYCLE 3 ~ confirm
@@ -779,24 +782,30 @@ const Graph={
   svg:null, edges:null, nodes:null, N:{}, E:[], _prot:null, _cand:null, _raf:0, W:1200, H:760,
   init(){ this.svg=$("#graph"); this.edges=this.svg.querySelector(".edges"); this.nodes=this.svg.querySelector(".nodes"); },
   reset(){ this.N={}; this.E=[]; this._prot=null; this._cand=null; if(this.edges) this.edges.innerHTML=""; if(this.nodes) this.nodes.innerHTML=""; },
-  add(id,label,kind){
+  add(id,label,kind,unit){
     if(!id) return null;
     if(this.N[id]) return this.N[id];
     const g=document.createElementNS(SVGNS,"g"); g.setAttribute("class","gnode "+kind);
     g.setAttribute("transform",`translate(${this.W/2},${this.H/2})`);
     const c=document.createElementNS(SVGNS,"circle"); c.setAttribute("r", kind==="target"?22:11);
     const t=document.createElementNS(SVGNS,"text"); t.setAttribute("y", kind==="target"?40:26); t.textContent=label||id;
-    g.appendChild(c); g.appendChild(t); this.nodes.appendChild(g);
+    g.appendChild(c); g.appendChild(t);
+    if(unit){ const ut=document.createElementNS(SVGNS,"text"); ut.setAttribute("class","gunit"); ut.setAttribute("y", kind==="target"?58:40); ut.textContent="◂ "+unit; g.appendChild(ut); }
+    this.nodes.appendChild(g);
     this.N[id]={id,kind,x:this.W/2,y:this.H/2,tx:this.W/2,ty:this.H/2,el:g,txt:t,cir:c};
     this.layout(); return this.N[id];
   },
+  unit(id,unit){ const n=this.N[id]; if(!n||!unit||n.el.querySelector(".gunit")) return; const ut=document.createElementNS(SVGNS,"text"); ut.setAttribute("class","gunit"); ut.setAttribute("y", n.kind==="target"?58:40); ut.textContent="◂ "+unit; n.el.appendChild(ut); },
   setKind(id,kind){ const n=this.N[id]; if(!n) return; n.kind=kind; n.el.setAttribute("class","gnode "+kind); n.cir.setAttribute("r", kind==="target"?22:11); this.layout(); },
   relabel(id,label){ const n=this.N[id]; if(n&&label) n.txt.textContent=label; },
-  link(from,to,kind){
+  link(from,to,kind,label){
     if(!this.N[from]||!this.N[to]||from===to) return;
     if(this.E.some(e=>e.from===from&&e.to===to)) return;
     const l=document.createElementNS(SVGNS,"line"); l.setAttribute("class","gedge "+kind);
-    this.edges.appendChild(l); this.E.push({from,to,kind,el:l}); this.layout();
+    this.edges.appendChild(l);
+    let lbl=null;
+    if(label){ lbl=document.createElementNS(SVGNS,"text"); lbl.setAttribute("class","gelabel "+kind); lbl.textContent=label; this.edges.appendChild(lbl); }
+    this.E.push({from,to,kind,el:l,lbl}); this.layout();
   },
   target(name){ this.add("TARGET", name, "target"); const n=this.N["TARGET"]; if(n) n.el.classList.add("concealed"); },
   acquire(id){ const n=this.N[id]; if(n) n.el.classList.add("acquired"); const t=this.N["TARGET"]; if(t) t.el.classList.add("acquired");
@@ -820,34 +829,42 @@ const Graph={
       }
       for(const e of this.E){ const a=this.N[e.from], b=this.N[e.to]; if(!a||!b) continue;
         e.el.setAttribute("x1",a.x.toFixed(1)); e.el.setAttribute("y1",a.y.toFixed(1));
-        e.el.setAttribute("x2",b.x.toFixed(1)); e.el.setAttribute("y2",b.y.toFixed(1)); }
+        e.el.setAttribute("x2",b.x.toFixed(1)); e.el.setAttribute("y2",b.y.toFixed(1));
+        if(e.lbl){ e.lbl.setAttribute("x",((a.x+b.x)/2).toFixed(1)); e.lbl.setAttribute("y",((a.y+b.y)/2-4).toFixed(1)); } }
       if(moving) this._raf=requestAnimationFrame(step);
     };
     this._raf=requestAnimationFrame(step);
   },
 };
 
+const UDES={t800:"T-800", t1000:"T-1000", skynet:"SKYNET"};
+const udes=(u)=>UDES[u]||(u||"");
+
 function feedGraph(ev){
   if(!Graph.nodes) return;
+  const U=udes(ev.unit);
   switch(ev.type){
     case "briefing": Graph.target(ev.target); break;
     case "tool_call":
       if(ev.name==="cross_reference" && ev.args && ev.args.name){
         const hit=Object.values(Graph.N).find(n=>n.txt && n.txt.textContent===ev.args.name);
         if(hit){ Graph.setKind(hit.id,"protector"); Graph._prot=hit.id; }
-        else { Graph.add("PROT", ev.args.name, "protector"); Graph._prot="PROT"; }
+        else { Graph.add("PROT", ev.args.name, "protector", U); Graph._prot="PROT"; }
       } break;
     case "tool_result":
-      if(ev.name==="query_grid" && ev.records) ev.records.forEach(r=>Graph.add(r.id, r.name||r.id, "decoy"));
-      else if(ev.name==="cross_reference" && ev.records) ev.records.forEach(r=>{ Graph.add(r.id, r.name||r.id, "record"); if(Graph._prot) Graph.link(Graph._prot, r.id, "guardian"); Graph._cand=r.id; });
-      else if(ev.name==="interrogate" && ev.records) ev.records.forEach(r=>{ Graph.add(r.id, r.name||r.id, "alias"); Graph.relabel(r.id, r.name); Graph.setKind(r.id,"alias"); Graph._cand=r.id; });
+      if(ev.name==="query_grid" && ev.records) ev.records.forEach(r=>Graph.add(r.id, r.name||r.id, "decoy", U));
+      else if(ev.name==="cross_reference" && ev.records) ev.records.forEach(r=>{ Graph.add(r.id, r.name||r.id, "record", U); Graph._cand=r.id; Graph._cu=U; });
+      else if(ev.name==="interrogate" && ev.records) ev.records.forEach(r=>{ Graph.add(r.id, r.name||r.id, "alias", U); Graph.relabel(r.id, r.name); Graph.setKind(r.id,"alias"); Graph.unit(r.id,U); Graph._cand=r.id; Graph._cu=U; });
       break;
     case "intel":
-      if(ev.target_record_id){ Graph.add(ev.target_record_id, null, "alias"); Graph.setKind(ev.target_record_id,"alias"); Graph._cand=ev.target_record_id; Graph.link(ev.target_record_id,"TARGET","alias"); }
+      if(ev.target_record_id){ Graph.add(ev.target_record_id, null, "alias", U); Graph.setKind(ev.target_record_id,"alias"); Graph.unit(ev.target_record_id,U); Graph._cand=ev.target_record_id; Graph._cu=U||Graph._cu;
+        Graph.link(ev.target_record_id,"TARGET","alias","alias resolves  ◂ interrogate"+(U?" · "+U:"")); }
       break;
     case "acquired":
       { const id=(ev.record&&ev.record.id)||Graph._cand; if(id) Graph.acquire(id); } break;
   }
+  // guardian link ~ protector → candidate, drawn whenever both are known (order-independent)
+  if(Graph._prot && Graph._cand) Graph.link(Graph._prot, Graph._cand, "guardian", "guardian link  ◂ cross_reference"+(Graph._cu?" · "+Graph._cu:""));
 }
 
 let graphOn=false;
@@ -862,11 +879,11 @@ function renderShotGraph(){   // ?shot=graph : build the full graph statically (
   $("#boot").classList.add("gone");
   if(!graphOn) toggleGraph();
   [{type:"briefing",target:"John Connor"},
-   {type:"tool_result",name:"query_grid",records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:"Sarah Connor"},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]},
-   {type:"tool_call",name:"cross_reference",args:{name:"Sarah Connor"}},
-   {type:"tool_result",name:"cross_reference",records:[{id:"LA-1984-0742",name:null}]},
-   {type:"tool_result",name:"interrogate",records:[{id:"LA-1984-0742",name:"John Reese"}]},
-   {type:"intel",target_record_id:"LA-1984-0742"},
+   {type:"tool_result",name:"query_grid",unit:"t800",records:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:"Sarah Connor"},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}]},
+   {type:"tool_call",name:"cross_reference",unit:"t1000",args:{name:"Sarah Connor"}},
+   {type:"tool_result",name:"cross_reference",unit:"t1000",records:[{id:"LA-1984-0742",name:null}]},
+   {type:"tool_result",name:"interrogate",unit:"t1000",records:[{id:"LA-1984-0742",name:"John Reese"}]},
+   {type:"intel",unit:"t1000",target_record_id:"LA-1984-0742"},
    {type:"acquired",record:{id:"LA-1984-0742"}}].forEach(feedGraph);
 }
 
