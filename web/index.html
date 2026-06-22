@@ -342,7 +342,7 @@ const Aud = {
   drone(){
     if(this.droneOn) return; this.droneOn=true; const c=this.ctx;
     const f=c.createBiquadFilter(); f.type="lowpass"; f.frequency.value=165; f.Q.value=5;
-    const g=c.createGain(); g.gain.value=0.5; f.connect(g); g.connect(this.master);
+    const g=c.createGain(); g.gain.value=0.35; f.connect(g); g.connect(this.master);   // drone hum ~ -30%
     [55,27.5,82.5].forEach((fr,i)=>{ const o=c.createOscillator(); o.type=i===2?"sine":"sawtooth"; o.frequency.value=fr; o.connect(f); o.start(); });
     const lfo=c.createOscillator(); lfo.frequency.value=0.06; const lg=c.createGain(); lg.gain.value=55;
     lfo.connect(lg); lg.connect(f.frequency); lfo.start();
