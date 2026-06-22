@@ -97,7 +97,7 @@ The [deployed link](https://paullaudeman.github.io/skynet-hunter/) plays a baked
 uv run python web/server.py     # then open http://localhost:8000/?live
 ```
 
-Same renderer, a live event source ~ `skynet/stream.py` is the seam. Swap the deterministic engine for the live orchestrator and it's real Claude agents hunting in the CRT.
+Same renderer, a live event source ~ `skynet/stream.py` is the seam. For **real Claude agents** in the CRT, set `ANTHROPIC_API_KEY` (in `.env`) and open `http://localhost:8000/?live&engine=claude` ~ the cost meter ticks real dollars, and you may even catch the live refusal on screen.
 
 ### Themed terminal
 

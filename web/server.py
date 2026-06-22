@@ -7,7 +7,8 @@ the HUD renders the actual engine, not the bundled JS tape ~ same renderer, a re
 event source. The deterministic engine needs no API key; swapping in the live
 orchestrator (real Claude) is the same StreamUI adapter, untouched.
 
-    uv run python web/server.py                 # http://localhost:8000/?live
+    uv run python web/server.py                 # http://localhost:8000/?live  (deterministic)
+    # add ANTHROPIC_API_KEY (.env), then open .../?live&engine=claude for real Claude agents
     PORT=9000 SPEED=0.5 uv run python web/server.py
 """
 from __future__ import annotations
@@ -33,13 +34,32 @@ PORT = int(os.environ.get("PORT", "8000"))
 SPEED = float(os.environ.get("SPEED", "1.0"))
 
 
-def run_hunt(emit, scenario_name: str = "john-connor") -> None:
+def run_hunt(emit, scenario_name: str = "john-connor", engine: str = "sim") -> None:
     config = load_config(DEFAULT_CONFIG)
     max_cycles = config["mission"]["max_cycles"]
     if scenario_name not in scenario.SCENARIO_CHOICES:
         scenario_name = "john-connor"
     sc = scenario.build_scenario(scenario_name)
     units = build_units(config)
+
+    if engine == "claude":
+        from skynet.cli import load_dotenv
+        load_dotenv()
+        if not os.environ.get("ANTHROPIC_API_KEY"):
+            emit({"type": "note", "text": "no ANTHROPIC_API_KEY ~ running the deterministic engine instead"})
+        else:
+            import anthropic
+            from skynet.orchestrator import Skynet
+            ui = StreamUI(emit, speed=0.0)  # real API latency paces the stream
+            ui.boot()
+            client = anthropic.Anthropic()
+            try:
+                Skynet(client, units, sc.database(), ui, sc.target_name,
+                       max_cycles, profile=sc.profile).run()
+            except Exception as e:  # a refusal / API error ~ degrade, don't hang the stream
+                emit({"type": "note", "text": f"live run ended ~ {type(e).__name__}: {e}"})
+            return
+
     ui = StreamUI(emit, speed=SPEED)
     simulate.run_simulation(units, sc, ui, max_cycles)
 
@@ -65,9 +85,11 @@ class Handler(SimpleHTTPRequestHandler):
             self.wfile.write(f"data: {json.dumps(ev)}\n\n".encode())
             self.wfile.flush()
 
-        scen = parse_qs(urlparse(self.path).query).get("scenario", ["john-connor"])[0]
+        q = parse_qs(urlparse(self.path).query)
+        scen = q.get("scenario", ["john-connor"])[0]
+        engine = q.get("engine", ["sim"])[0]
         try:
-            run_hunt(emit, scen)
+            run_hunt(emit, scen, engine)
             emit({"type": "end"})
         except (BrokenPipeError, ConnectionResetError):
             pass  # client navigated away mid-stream

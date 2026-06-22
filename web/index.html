@@ -687,9 +687,9 @@ async function renderEvent(ev){
   }
 }
 
-async function streamHunt(scen){
+async function streamHunt(){
   const q=[]; let done=false, wake=null;
-  const url="/events"+(scen?("?scenario="+encodeURIComponent(scen)):"");
+  const url="/events"+location.search;   // forwards ?engine=claude / ?scenario= to the server
   const es=new EventSource(url);
   es.onmessage=(e)=>{ try{ q.push(JSON.parse(e.data)); }catch(_){}; if(wake){wake();wake=null;} };
   es.onerror=()=>{ done=true; if(wake){wake();wake=null;} };
