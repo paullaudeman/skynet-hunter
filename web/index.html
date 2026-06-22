@@ -261,9 +261,10 @@ body{
 .gedge.guardian{ stroke:var(--amber); stroke-dasharray:6 3; opacity:1; stroke-width:2; }
 .gedge.alias{ stroke:var(--green); stroke-width:2.5; }
 .gedge.acquired{ stroke:var(--green); }
-.gelabel{ font-family:var(--body); font-size:11px; text-anchor:middle; paint-order:stroke; stroke:#0e0801; stroke-width:3px; fill:var(--amber-dim); }
+.gelabel{ font-family:var(--body); font-size:11px; text-anchor:middle; paint-order:stroke; stroke:#0e0801; stroke-width:4px; fill:var(--amber-dim); }
 .gelabel.guardian{ fill:var(--amber); } .gelabel.alias{ fill:var(--green); }
 .gunit{ font-family:var(--body); font-size:10px; text-anchor:middle; fill:var(--amber-ft); }
+#graph text{ text-shadow:none; }   /* crisp ~ the phosphor glow blurs small SVG labels */
 
 /* ---- boot overlay ---- */
 .boot{position:absolute; inset:0; z-index:20; background:var(--bg2);
@@ -805,7 +806,7 @@ const Graph={
     this.edges.appendChild(l);
     let lbl=null;
     if(label){ lbl=document.createElementNS(SVGNS,"text"); lbl.setAttribute("class","gelabel "+kind); lbl.textContent=label; this.edges.appendChild(lbl); }
-    this.E.push({from,to,kind,el:l,lbl}); this.layout();
+    this.E.push({from,to,kind,el:l,lbl,lpos: kind==="guardian"?0.3:0.5}); this.layout();
   },
   target(name){ this.add("TARGET", name, "target"); const n=this.N["TARGET"]; if(n) n.el.classList.add("concealed"); },
   acquire(id){ const n=this.N[id]; if(n) n.el.classList.add("acquired"); const t=this.N["TARGET"]; if(t) t.el.classList.add("acquired");
@@ -830,7 +831,7 @@ const Graph={
       for(const e of this.E){ const a=this.N[e.from], b=this.N[e.to]; if(!a||!b) continue;
         e.el.setAttribute("x1",a.x.toFixed(1)); e.el.setAttribute("y1",a.y.toFixed(1));
         e.el.setAttribute("x2",b.x.toFixed(1)); e.el.setAttribute("y2",b.y.toFixed(1));
-        if(e.lbl){ e.lbl.setAttribute("x",((a.x+b.x)/2).toFixed(1)); e.lbl.setAttribute("y",((a.y+b.y)/2-4).toFixed(1)); } }
+        if(e.lbl){ const f=e.lpos||0.5; e.lbl.setAttribute("x",(a.x+(b.x-a.x)*f).toFixed(1)); e.lbl.setAttribute("y",(a.y+(b.y-a.y)*f-6).toFixed(1)); } }
       if(moving) this._raf=requestAnimationFrame(step);
     };
     this._raf=requestAnimationFrame(step);
