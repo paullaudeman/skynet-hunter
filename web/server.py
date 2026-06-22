@@ -34,13 +34,20 @@ PORT = int(os.environ.get("PORT", "8000"))
 SPEED = float(os.environ.get("SPEED", "1.0"))
 
 
-def run_hunt(emit, scenario_name: str = "john-connor", engine: str = "sim") -> None:
+def run_hunt(emit, scenario_name: str = "john-connor", engine: str = "sim", scene: str = "hunt") -> None:
     config = load_config(DEFAULT_CONFIG)
     max_cycles = config["mission"]["max_cycles"]
     if scenario_name not in scenario.SCENARIO_CHOICES:
         scenario_name = "john-connor"
     sc = scenario.build_scenario(scenario_name)
     units = build_units(config)
+
+    if scene == "arena":
+        # the counter-terminator ~ deterministic only (two scripted orchestrators racing)
+        from skynet import arena
+        ui = StreamUI(emit, speed=SPEED)
+        arena.run_arena_simulation(units, sc, ui, max_cycles)
+        return
 
     if engine == "claude":
         from skynet.cli import load_dotenv
@@ -88,8 +95,9 @@ class Handler(SimpleHTTPRequestHandler):
         q = parse_qs(urlparse(self.path).query)
         scen = q.get("scenario", ["john-connor"])[0]
         engine = q.get("engine", ["sim"])[0]
+        scene = q.get("scene", ["hunt"])[0]
         try:
-            run_hunt(emit, scen, engine)
+            run_hunt(emit, scen, engine, scene)
             emit({"type": "end"})
         except (BrokenPipeError, ConnectionResetError):
             pass  # client navigated away mid-stream
