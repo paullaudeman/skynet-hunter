@@ -106,10 +106,17 @@ class Handler(SimpleHTTPRequestHandler):
 def main() -> None:
     handler = partial(Handler, directory=WEB)
     httpd = ThreadingHTTPServer(("", PORT), handler)
-    url = f"http://localhost:{PORT}/?live"
+    from skynet.cli import load_dotenv
+    load_dotenv()
+    has_key = bool(os.environ.get("ANTHROPIC_API_KEY"))
+    base = f"http://localhost:{PORT}/?live"
     print("skynet hunter ~ phase-2 stream server")
-    print(f"  open   {url}")
-    print("  engine: deterministic (no key) · Ctrl-C to stop")
+    print(f"  sim    {base}")
+    if has_key:
+        print(f"  live   {base}&engine=claude   ← real Claude agents (key detected)")
+    else:
+        print(f"  live   {base}&engine=claude   (no ANTHROPIC_API_KEY ~ will fall back to sim)")
+    print("  Ctrl-C to stop")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
