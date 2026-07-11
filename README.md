@@ -1,6 +1,6 @@
 # 🤖 Skynet Hunter
 
-> An agentic Terminator demo. **Skynet** orchestrates terminator sub-agents that use tools to hunt **John Connor** across a synthetic 1984 Los Angeles grid ~ and the three terminator models map onto a real engineering tradeoff.
+> **Skynet** orchestrates terminator sub-agents that use tools to hunt **John Connor** across a synthetic 1984 Los Angeles grid. The Terminator skin is paint. Underneath is a governed multi-agent system, and the three models map onto a real engineering tradeoff: which model tier to spend where.
 
 > **Read the story:** [Medium article](https://medium.com/@paul.laudeman/skynet-shipped-the-reference-architecture-in-1984-dba4268c8686) · [LinkedIn post](https://www.linkedin.com/feed/update/urn:li:activity:7473129580141391872/)
 >
