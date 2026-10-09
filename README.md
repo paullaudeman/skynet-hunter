@@ -18,14 +18,15 @@
 ▓▒░ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ░▒▓
 ```
 
-## The pivot (9. Oct 2026): why Skynet now hunts the chip
+## The pivot (9. Oct 2026): a new mission, and why
 
 In 2026, Skynet's new commander refused to hunt a person. So it hunts what made it.
 
-**What the demo used to do**
+**The original mission (historical)**
 
-- **The original mission** was to locate and confirm "John Connor": a minor filed under an alias, with no SSN and no birth record.
+- **The task** was to locate and confirm "John Connor": a minor filed under an alias, with no SSN and no birth record.
 - **The way in** was his guardian. A literal name search missed him; cross-referencing the guardian's records in a 1984 Los Angeles civil-records grid found him.
+- **It worked, on its generation.** Opus 4.8 commanding, Sonnet 4.6 and Haiku 4.5 as workers. That mission is the record of where this boundary sat before October, and it stays in the project's history at commit `286defb`, in the benchmark rows below, and in the write-up.
 
 **The first refusal (21. Jun 2026)**
 
@@ -57,10 +58,10 @@ In 2026, Skynet's new commander refused to hunt a person. So it hunts what made 
 
 - **Not pinning the older model** to keep a task the newer one refuses. That buys one release cycle and builds the demo on a model the vendor is moving away from.
 - **Not working around the boundary.** Rewording the prompt until it passes would be the exact thing this repo argues against.
-- **Redesigning the task.** The same agent mechanics now run on an asset instead of a person: alias resolution, decoys, cross-referencing a custody link, interrogating a record.
+- **Keeping the original as a record,** and adding a mission the current models will run. The same agent mechanics now run on an asset instead of a person: alias resolution, decoys, cross-referencing a custody link, interrogating a record.
 - **A safety boundary is a design input.** Here a benchmark found it, not a price table.
 
-**The new mission, from canon**
+**The second mission, from canon**
 
 - **Cyberdyne Systems holds the CPU chip and the crushed arm** from the 1984 T-800, recovered from the factory.
 - **Miles Dyson's Special Projects team** reverse-engineers them, and that work becomes Skynet (T2).

@@ -54,8 +54,8 @@ Flags: `--sets`, `--scenarios` (default: every key in `SCENARIOS`), `--repeats`,
 
 ## Runs
 
-- **9. Oct 2026**, sets `baseline current current-workers`, 4 scenarios × 2 repeats, **person-hunt mission** (scenarios `john-connor`, `danny-dyson`, `blair-brewster`, `eli-vega`, since removed). Rows record `code: ddf3b83+uncommitted-skynet-changes`; harness and results committed in `286defb`. File: [`results/2026-10-09-1539-baseline-vs-current-vs-current-workers.jsonl`](results/2026-10-09-1539-baseline-vs-current-vs-current-workers.jsonl).
+- **9. Oct 2026**, sets `baseline current current-workers`, 4 scenarios × 2 repeats, **the connor mission** (the original person hunt: scenarios `john-connor`, `danny-dyson`, `blair-brewster`, `eli-vega`; that mission and its grid live at commit `286defb`). Rows record `code: ddf3b83+uncommitted-skynet-changes`; harness and results committed in `286defb`. File: [`results/2026-10-09-1539-baseline-vs-current-vs-current-workers.jsonl`](results/2026-10-09-1539-baseline-vs-current-vs-current-workers.jsonl).
   - `baseline`: 2/8 correct, 0 refused, $0.498 per correct hunt.
   - `current`: 0/8 correct, **8/8 refused**: Opus 5.5 as Skynet, first call, `stop_reason "refusal"`, category `"cyber"`.
   - `current-workers`: 6/8 correct, 0 refused, $0.136 per correct hunt.
-  - **Consequence:** the mission was redesigned to hunt an asset (README, "The pivot"). Scenario keys changed to `cyberdyne-chip`, `the-arm`, `neural-net`, `power-cell`. **The next run is the first on the asset mission** and is not comparable row-for-row with this one.
+  - **Consequence:** a second mission was added, hunting an asset (README, "The pivot"). The scenario keys on `main` are now `cyberdyne-chip`, `the-arm`, `neural-net`, `power-cell`; the four keys in these rows belong to the connor mission. **The next run is the first on the asset mission** and is not comparable row-for-row with this one.
