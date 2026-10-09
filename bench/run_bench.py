@@ -5,7 +5,7 @@ and records per hunt: found the right target or not, cycles, calls, tokens,
 cost, wall time and errors. Nothing but the model IDs differs between sets, so
 a difference in the results is the model.
 
-    ANTHROPIC_API_KEY="$(op read 'op://Personal/Anthropic API Key/credential')" \
+    ANTHROPIC_API_KEY="$(op read 'op://<vault>/<item>/credential')" \
       uv run python bench/run_bench.py --sets baseline current --repeats 2
 
 Writes bench/results/<date>-<sets>.jsonl and prints a summary table.

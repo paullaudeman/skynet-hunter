@@ -53,7 +53,7 @@ The `cmd-*` sets sweep the commander over fixed 5.5 workers; the `wrk-*` sets sw
 ## Run it
 
 ```bash
-ANTHROPIC_API_KEY="$(op read 'op://Personal/Anthropic API Key/credential')" \
+ANTHROPIC_API_KEY="$(op read 'op://<vault>/<item>/credential')" \
   uv run python bench/run_bench.py --repeats 2                      # the full MATRIX
   uv run python bench/run_bench.py --sets cmd-opus-5 cmd-sonnet-5-5  # or pick sets
 ```
