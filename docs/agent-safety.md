@@ -117,4 +117,4 @@ never the dangerous part. The wiring is.
 *Background: the discussion that produced this lives in the internal reflection journal
 (`reflections/2026-06-22-distance-to-skynet.html`). The model refusals, and why
 the mission moved from a hidden person to the T-800 chip on 9. Oct 2026, are in the
-[README](../README.md#the-pivot-9-oct-2026-why-skynet-now-hunts-the-chip).*
+[README](../README.md#the-pivot-9-oct-2026-a-new-mission-and-why).*

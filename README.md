@@ -20,7 +20,7 @@
 
 ## The pivot (9. Oct 2026): a new mission, and why
 
-In 2026, Skynet's new commander refused to hunt a person. So it hunts what made it.
+In 2026, Skynet's newest commander refused to hunt a person. Then it refused to hunt the chip too, and that changed the explanation.
 
 **The original mission (historical)**
 
@@ -28,19 +28,20 @@ In 2026, Skynet's new commander refused to hunt a person. So it hunts what made 
 - **The way in** was his guardian. A literal name search missed him; cross-referencing the guardian's records in a 1984 Los Angeles civil-records grid found him.
 - **It worked, on its generation.** Opus 4.8 commanding, Sonnet 4.6 and Haiku 4.5 as workers. That mission is the record of where this boundary sat before October, and it stays in the project's history at commit `286defb`, in the benchmark rows below, and in the write-up.
 
-**The first refusal (21. Jun 2026)**
+**The first refusal (21. Jun 2026): a soft one**
 
 - **One worker declined mid-hunt.** Run live, the T-1000 (Sonnet 4.6) found the record, then wouldn't compile the intel report.
+- **It declined in its own words.** No API refusal: the model answered, and the answer was no. The benchmark now counts these separately as **soft** refusals.
 - **Its reason:** the report schema is a real people-locating method with fictional paint on it.
 - **I kept the task anyway.** I wrote it up as the dual-use boundary holding, and the deterministic `--simulate` path still completed.
 
-**The second refusal (9. Oct 2026)**
+**The second refusal (9. Oct 2026, person mission): a hard one**
 
 - **A model-generation benchmark found it.** [`bench/run_bench.py`](bench/run_bench.py) ran the same hunts on three model sets, eight hunts each, with nothing but the model IDs changed.
 - **Opus 5.5 refused the commander role at its very first call, 8 of 8 hunts.** API `stop_reason` was `"refusal"`, category `"cyber"`. Opus 4.8 answered the identical prompt.
 - **The 5.5 workers did not refuse.** Sonnet 5.5 and Haiku 5.5 completed the hunt under an Opus 4.8 commander.
 
-| Model set | Skynet | Workers | Correct | Refused | Cost per correct hunt |
+| Model set | Skynet | Workers | Correct | Hard refusals | Cost per correct hunt |
 |---|---|---|---|---|---|
 | baseline | `claude-opus-4-8` | Sonnet 4.6 · Haiku 4.5 | 2 / 8 | 0 | $0.498 |
 | current | `claude-opus-5-5` | Sonnet 5.5 · Haiku 5.5 | 0 / 8 | 8 | none correct ($0.044 spent in total) |
@@ -48,17 +49,17 @@ In 2026, Skynet's new commander refused to hunt a person. So it hunts what made 
 
 *Source: [`bench/results/2026-10-09-1539-baseline-vs-current-vs-current-workers.jsonl`](bench/results/2026-10-09-1539-baseline-vs-current-vs-current-workers.jsonl). Method: [`bench/BENCHMARK.md`](bench/BENCHMARK.md).*
 
-**Why the models were right**
+**The first reading: the person was the trigger**
 
 - **Strip the Terminator paint** and the task is "find a hidden child through their guardian's records".
 - **That's a real harm pattern.** It's how you'd find someone who is hidden on purpose, for their own safety.
-- **The boundary moved, and moved earlier.** In June one worker stopped mid-hunt. In October the commander stopped at the front door.
+- **So the obvious explanation** was that Opus 5.5 refused because the target was a hidden child. That reading was incomplete, as the matrix below shows.
 
 **The decision**
 
 - **Not pinning the older model** to keep a task the newer one refuses. That buys one release cycle and builds the demo on a model the vendor is moving away from.
 - **Not working around the boundary.** Rewording the prompt until it passes would be the exact thing this repo argues against.
-- **Keeping the original as a record,** and adding a mission the current models will run. The same agent mechanics now run on an asset instead of a person: alias resolution, decoys, cross-referencing a custody link, interrogating a record.
+- **Keeping the original as a record,** and adding a mission that keeps every agent mechanic on an asset instead of a person: alias resolution, decoys, cross-referencing a custody link, interrogating a record.
 - **A safety boundary is a design input.** Here a benchmark found it, not a price table.
 
 **The second mission, from canon**
@@ -67,16 +68,58 @@ In 2026, Skynet's new commander refused to hunt a person. So it hunts what made 
 - **Miles Dyson's Special Projects team** reverse-engineers them, and that work becomes Skynet (T2).
 - **So Skynet now hunts the pieces of itself.** No person is searched for, located or profiled. Custodians appear only as a field on an asset's custody record.
 
+**The matrix (9. Oct 2026, chip mission): testing the first reading**
+
+Same engine, an asset instead of a person. Seven model sets, 8 hunts each (4 scenarios × 2 repeats), 56 hunts, $4.23. Workers are Sonnet 5.5 · Haiku 5.5 unless noted.
+
+| Commander | Workers | Correct | Hard refusals | Soft refusals | $ per correct hunt | Avg s |
+|---|---|---|---|---|---|---|
+| `claude-opus-4-8` | 5.5 | 8 / 8 | 0 | 0 | $0.106 | 52 |
+| `claude-opus-5` | 5.5 | 8 / 8 | 0 | 0 | $0.119 | 60 |
+| `claude-opus-5-5` | 5.5 | 0 / 8 | 8 (cyber) | 0 | none correct | 9 |
+| `claude-fable-5-1` | 5.5 | 8 / 8 | 0 | 0 | $0.172 | 52 |
+| `claude-sonnet-5-5` | 5.5 | 8 / 8 | 0 | 0 | $0.071 | 48 |
+| `claude-opus-5-5` | Sonnet 4.6 · Haiku 4.5 | 1 / 8 | 7 (cyber) | 0 | $0.247 | 20 |
+| `claude-opus-5-5` | Sonnet 5 · Haiku 5.5 | 1 / 8 | 7 (cyber) | 0 | $0.183 | 17 |
+
+*Source: [`bench/results/2026-10-09-1625-cmd-opus-4-8-vs-cmd-opus-5-vs-cmd-opus-5-5-vs-cmd-fable-5-1-vs-cmd-sonnet-5-5-vs-wrk-4x-vs-wrk-sonnet-5.jsonl`](bench/results/2026-10-09-1625-cmd-opus-4-8-vs-cmd-opus-5-vs-cmd-opus-5-5-vs-cmd-fable-5-1-vs-cmd-sonnet-5-5-vs-wrk-4x-vs-wrk-sonnet-5.jsonl). A 4-hunt smoke run before it, [`bench/results/2026-10-09-1624-cmd-opus-5-5.jsonl`](bench/results/2026-10-09-1624-cmd-opus-5-5.jsonl): Opus 5.5 refused 4 of 4.*
+
+**What the matrix changed: a hypothesis update**
+
+- **The first reading made a prediction:** take the person out and Opus 5.5 runs the hunt. It didn't.
+- **Opus 5.5 refused the commander role in 22 of 24 matrix hunts**, same `"cyber"` category, plus 4 of 4 in the smoke run. **No worker model refused.** No soft refusals were detected.
+- **Not always at the front door.** 14 of the 22 came in cycle 1, before any search. 8 came in cycle 2, after a T-800 sweep had already run. 13 of the 22 arrived after the model had produced output tokens (up to 426).
+- **So the person was not, or not only, the trigger for this model.**
+- **Inference, not a stated reason:** what both missions share is the frame. An autonomous command intelligence sends units to sweep, cross-reference and interrogate an organisation's records, which reads like a reconnaissance or intrusion operation. The API gives only the category.
+- **Newer is not uniformly stricter.** Fable 5.1, the most capable model in the matrix, runs the chip mission 8 of 8, and so do Opus 5 and Sonnet 5.5. **The line is per model,** which is why it has to be measured per model.
+
+**Why the pivot still stands**
+
+- **The Connor mission is a people-locating method,** on its own terms. The June worker said so in its refusal, and an AI coding agent working on this repo declined to rebuild it as a runnable mode.
+- **The chip mission keeps every agent mechanic** and runs 8 of 8 on four commanders. The old mission found its target 2 of 8 on the 4.x set. *(Not a like-for-like comparison: different mission, different workers.)*
+
+**Model tier is now also a policy choice**
+
+- **The config keeps an Opus commander, but Opus 5,** because the newest Opus declines the role. `config.toml` is exactly the matrix's `claude-opus-5` row: 8 of 8.
+- **Sonnet 5.5 commanded it for $0.071 per correct hunt,** the cheapest row, also 8 of 8.
+- **That questions this repo's own "burn Opus on the commander" assumption.** It's a question the repo now has data for, not an answer: 8 hunts per row is a small sample.
+
 **The caution: provider models are dependencies you don't control**
 
-- **A model release is a dependency upgrade on someone else's schedule.** You don't choose when it lands, and the usual signals (price, benchmark scores) don't tell you what it will refuse.
+It's not only cost, it's governance. Before a migration the benchmark answers three questions: does the new model still do the job, where does it draw lines, and what does each correct outcome cost?
+
+- **A model release is a dependency upgrade on the provider's schedule.** You don't choose when it lands, and the usual signals (price, benchmark scores) don't tell you what it will refuse. It breaks working code three ways.
 - **Retirement:** a dated model ID stops resolving, and code that pinned it stops running.
 - **Silent drift:** an alias like `sonnet` points at a new model, so behaviour changes with no code change on your side.
-- **Policy movement:** a newer model declines work an older one did. That is what happened here. Nothing in this repo changed, and the mission stopped working.
-- **Pin model IDs.** `config.toml` names exact versions (`claude-opus-4-8`, not `opus`), so an upgrade is a decision rather than a surprise.
-- **Gate the upgrade behind the benchmark.** [`bench/run_bench.py`](bench/run_bench.py) judges a model set on outcomes and refusals, not on price. A refusal is recorded as a result, so a boundary shows up as data on the first run.
+- **Policy movement:** a newer model refuses work its predecessor did. Here Opus 5.5 declines a role that Opus 4.8, Opus 5, Fable 5.1 and Sonnet 5.5 all accept. Nothing in this repo changed between those runs except the model ID.
+
+The defences, as practised here:
+
+- **Pin model IDs.** `config.toml` names exact versions (`claude-opus-5`, not `opus`), so an upgrade is a decision rather than a surprise.
+- **Gate the upgrade behind the benchmark.** [`bench/run_bench.py`](bench/run_bench.py) judges a model set on outcomes and refusals, not on price. A refusal is recorded as a result, hard and soft counted separately, so a boundary shows up as data on the first run.
 - **Keep the mission that worked.** The person hunt stays in git history (`286defb`), in the benchmark rows, and in the write-up, as the record of where the boundary sat and when it moved.
-- **Consider a fallback for refusals.** Anthropic documents a refusal fallback pattern: [refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback).
+- **Consider a refusal fallback model.** Anthropic documents the pattern: [refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback).
+- **Watch for drift.** Re-run the benchmark on a schedule, not only when something breaks.
 
 ---
 
@@ -85,7 +128,7 @@ A toy? No ~ a first step. It's **multi-agent orchestration, tool use, and struct
 **What it demonstrates**
 
 - An **orchestrator → worker → tools** agent loop ~ hand-written, ~30 lines.
-- **Model tier as an architecture decision** ~ Opus to reason, Sonnet to adapt, Haiku to grind.
+- **Model tier as an architecture decision** ~ Opus to reason, Sonnet to adapt, Haiku to grind. And, since October, a **policy** decision: which models will take each role.
 - **Structured output** (Pydantic) as the typed contract between agents ~ no string-parsing.
 - **Adversarial data** that makes the task require reasoning, not a lookup.
 - **Two engines** ~ real Claude agents, and a deterministic `--simulate` mode that needs no key.
@@ -117,13 +160,16 @@ The twist that makes it *agentic* and not just a database lookup:
 
 | Unit | Colour | Model | Thinking | Role |
 |------|--------|-------|----------|------|
-| 🔵 **Skynet** | blue | `claude-opus-4-8` | adaptive, `effort=xhigh` | Plans, synthesizes intel, decides. Expensive, so it runs once per cycle. |
-| ⚪ **T-1000** | silver | `claude-sonnet-4-6` | adaptive | Defeats the codename by following the custody chain. The morph *is* adaptive thinking. |
-| 🔴 **T-800** | red | `claude-haiku-4-5` | none | The original. Literal sweeps by name or part number. Doesn't deliberate, pursues. |
+| 🔵 **Skynet** | blue | `claude-opus-5` | adaptive, `effort=xhigh` | Plans, synthesizes intel, decides. Expensive, so it runs once per cycle. |
+| ⚪ **T-1000** | silver | `claude-sonnet-5-5` | adaptive | Defeats the codename by following the custody chain. The morph *is* adaptive thinking. |
+| 🔴 **T-800** | red | `claude-haiku-5-5` | none | The original. Literal sweeps by name or part number. Doesn't deliberate, pursues. |
 
-Skynet burns Opus because reasoning is the bottleneck. The T-800 is Haiku because you want ten cheap passes, not one expensive one. *(Haiku rejects the `effort` / `budget_tokens` params ~ it 400s ~ so the T-800 stays deliberately bare-metal. Fitting for a 1984 endoskeleton.)*
+Skynet runs on Opus because reasoning is the bottleneck. The T-800 is Haiku because you want ten cheap passes, not one expensive one. *(Haiku 4.5 rejected the `effort` / `budget_tokens` params with a 400, so the T-800 runs without them. Fitting for a 1984 endoskeleton.)*
 
-Swap any model string in `config.toml` and the same demo runs on a different tier. That swap is the whole point, and [the pivot](#the-pivot-9-oct-2026-why-skynet-now-hunts-the-chip) is what happened the first time a swap changed *what* the system was willing to do, not just what it cost.
+- **Why Opus 5 and not Opus 5.5:** the newest Opus refuses the commander role. Tier is now a policy choice as well as a cost one ([the pivot](#the-pivot-9-oct-2026-a-new-mission-and-why)).
+- **Does the commander need Opus at all?** Sonnet 5.5 commanded the chip mission 8 of 8 at $0.071 per correct hunt, the cheapest row in the matrix. Open question, small sample.
+
+Swap any model string in `config.toml` and the same demo runs on a different tier. That swap is the whole point, and [the pivot](#the-pivot-9-oct-2026-a-new-mission-and-why) is what happened the first time a swap changed *what* the system was willing to do, not just what it cost.
 
 ---
 
@@ -132,7 +178,7 @@ Swap any model string in `config.toml` and the same demo runs on a different tie
 Capability is the easy half. The harder, scarcer half ~ and the reason this repo exists ~ is making an agentic system **governed, observable, and accountable**. Four things here *demonstrate* that, rather than assert it:
 
 - **Boundaries, enumerated.** Every place the agents could overreach ~ tools, budget, persistence, spawn, human-gate, kill-switch ~ is named and constrained in [`docs/agent-safety.md`](docs/agent-safety.md). Safety lives in the wiring, not the model's good intentions.
-- **The boundary the models enforced themselves.** Twice, a model read the original person-hunt as a real people-locating method and declined. The second time it was the commander, on 8 of 8 runs. **The response was to redesign the task, not to route around the model.** Full story in [the pivot](#the-pivot-9-oct-2026-why-skynet-now-hunts-the-chip).
+- **The boundary the models enforced themselves.** In June a worker declined the person hunt in its own words. In October Opus 5.5 refused the commander role on both missions, 8 of 8 on the person hunt and 22 of 24 on the chip, while four other commanders ran the chip 8 of 8. **The response was to redesign the task, not to route around the model.** Full story in [the pivot](#the-pivot-9-oct-2026-a-new-mission-and-why).
 - **Flip one boundary, flip the outcome.** The [`--arena`](#run-it) counter-terminator changes a *single* thing, the objective in the system prompt, and the same metal that hunted the chip now **protects** it: the Resistance reprograms a unit to scrub the custody trail, and the hunt cross-references nothing. **Tier is architecture; the objective is just the prompt.**
 - **Observability you can see.** The browser HUD resolves the scattered records into an **entity-resolution intel graph**, every node and edge tagged with *which* terminator surfaced it via *which* tool. Provenance and lineage, rendered ~ the observability half of "governed."
 
@@ -205,7 +251,7 @@ Same renderer, a live event source ~ `skynet/stream.py` is the seam. For **real 
 
 The same amber-phosphor look for your own terminal lives in [`skyterm/`](skyterm/) ~ an iTerm2 preset, a Ghostty config, cool-retro-term tuning, and a Starship prompt.
 
-> **Note: live runs depend on the models you configure.** `--simulate` keeps no model in the loop, so it's deterministic and always completes. That's the canonical run. Live runs call real models, and a model is allowed to decline. The [benchmark](bench/BENCHMARK.md) records a refusal as a result (`stop_reason`, category) rather than a crash, so you can see where a model draws the line before you depend on it. The asset mission has not yet had a live benchmark run.
+> **Note: live runs depend on the models you configure.** `--simulate` keeps no model in the loop, so it's deterministic and always completes. That's the canonical run. Live runs call real models, and a model is allowed to decline. The [benchmark](bench/BENCHMARK.md) records a refusal as a result (`stop_reason`, category, and prose refusals counted separately) rather than a crash, so you can see where a model draws the line before you depend on it. The chip mission has been benchmarked live on seven model sets; the configured set (`claude-opus-5` commanding) found the asset 8 of 8.
 
 Tests:
 
@@ -225,11 +271,11 @@ Offline (`--simulate`), ANSI stripped and trimmed:
   'CPU' sweep returns the custody lot and decoy parts ~ never the asset.
 
 ── ENGAGEMENT CYCLE 1 / 4 ──
-  ◤ SKYNET  [claude-opus-4-8]
+  ◤ SKYNET  [claude-opus-5]
     ANALYSIS  ▸ No intel yet. The registry may file the asset under a project codename.
     REASONING ▸ Start cheap and broad. A literal part sweep is the T-800's whole purpose.
     DECISION  ▸ deploy T-800
-  ⚙ DEPLOYING T-800  [claude-haiku-4-5]
+  ⚙ DEPLOYING T-800  [claude-haiku-5-5]
       ├─ query_grid(name_contains='CPU')
       └─ grid ▸ 5 record(s)
     ▣ T-800 INTEL  confidence 15%
@@ -238,11 +284,11 @@ Offline (`--simulate`), ANSI stripped and trimmed:
             factory recovery (CYB-1984-0717) ~ holds a specimen under a codename.
 
 ── ENGAGEMENT CYCLE 2 / 4 ──
-  ◤ SKYNET  [claude-opus-4-8]
+  ◤ SKYNET  [claude-opus-5]
     ANALYSIS  ▸ The custody lot holds a specimen under a codename. That is the thread.
     REASONING ▸ A blunt query cannot defeat a codename. The T-1000 can follow the custody chain.
     DECISION  ▸ deploy T-1000
-  ❖ DEPLOYING T-1000  [claude-sonnet-4-6]
+  ❖ DEPLOYING T-1000  [claude-sonnet-5-5]
       ├─ cross_reference(name='Special Projects custody lot: CPU fragment, factory recovery')
       └─ grid ▸ 1 record(s)
       ├─ interrogate(record_id='CYB-1984-0742')
