@@ -27,6 +27,10 @@ PRICING: dict[str, tuple[float, float]] = {
     "claude-opus-4-8": (5.0, 25.0),    # Skynet  ~ reasons hard and rarely
     "claude-sonnet-4-6": (3.0, 15.0),  # T-1000  ~ adaptive infiltrator
     "claude-haiku-4-5": (1.0, 5.0),    # T-800   ~ blunt literal sweep
+    # Current generation, from platform.claude.com/docs/en/about-claude/pricing, read 9. Oct 2026.
+    "claude-opus-5-5": (4.0, 20.0),
+    "claude-sonnet-5-5": (2.0, 10.0),
+    "claude-haiku-5-5": (0.10, 0.50),  # prompts up to 100K tokens; this demo's prompts are far smaller
 }
 
 # Prompt-cache economics: a read is ~0.1x the input rate, a write ~1.25x.
