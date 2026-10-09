@@ -19,6 +19,7 @@ from typing import Any
 
 from . import grid
 from .cost import CostMeter
+from .memory import LocalIntelStore
 from .schemas import IntelReport, SkynetDecision
 from .units import Unit, normalize_designation
 
@@ -49,12 +50,13 @@ class Skynet:
     # -- the orchestration loop ------------------------------------------
     def run(self) -> bool:
         self.ui.mission_briefing(self.target, self.profile)
-        intel_log: list[dict[str, Any]] = []
+        store = LocalIntelStore()
+        session = self.target
 
         for cycle in range(1, self.max_cycles + 1):
             self.ui.cycle_header(cycle, self.max_cycles)
             before = self.meter.total_cost
-            decision = self.decide(intel_log)
+            decision = self.decide(store.retrieve(session))
             self.ui.skynet_decision(self.skynet, decision)
             self._cost_tick(self.skynet, self.meter.total_cost - before)
 
@@ -75,7 +77,7 @@ class Skynet:
             report = self.deploy(unit, decision.directive or f"Locate {self.target}.")
             self.ui.intel_report(unit, report)
             self._cost_tick(unit, self.meter.total_cost - before)
-            intel_log.append(report.model_dump())
+            store.create_event(session, unit_key, report.model_dump())
 
         self.ui.mission_failed()
         self._cost_summary()
