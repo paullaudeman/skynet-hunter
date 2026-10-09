@@ -82,7 +82,7 @@ class _FakeClient:
 
 def test_orchestrator_round_trips_intel_through_the_seam():
     """Skynet's later decisions must see earlier reports, in order, via the store."""
-    sc = scenario.build_scenario("john-connor")
+    sc = scenario.build_scenario("cyberdyne-chip")
     units = build_units(CONFIG)
     ui = UI(Theme("amber"), art=False)  # art off => no sleeps
     db = sc.database()
@@ -93,14 +93,14 @@ def test_orchestrator_round_trips_intel_through_the_seam():
             reasoning="Start broad ~ deploy the T-800.",
             target_acquired=False,
             deploy_unit="T-800",
-            directive="Sweep the surname.",
+            directive="Sweep the part keyword.",
         ),
         SkynetDecision(
-            assessment="Sweep returned decoys; a protector thread remains.",
-            reasoning="Deploy the T-1000 to defeat the alias.",
+            assessment="Sweep returned decoys; a custody thread remains.",
+            reasoning="Deploy the T-1000 to defeat the codename.",
             target_acquired=False,
             deploy_unit="T-1000",
-            directive="Cross-reference the protector.",
+            directive="Cross-reference the custody record.",
         ),
         SkynetDecision(
             assessment="High-confidence record returned.",
@@ -110,8 +110,8 @@ def test_orchestrator_round_trips_intel_through_the_seam():
         ),
     ]
     reports = [
-        IntelReport(unit="T-800", summary="ALPHA_MARKER surname sweep, only decoys.", confidence=0.15),
-        IntelReport(unit="T-1000", summary="BETA_MARKER cross-reference found the alias.",
+        IntelReport(unit="T-800", summary="ALPHA_MARKER part sweep, only decoys.", confidence=0.15),
+        IntelReport(unit="T-1000", summary="BETA_MARKER cross-reference found the codename.",
                     target_record_id=sc.target_id, confidence=0.93),
     ]
 
@@ -138,7 +138,7 @@ def test_orchestrator_round_trips_intel_through_the_seam():
 
 def test_orchestrator_fails_cleanly_when_skynet_stands_down():
     """No deployable order => the loop ends without acquiring (no crash)."""
-    sc = scenario.build_scenario("john-connor")
+    sc = scenario.build_scenario("cyberdyne-chip")
     units = build_units(CONFIG)
     ui = UI(Theme("amber"), art=False)
     db = sc.database()
@@ -161,7 +161,7 @@ def test_each_run_gets_its_own_session_id():
     """Decision Card 8: the session is per run, not per target, and long enough for AgentCore."""
     from skynet.orchestrator import new_session_id
 
-    a, b = new_session_id("John Connor"), new_session_id("John Connor")
+    a, b = new_session_id("T-800 CPU"), new_session_id("T-800 CPU")
     assert a != b
     assert len(a) >= 33 and len(b) >= 33
-    assert a.startswith("john-connor-")
+    assert a.startswith("t-800-cpu-")

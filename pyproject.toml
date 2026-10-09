@@ -1,7 +1,7 @@
 [project]
 name = "skynet-hunter"
 version = "0.1.0"
-description = "An agentic Terminator demo: Skynet orchestrates terminator sub-agents to hunt John Connor across a synthetic 1984 Los Angeles grid."
+description = "An agentic Terminator demo: Skynet orchestrates terminator sub-agents to recover the 1984 T-800 CPU from a synthetic Cyberdyne asset registry."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "Paul Laudeman" }]

@@ -3,13 +3,13 @@
 Skynet hunts; the Resistance disrupts. Deterministic offline arc, the same
 discipline as `simulate.py` (nothing on screen is a lie):
 
-    cycle 1   Skynet's literal sweep surfaces the guardian's dependent-minor flag
+    cycle 1   Skynet's literal sweep surfaces the custody record holding a specimen
     ↓
-    RESIST    a reprogrammed protector SCRUBS that flag and severs the link
+    RESIST    a reprogrammed protector SCRUBS that flag and severs the custody link
     ↓
     cycle 2   Skynet escalates to a cross-reference ~ and finds NOTHING
     ↓
-    result    leads exhausted; the target is safeguarded
+    result    leads exhausted; the asset stays buried (in T2 they destroy it)
 
 The scrub really mutates the live grid, so the failed cross-reference in cycle 2
 is the genuine consequence of the disruption, not a script. That is the whole
@@ -44,12 +44,12 @@ def _play(ui: Any, unit: Unit, db: grid.GridDatabase, calls: list[tuple[str, dic
 
 def run_arena_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycles: int = 4) -> bool:
     """Run the adversarial arena. Returns True if Skynet acquires, else False
-    (the target is safeguarded). Offline + deterministic."""
+    (the asset is safeguarded). Offline + deterministic."""
     db = scenario.database()
     skynet, t800, t1000 = units["skynet"], units["t800"], units["t1000"]
     resistance = units["resistance"]
-    last = scenario.target_name.split()[-1]
-    sweep = db.query(name_contains=last)
+    kw = scenario.keyword
+    sweep = db.query(name_contains=kw)
     meter = CostMeter()
 
     def bill(unit: Unit, beat: str) -> None:
@@ -63,33 +63,33 @@ def run_arena_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, ma
     if hasattr(ui, "faction_banner"):
         ui.faction_banner("THE RESISTANCE HAS SENT A PROTECTOR BACK", "green")
 
-    # -- Cycle 1: Skynet's literal sweep surfaces the guardian's flag ----
+    # -- Cycle 1: Skynet's literal sweep surfaces the custody record -----
     ui.cycle_header(1, max_cycles)
     ui.skynet_decision(
         skynet,
         SkynetDecision(
             assessment="No intel yet. Open cheap and broad.",
-            reasoning="A literal surname sweep is the T-800's whole purpose ~ deploy it first.",
+            reasoning="A literal part sweep is the T-800's whole purpose ~ deploy it first.",
             target_acquired=False, deploy_unit="T-800",
-            directive=f"Sweep the grid for the surname '{last}'.",
-            expectation="Surname matches to triage ~ and any flagged associate of interest.",
+            directive=f"Sweep the registry for '{kw}'.",
+            expectation="Name matches to triage ~ and any custody record holding a specimen.",
         ),
     )
     bill(skynet, "skynet")
-    ui.deploy(t800, f"Search the grid for '{last}'.")
-    ui.unit_says(t800, "Scanning. Surname query initiated.")
-    _play(ui, t800, db, [("query_grid", {"name_contains": last})])
+    ui.deploy(t800, f"Search the registry for '{kw}'.")
+    ui.unit_says(t800, "Scanning. Part query initiated.")
+    _play(ui, t800, db, [("query_grid", {"name_contains": kw})])
     ui.intel_report(
         t800,
         IntelReport(
             unit="T-800",
-            method="Single literal query_grid on the surname.",
-            summary=(f"{len(sweep)} surname matches. None match the target. The guardian "
-                     f"{scenario.protector_name} carries a dependent-minor flag ~ a thread."),
+            method="Single literal query_grid on the part keyword.",
+            summary=(f"{len(sweep)} name matches. None is the asset. The {scenario.custody_kind} "
+                     f"holds a specimen under a codename ~ a thread."),
             records_examined=[r["id"] for r in sweep],
-            candidate_record_ids=[scenario.protector_id],
+            candidate_record_ids=[scenario.custody_id],
             target_record_id=None, confidence=0.15,
-            notes=f"{scenario.protector_name} ({scenario.protector_id}) flagged with a dependent minor.",
+            notes=f"{scenario.custody_name} ({scenario.custody_id}) holds a codename specimen.",
         ),
     )
     bill(t800, "t800")
@@ -97,10 +97,10 @@ def run_arena_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, ma
     # -- Resistance turn: the protector scrubs the flag, severs the link -
     if hasattr(ui, "faction_banner"):
         ui.faction_banner("RESISTANCE ~ PROTECTOR DEPLOYED", "green")
-    ui.deploy(resistance, f"The hunter found {scenario.protector_name}'s flag. Sever the trail before the cross-reference.")
-    ui.unit_says(resistance, "Reprogrammed. Directive: protect. Cutting the link to the child.")
-    _play(ui, resistance, db, [("scrub_flag", {"record_id": scenario.protector_id})])
-    ui.unit_says(resistance, "Flag scrubbed. Associate links severed. The trail is cold.")
+    ui.deploy(resistance, f"The hunter found the {scenario.custody_kind}. Sever the custody trail before the cross-reference.")
+    ui.unit_says(resistance, "Reprogrammed. Directive: protect. If Skynet recovers this, Skynet gets built.")
+    _play(ui, resistance, db, [("scrub_flag", {"record_id": scenario.custody_id})])
+    ui.unit_says(resistance, "Flag scrubbed. Custody links severed. The trail is cold.")
     bill(resistance, "resistance")
 
     # -- Cycle 2: Skynet escalates to the T-1000 ~ but the link is gone --
@@ -108,27 +108,27 @@ def run_arena_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, ma
     ui.skynet_decision(
         skynet,
         SkynetDecision(
-            assessment=f"{scenario.protector_name} carries a dependent-minor flag. That is the thread.",
-            reasoning="A blunt query can't defeat an alias. Deploy the T-1000 to cross-reference the guardian.",
+            assessment=f"The {scenario.custody_kind} holds a codename specimen. That is the thread.",
+            reasoning="A blunt query can't defeat a codename. Deploy the T-1000 to follow the custody chain.",
             target_acquired=False, deploy_unit="T-1000",
-            directive=f"Cross-reference {scenario.protector_name}. Interrogate any concealed minor.",
-            expectation="The aliased record of the hidden minor, via the guardian's associate link.",
+            directive=f"Cross-reference '{scenario.custody_name}'. Interrogate the specimen it holds.",
+            expectation="The codename record of the recovered asset, via the custody chain.",
         ),
     )
     bill(skynet, "skynet")
-    ui.deploy(t1000, f"Cross-reference {scenario.protector_name}.")
-    ui.unit_says(t1000, "Adapting. Following the guardian's associate links.")
-    _play(ui, t1000, db, [("cross_reference", {"name": scenario.protector_name})])
-    ui.unit_says(t1000, "No linked records. The associate trail has been wiped.")
+    ui.deploy(t1000, f"Cross-reference the {scenario.custody_kind}.")
+    ui.unit_says(t1000, "Adapting. Following the custody chain.")
+    _play(ui, t1000, db, [("cross_reference", {"name": scenario.custody_name})])
+    ui.unit_says(t1000, "No linked records. The custody chain has been wiped.")
     ui.intel_report(
         t1000,
         IntelReport(
             unit="T-1000",
-            method=f"cross_reference on {scenario.protector_name} ~ returned nothing.",
-            summary="The guardian's associate links are gone. No concealed minor reachable. Trail severed.",
-            records_examined=[scenario.protector_id], candidate_record_ids=[],
+            method="cross_reference on the custody record ~ returned nothing.",
+            summary="The custody links are gone. No codename specimen reachable. Trail severed.",
+            records_examined=[scenario.custody_id], candidate_record_ids=[],
             target_record_id=None, confidence=0.0,
-            notes="Records were sanitized between cycles. Someone is covering the target's tracks.",
+            notes="Records were sanitized between cycles. Someone is covering the asset's tracks.",
         ),
     )
     bill(t1000, "t1000")
@@ -136,8 +136,8 @@ def run_arena_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, ma
     # -- Cycle 3: Skynet has no leads. The Resistance wins. --------------
     ui.cycle_header(3, max_cycles)
     decision = SkynetDecision(
-        assessment="The guardian's flag and links are gone. The only thread is severed.",
-        reasoning="No path remains to the concealed target. Leads exhausted.",
+        assessment="The custody flag and links are gone. The only thread is severed.",
+        reasoning="No path remains to the codename asset. Leads exhausted.",
         target_acquired=False, target_record_id=None,
         deploy_unit=None, directive=None, expectation=None,
     )
@@ -150,4 +150,4 @@ def run_arena_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, ma
         ui.mission_failed()
     if hasattr(ui, "cost_summary"):
         ui.cost_summary(meter, units)
-    return False  # Skynet did not acquire ~ the target is safe
+    return False  # Skynet did not acquire ~ the asset stays buried

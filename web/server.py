@@ -34,11 +34,11 @@ PORT = int(os.environ.get("PORT", "8000"))
 SPEED = float(os.environ.get("SPEED", "1.0"))
 
 
-def run_hunt(emit, scenario_name: str = "john-connor", engine: str = "sim", scene: str = "hunt") -> None:
+def run_hunt(emit, scenario_name: str = "cyberdyne-chip", engine: str = "sim", scene: str = "hunt") -> None:
     config = load_config(DEFAULT_CONFIG)
     max_cycles = config["mission"]["max_cycles"]
     if scenario_name not in scenario.SCENARIO_CHOICES:
-        scenario_name = "john-connor"
+        scenario_name = "cyberdyne-chip"
     sc = scenario.build_scenario(scenario_name)
     units = build_units(config)
 
@@ -93,7 +93,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.wfile.flush()
 
         q = parse_qs(urlparse(self.path).query)
-        scen = q.get("scenario", ["john-connor"])[0]
+        scen = q.get("scenario", ["cyberdyne-chip"])[0]
         engine = q.get("engine", ["sim"])[0]
         scene = q.get("scene", ["hunt"])[0]
         try:

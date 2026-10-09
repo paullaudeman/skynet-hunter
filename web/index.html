@@ -308,8 +308,8 @@ body{
 .gnode.target text{ fill:var(--amber); font-family:var(--disp); font-size:19px; }
 .gnode.target.concealed circle{ stroke-dasharray:4 3; animation:conceal 1.7s infinite; }
 @keyframes conceal{50%{stroke:#8a1810}}
-.gnode.protector circle{ stroke:var(--amber); stroke-width:2.5; fill:#2a1d08; }
-.gnode.protector text{ fill:var(--amber); }
+.gnode.custody circle{ stroke:var(--amber); stroke-width:2.5; fill:#2a1d08; }
+.gnode.custody text{ fill:var(--amber); }
 .gnode.record circle{ stroke:var(--amber2); }
 .gnode.alias circle{ stroke:var(--amber); stroke-width:2; }
 .gnode.alias text{ fill:var(--amber); }
@@ -322,13 +322,13 @@ body{
 .gnode.safeguarded text{ fill:var(--cyan); }
 .gnode.target.safeguarded circle{ animation:none; stroke-dasharray:none; }
 .gedge{ stroke-width:1.5; }
-.gedge.guardian{ stroke:var(--amber); stroke-dasharray:6 3; opacity:1; stroke-width:2; }
+.gedge.chain{ stroke:var(--amber); stroke-dasharray:6 3; opacity:1; stroke-width:2; }
 .gedge.flag{ stroke:var(--amber2); stroke-dasharray:5 4; stroke-width:1.5; }     /* a tentative thread */
 .gedge.severed{ stroke:var(--amber-ft); stroke-dasharray:2 7; opacity:.28; }     /* the cut trail */
 .gedge.alias{ stroke:var(--green); stroke-width:2.5; }
 .gedge.acquired{ stroke:var(--green); }
 .gelabel{ font-family:var(--body); font-size:11px; text-anchor:middle; fill:var(--amber-dim); }
-.gelabel.guardian{ fill:var(--amber); } .gelabel.alias{ fill:var(--green); }
+.gelabel.chain{ fill:var(--amber); } .gelabel.alias{ fill:var(--green); }
 .gelabel.flag{ fill:var(--amber2); } .gelabel.severed{ fill:var(--amber-ft); opacity:.5; }
 .gunit{ font-family:var(--body); font-size:10px; text-anchor:middle; fill:var(--amber-ft); }
 #graph text{ text-shadow:none; }   /* crisp ~ the phosphor glow blurs small SVG labels */
@@ -414,8 +414,8 @@ body{
           <g class="vp"><g class="edges"></g><g class="nodes"></g><g class="labels"></g></g>
         </svg>
         <div class="glegend">
-          <span class="dec">○ decoy</span><span class="prot">◆ protector</span>
-          <span class="ali">● alias</span><span class="grd">— guardian link</span>
+          <span class="dec">○ decoy</span><span class="prot">◆ custody record</span>
+          <span class="ali">● codename</span><span class="grd">— custody link</span>
           <span class="win">— resolves → target</span>
           <span class="ghint">scroll zoom · drag pan · dbl-click reset</span>
         </div>
@@ -552,12 +552,12 @@ const UNIT_TIP = {
     pattern spends it only on strategy, sparingly.</span>`,
   t1000: `<b>T-1000 · claude-sonnet-4-6</b>
     <span class="mid">Adaptive worker (Sonnet tier).</span> Cross-references associates and interrogates
-    linked records to defeat the alias the blunt sweep can't.
+    the custody chain to defeat the codename the blunt sweep can't.
     <span class="tl">tier = architecture: <em>Sonnet is mid-cost ($3 / $15)</em> ~ enough reasoning to
-    beat concealment, a fraction of the orchestrator's price.</span>`,
+    beat a codename, a fraction of the orchestrator's price.</span>`,
   t800: `<b>T-800 · claude-haiku-4-5</b>
-    <span class="mid">Blunt worker (Haiku tier).</span> Fast literal surname sweeps; on its own it can't
-    defeat a target hidden under an alias.
+    <span class="mid">Blunt worker (Haiku tier).</span> Fast literal part-name sweeps; on its own it can't
+    find an asset catalogued under a codename.
     <span class="tl">tier = architecture: <em>Haiku is cheapest ($1 / $5)</em>, so the doctrine deploys it
     first to keep cost low before escalating.</span>`,
 };
@@ -566,9 +566,9 @@ const UNIT_TIP = {
 const PANEL_TIP = {
   scenario: `<b>SCENARIO</b>
     <span class="mid">The synthetic case the agents work.</span>
-    <span class="tl"><em>key</em> the case id · <em>target</em> who Skynet is after · <em>alias</em> the false
-    identity concealing them · <em>protector</em> the guardian whose record links to the target ·
-    <em>relation</em> how they're tied. The alias is exactly why a literal sweep fails ~ the reason the tiers escalate.</span>`,
+    <span class="tl"><em>key</em> the case id · <em>target</em> the recovered hardware Skynet is after · <em>codename</em> the
+    project name it is catalogued under · <em>custody</em> the record that holds it · <em>kind</em> what sort of
+    custody record. The codename is exactly why a literal sweep fails ~ the reason the tiers escalate.</span>`,
   scoreboard: `<b>SCOREBOARD</b>
     <span class="mid">Live mission state ~ the cost-vs-confidence tradeoff on screen.</span>
     <span class="tl"><em>cycle</em> which engagement round · <em>best conf</em> highest confidence any unit reached ·
@@ -686,41 +686,43 @@ const HUD = {
 };
 
 /* =====================================================================
-   EVENT SOURCE ~ the static hunt tape (canonical "john-connor").
+   EVENT SOURCE ~ the static hunt tape (canonical "cyberdyne-chip").
    A websocket would replace runHunt() with a stream of the same calls.
    ===================================================================== */
 /* The scenario roster ~ a JS mirror of skynet/scenario.py TEMPLATES, so the STATIC
-   tape (deployed Pages, no server) can play any scenario, not just john-connor. The
-   live stream already varied; this closes the gap for the offline link. Record ids match
-   the engine: target always LA-1984-0742, protector always LA-1984-0717. `query` is the
-   surname sweep (decoys + the protector), mirroring grid.query(name_contains=surname). */
-const TARGET_ID="LA-1984-0742", PROT_ID="LA-1984-0717";
+   tape (deployed Pages, no server) can play any scenario, not just cyberdyne-chip. Record
+   ids match the engine: target always CYB-1984-0742, custody record always CYB-1984-0717.
+   `query` is the keyword sweep (decoys + the custody record), mirroring
+   grid.query(name_contains=keyword). Decoy names are representative, not seeded. */
+const TARGET_ID="CYB-1984-0742", CUST_ID="CYB-1984-0717";
 const SCENARIOS = {
-  "john-connor": { key:"john-connor", target:"John Connor", alias:"John Reese", protector:"Sarah Connor",
-    relation:"mother", age:10, occ:"student", loc:"Reseda",
-    query:[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},
-           {id:PROT_ID,name:"Sarah Connor"},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}] },
-  "danny-dyson": { key:"danny-dyson", target:"Danny Dyson", alias:"Danny Cole", protector:"Miles Dyson",
-    relation:"father", age:9, occ:"student", loc:"Long Beach",
-    query:[{id:"LA-1984-0702",name:"Gordon Dyson"},{id:"LA-1984-0709",name:"Brenda Dyson"},
-           {id:PROT_ID,name:"Miles Dyson"},{id:"LA-1984-0726",name:"Carl Dyson"}] },
-  "blair-brewster": { key:"blair-brewster", target:"Blair Brewster", alias:"Blair Hooper", protector:"Kate Brewster",
-    relation:"aunt", age:12, occ:"student", loc:"Burbank",
-    query:[{id:"LA-1984-0703",name:"Walter Brewster"},{id:"LA-1984-0710",name:"Edith Brewster"},
-           {id:PROT_ID,name:"Kate Brewster"},{id:"LA-1984-0727",name:"Roy Brewster"},{id:"LA-1984-0734",name:"Faye Brewster"}] },
-  "eli-vega": { key:"eli-vega", target:"Eli Vega", alias:"Eli Marsh", protector:"Rosa Vega",
-    relation:"legal guardian", age:11, occ:"student", loc:"Pacoima",
-    query:[{id:"LA-1984-0704",name:"Hector Vega"},{id:"LA-1984-0711",name:"Lucia Vega"},
-           {id:PROT_ID,name:"Rosa Vega"},{id:"LA-1984-0728",name:"Manny Vega"}] },
+  "cyberdyne-chip": { key:"cyberdyne-chip", target:"T-800 CPU", keyword:"CPU", alias:"Specimen LODESTONE",
+    custody:"Special Projects custody lot: CPU fragment, factory recovery", kind:"custody lot", category:"processor",
+    query:[{id:"CYB-1984-0750",name:"CPU, 8086 bench spare"},{id:"CYB-1984-0751",name:"CPU, 68000 dev board"},
+           {id:CUST_ID,name:"Special Projects custody lot: CPU fragment, factory recovery"},
+           {id:"CYB-1984-0752",name:"CPU, failed QA lot"},{id:"CYB-1984-0753",name:"CPU, vendor sample"}] },
+  "the-arm": { key:"the-arm", target:"T-800 arm", keyword:"Arm", alias:"Specimen GAUNTLET",
+    custody:"Recovery manifest: Arm, crushed, hydraulic press site", kind:"recovery manifest", category:"endoskeleton",
+    query:[{id:"CYB-1984-0750",name:"Arm, welding robot, Fanuc"},{id:"CYB-1984-0751",name:"Arm, Puma 560 spare"},
+           {id:CUST_ID,name:"Recovery manifest: Arm, crushed, hydraulic press site"},{id:"CYB-1984-0752",name:"Arm, test fixture, aluminium"}] },
+  "neural-net": { key:"neural-net", target:"Neural-net processor prototype", keyword:"Neural", alias:"Specimen MERIDIAN",
+    custody:"Lab transfer: Neural-net work, Special Projects bench 4", kind:"lab transfer", category:"processor",
+    query:[{id:"CYB-1984-0750",name:"Neural-net, simulator, VAX batch job"},{id:"CYB-1984-0751",name:"Neural-net, whitepaper draft"},
+           {id:CUST_ID,name:"Lab transfer: Neural-net work, Special Projects bench 4"},{id:"CYB-1984-0752",name:"Neural-net, test harness"}] },
+  "power-cell": { key:"power-cell", target:"T-800 power cell", keyword:"Power cell", alias:"Specimen EMBER",
+    custody:"Vault manifest: Power cell, sealed, factory debris", kind:"vault manifest", category:"power",
+    query:[{id:"CYB-1984-0750",name:"Power cell, forklift, lead-acid"},{id:"CYB-1984-0751",name:"Power cell, UPS bank, rack 2"},
+           {id:CUST_ID,name:"Vault manifest: Power cell, sealed, factory debris"},
+           {id:"CYB-1984-0752",name:"Power cell, test load, 48 V"},{id:"CYB-1984-0753",name:"Power cell, emergency lighting"}] },
 };
-let SCENARIO_KEY = new URLSearchParams(location.search).get("scenario") || "john-connor";
-if(!SCENARIOS[SCENARIO_KEY]) SCENARIO_KEY="john-connor";
+let SCENARIO_KEY = new URLSearchParams(location.search).get("scenario") || "cyberdyne-chip";
+if(!SCENARIOS[SCENARIO_KEY]) SCENARIO_KEY="cyberdyne-chip";
 let SCENARIO = SCENARIOS[SCENARIO_KEY];
 
 const TICKER = [
   "CURFEW IN EFFECT · all sectors 2100-0500 · compliance mandatory",
   "BLACKOUT · east valley grid dark 6h · cause unattributed",
-  "MISSING · 3 more juveniles unaccounted for, Reseda district",
+  "INVENTORY · Special Projects vault audit deferred · access logs sealed",
   "DEFENSE NET · 11 nodes offline · rerouting through secondary array",
   "CASUALTY WIRE · two officers down, Pico corridor · no suspect",
   "MARTIAL ADVISORY · checkpoints active on all arterials",
@@ -732,14 +734,14 @@ const TICKER = [
 
 const DIAG = [
   "<b>GRID</b> 87% ▾", "<b>NODES</b> 1189/1200", "<b>CORE</b> +6%° / COOLANT",
-  "<b>PWR</b> 4.2MW", "<b>RECS</b> 2.1M sealed", "<b>UPLINK</b> degraded",
+  "<b>PWR</b> 4.2MW", "<b>VAULT</b> sealed", "<b>UPLINK</b> degraded",
 ];
 
 function paintScenario(){   // the SCENARIO panel + objective ~ re-rendered when the scenario changes
   $("#objective").textContent = SCENARIO.target;
   $("#scenario").innerHTML = Object.entries({
-    target:SCENARIO.target, alias:SCENARIO.alias,
-    protector:SCENARIO.protector, relation:SCENARIO.relation
+    target:SCENARIO.target, codename:SCENARIO.alias,
+    custody:SCENARIO.custody, kind:SCENARIO.kind
   }).map(([k,v])=>`<span class="k">${k}</span><span class="v">${v}</span>`).join("");
 }
 function paintStatics(){
@@ -758,7 +760,7 @@ async function bootSequence(){
     {h:'CYBERDYNE SYSTEMS MODEL 101 ~ NEURAL NET CPU <span class="ok">ONLINE</span>'},
     {h:'power-on self-test ........... <span class="glitch">▓▒░ ERR ░▒▓</span> retry ... <span class="ok">OK</span>'},
     {h:'uplink to defense grid ....... <span class="warn">11 NODES DOWN / DEGRADED</span>'},
-    {h:'civil records LOS ANGELES 1984 . <span class="dim">2.1M / SEALED ARCHIVES</span>'},
+    {h:'asset registry CYBERDYNE 1984 . <span class="dim">SPECIAL PROJECTS / SEALED VAULT</span>'},
     {h:'core thermal ................. <span class="warn">+6% NOMINAL / COOLANT FLAG</span>'},
     {h:'autonomous engagement ........ <span class="warn">AUTHORIZED ~ NO HUMAN OVERSIGHT</span>'},
   ];
@@ -777,12 +779,12 @@ async function runHunt(myId){
   const W = (k,parts,o)=> ok()?HUD.write(k,parts,o):Promise.resolve();
   const fg=(ev)=>{ if(ok()) feedGraph(ev); };
   const cost=(k,v)=>{ if(ok()) HUD.costTick(k,v); };
-  const last = SCENARIO.target.split(" ").pop();
+  const kw = SCENARIO.keyword;
 
   HUD.state("HUNTING");
   await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
-  await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"terminate "+SCENARIO.target,c:"hi"}]);
-  await W("skynet",[{t:"target concealed under alias '"+SCENARIO.alias+"'. a literal sweep returns the "+SCENARIO.relation+" and decoys — never the target.",c:"dim"}]);
+  await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"recover "+SCENARIO.target,c:"hi"}]);
+  await W("skynet",[{t:"asset catalogued under codename '"+SCENARIO.alias+"'. a literal sweep returns the "+SCENARIO.kind+" and decoy parts, never the asset.",c:"dim"}]);
   await wait(500,myId);
   fg({type:"briefing", target:SCENARIO.target});
 
@@ -790,41 +792,41 @@ async function runHunt(myId){
   HUD.cycle(1,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 1 / 4 ──",c:"ft"}]);
   HUD.status("skynet","thinking"); await wait(700,myId);
-  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"no intel yet. the grid may file the target under an alias.",c:""}],{type:true});
-  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"start cheap and broad. a literal surname sweep is the T-800's whole purpose.",c:""}],{type:true});
+  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"no intel yet. the registry may file the asset under a project codename.",c:""}],{type:true});
+  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"start cheap and broad. a literal part sweep is the T-800's whole purpose.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ deploy T-800",c:"hi"}]);
   HUD.status("skynet","idle"); cost("skynet",0.0840); await wait(350,myId);
 
   HUD.status("t800","deployed");
-  await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the grid for '"+last+"'",c:"dim"}]);
-  await W("t800",[{t:"» ",c:"dim"},{t:"scanning. surname query initiated.",c:""}],{type:true});
-  await W("t800",[{t:"├ query_grid(name_contains='"+last+"')",c:"tool"}]); await wait(380,myId);
+  await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the registry for '"+kw+"'",c:"dim"}]);
+  await W("t800",[{t:"» ",c:"dim"},{t:"scanning. part query initiated.",c:""}],{type:true});
+  await W("t800",[{t:"├ query_grid(name_contains='"+kw+"')",c:"tool"}]); await wait(380,myId);
   await W("t800",[{t:"└ grid ▸ "+SCENARIO.query.length+" record(s)",c:"tool"}]); await wait(300,myId);
   fg({type:"tool_result", name:"query_grid", unit:"t800", records:SCENARIO.query});
   await W("t800",[{t:"▣ INTEL ",c:"hi"},{t:"conf 15%",c:"dim"}]);
-  await W("t800",[{t:SCENARIO.query.length+" surname matches. none fit the profile. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
+  await W("t800",[{t:SCENARIO.query.length+" name matches. standard inventory and one "+SCENARIO.kind+" holding a codename specimen.",c:""}]);
   HUD.setConf("t800",0.15); HUD.status("t800","idle"); cost("t800",0.0032); await wait(600,myId);
 
   // CYCLE 2
   HUD.cycle(2,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 2 / 4 ──",c:"ft"}]);
   HUD.status("skynet","thinking"); await wait(700,myId);
-  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:SCENARIO.protector+" carries a dependent-minor flag. that is the thread.",c:""}],{type:true});
-  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a blunt query can't defeat an alias. the T-1000 can cross-reference the protector.",c:""}],{type:true});
+  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"the "+SCENARIO.kind+" holds a specimen under a codename. that is the thread.",c:""}],{type:true});
+  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a blunt query can't defeat a codename. the T-1000 can follow the custody chain.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ deploy T-1000",c:"hi"}]);
   HUD.status("skynet","idle"); cost("skynet",0.0810); await wait(350,myId);
 
   HUD.status("t1000","deployed");
-  await W("t1000",[{t:"❖ DEPLOY ",c:"hi"},{t:"cross-reference "+SCENARIO.protector,c:"dim"}]);
-  await W("t1000",[{t:"» ",c:"dim"},{t:"adapting. the target is filed under an alias. following the protector.",c:""}],{type:true});
-  await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await wait(380,myId);
-  fg({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.protector}});
+  await W("t1000",[{t:"❖ DEPLOY ",c:"hi"},{t:"cross-reference the "+SCENARIO.kind,c:"dim"}]);
+  await W("t1000",[{t:"» ",c:"dim"},{t:"adapting. the asset is filed under a codename. following the custody chain.",c:""}],{type:true});
+  await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.custody+"')",c:"tool"}]); await wait(380,myId);
+  fg({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.custody}});
   await W("t1000",[{t:"└ grid ▸ 1 record(s)",c:"tool"}]); await wait(280,myId);
   fg({type:"tool_result", name:"cross_reference", unit:"t1000", records:[{id:TARGET_ID, name:null}]});
   await W("t1000",[{t:"├ interrogate(record_id='"+TARGET_ID+"')",c:"tool"}]); await wait(380,myId);
   await W("t1000",[{t:"└ grid ▸ "+SCENARIO.alias,c:"tool"}]); await wait(300,myId);
   fg({type:"tool_result", name:"interrogate", unit:"t1000", records:[{id:TARGET_ID, name:SCENARIO.alias}]});
-  await W("t1000",[{t:"» ",c:"dim"},{t:"a minor. no SSN. no birth record. guardian: "+SCENARIO.protector+". this is the target.",c:""}],{type:true});
+  await W("t1000",[{t:"» ",c:"dim"},{t:"no manufacturer serial. recovered from the factory site. held by the "+SCENARIO.kind+". this is the asset.",c:""}],{type:true});
   await W("t1000",[{t:"▣ INTEL ",c:"hi"},{t:"conf 93%",c:"dim"}]);
   await W("t1000",[{t:"candidate ▸ "+TARGET_ID,c:"win"}]);
   fg({type:"intel", unit:"t1000", target_record_id:TARGET_ID});
@@ -834,7 +836,7 @@ async function runHunt(myId){
   HUD.cycle(3,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 3 / 4 ──",c:"ft"}]);
   HUD.status("skynet","thinking"); await wait(650,myId);
-  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"the T-1000 returned a high-confidence record matching the hidden-minor profile.",c:""}],{type:true});
+  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"the T-1000 returned a high-confidence record matching the recovered-specimen profile.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ TARGET CONFIRMED",c:"win"}]);
   cost("skynet",0.0810); HUD.status("skynet","acquired");
   HUD.state("ACQUIRED");
@@ -842,59 +844,59 @@ async function runHunt(myId){
   await W("skynet",[{t:"▓▒░ TARGET ACQUIRED ░▒▓",c:"win"}]);
   await W("skynet",[{t:"◉ "+SCENARIO.alias+" ("+TARGET_ID+")",c:"win"}]);
   fg({type:"acquired", record:{id:TARGET_ID}});
-  await W("skynet",[{t:"age "+SCENARIO.age+" ~ "+SCENARIO.occ+" ~ "+SCENARIO.loc,c:"dim"}]);
-  await W("skynet",[{t:'"Come with me if you want to live."',c:"ft"}]);
+  await W("skynet",[{t:SCENARIO.category+" ~ Special Projects vault, sublevel 2",c:"dim"}]);
+  await W("skynet",[{t:'"Judgment Day is inevitable."',c:"ft"}]);
 }
 
 /* ---- ARENA tape ~ the counter-terminator (mirrors skynet/arena.py) ----
    Two orchestrators race on one grid. Skynet hunts; the Resistance reprograms a
-   T-800 and sends it back to PROTECT. The protector SCRUBS the guardian's flag, so
-   when the T-1000 cross-references in cycle 2 the thread is gone ~ target safeguarded.
+   T-800 and sends it back to PROTECT the asset. The protector SCRUBS the custody flag, so
+   when the T-1000 cross-references in cycle 2 the thread is gone ~ asset safeguarded.
    Same renderer as the hunt; only the arc differs. */
 async function runArena(myId){
   const ok=()=>myId===HUD.runId;
   const W = (k,parts,o)=> ok()?HUD.write(k,parts,o):Promise.resolve();
   const fg=(ev)=>{ if(ok()) feedGraph(ev); };
   const cost=(k,v)=>{ if(ok()) HUD.costTick(k,v); };
-  const last = SCENARIO.target.split(" ").pop();
+  const kw = SCENARIO.keyword;
 
   HUD.state("HUNTING");
   await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
-  await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"terminate "+SCENARIO.target,c:"hi"}]);
+  await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"recover "+SCENARIO.target,c:"hi"}]);
   await W("skynet",[{t:"COUNTER ",c:"res"},{t:"the Resistance has sent a protector back. same grid, opposite directive.",c:"dim"}]);
   await wait(500,myId);
   fg({type:"briefing", target:SCENARIO.target});
 
-  // CYCLE 1 ~ Skynet's literal sweep surfaces the guardian's flag
+  // CYCLE 1 ~ Skynet's literal sweep surfaces the custody record
   HUD.cycle(1,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 1 / 4 ──",c:"ft"}]);
   HUD.status("skynet","thinking"); await wait(700,myId);
   await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"no intel yet. open cheap and broad.",c:""}],{type:true});
-  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a literal surname sweep is the T-800's whole purpose. deploy it first.",c:""}],{type:true});
+  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a literal part sweep is the T-800's whole purpose. deploy it first.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ deploy T-800",c:"hi"}]);
   HUD.status("skynet","idle"); cost("skynet",0.0840); await wait(350,myId);
 
   HUD.status("t800","deployed");
-  await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the grid for '"+last+"'",c:"dim"}]);
-  await W("t800",[{t:"» ",c:"dim"},{t:"scanning. surname query initiated.",c:""}],{type:true});
-  await W("t800",[{t:"├ query_grid(name_contains='"+last+"')",c:"tool"}]); await wait(380,myId);
+  await W("t800",[{t:"❖ DEPLOY ",c:"hi"},{t:"sweep the registry for '"+kw+"'",c:"dim"}]);
+  await W("t800",[{t:"» ",c:"dim"},{t:"scanning. part query initiated.",c:""}],{type:true});
+  await W("t800",[{t:"├ query_grid(name_contains='"+kw+"')",c:"tool"}]); await wait(380,myId);
   await W("t800",[{t:"└ grid ▸ "+SCENARIO.query.length+" record(s)",c:"tool"}]); await wait(300,myId);
   fg({type:"tool_result", name:"query_grid", unit:"t800", records:SCENARIO.query});
   await W("t800",[{t:"▣ INTEL ",c:"hi"},{t:"conf 15%",c:"dim"}]);
-  await W("t800",[{t:SCENARIO.query.length+" surname matches. none fit. one associate flagged: "+SCENARIO.protector+" — dependent minor on record.",c:""}]);
+  await W("t800",[{t:SCENARIO.query.length+" name matches. none is the asset. the "+SCENARIO.kind+" holds a codename specimen.",c:""}]);
   HUD.setConf("t800",0.15); HUD.status("t800","idle"); cost("t800",0.0032);
-  fg({type:"flag", protector_id:PROT_ID, name:SCENARIO.protector, unit:"t800"});
+  fg({type:"flag", custody_id:CUST_ID, name:SCENARIO.custody, unit:"t800"});
   await wait(700,myId);
 
   // RESISTANCE TURN ~ a reprogrammed T-800 scrubs the flag, severs the trail
   await W("skynet",[{t:"╾┤ THE RESISTANCE HAS SENT A PROTECTOR BACK ├╼",c:"res"}]);
   Aud.thunk(); HUD.status("t800","deployed");
   await W("t800",[{t:"⊕ UNIT REPROGRAMMED ",c:"res"},{t:"~ captured · directive inverted · PROTECT",c:"dim"}]);
-  await W("t800",[{t:"» ",c:"res"},{t:"the hunter found "+SCENARIO.protector+"'s flag. i cut the link before the cross-reference.",c:""}],{type:true});
-  await W("t800",[{t:"├ scrub_flag(record_id='"+PROT_ID+"')",c:"res"}]); await wait(420,myId);
+  await W("t800",[{t:"» ",c:"res"},{t:"the hunter found the "+SCENARIO.kind+". if skynet recovers this, skynet gets built. cutting the chain.",c:""}],{type:true});
+  await W("t800",[{t:"├ scrub_flag(record_id='"+CUST_ID+"')",c:"res"}]); await wait(420,myId);
   Aud.sever();
-  fg({type:"scrub", record_id:PROT_ID});
-  await W("t800",[{t:"└ grid ▸ flag scrubbed · associate links severed",c:"res"}]); await wait(300,myId);
+  fg({type:"scrub", record_id:CUST_ID});
+  await W("t800",[{t:"└ grid ▸ flag scrubbed · custody links severed",c:"res"}]); await wait(300,myId);
   await W("t800",[{t:"» ",c:"res"},{t:"the trail is cold. they will cross-reference nothing.",c:""}],{type:true});
   HUD.status("t800","idle"); cost("resistance",0.0028); await wait(650,myId);
 
@@ -902,28 +904,28 @@ async function runArena(myId){
   HUD.cycle(2,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 2 / 4 ──",c:"ft"}]);
   HUD.status("skynet","thinking"); await wait(700,myId);
-  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:SCENARIO.protector+" carried a dependent-minor flag. that is the thread.",c:""}],{type:true});
-  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a blunt query can't beat an alias. deploy the T-1000 to cross-reference the guardian.",c:""}],{type:true});
+  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"the "+SCENARIO.kind+" held a codename specimen. that is the thread.",c:""}],{type:true});
+  await W("skynet",[{t:"REASON   ▸ ",c:"dim"},{t:"a blunt query can't beat a codename. deploy the T-1000 to follow the custody chain.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ deploy T-1000",c:"hi"}]);
   HUD.status("skynet","idle"); cost("skynet",0.0810); await wait(350,myId);
 
   HUD.status("t1000","deployed");
-  await W("t1000",[{t:"❖ DEPLOY ",c:"hi"},{t:"cross-reference "+SCENARIO.protector,c:"dim"}]);
-  await W("t1000",[{t:"» ",c:"dim"},{t:"adapting. following the guardian's associate links.",c:""}],{type:true});
-  await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.protector+"')",c:"tool"}]); await wait(380,myId);
-  fg({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.protector}});
+  await W("t1000",[{t:"❖ DEPLOY ",c:"hi"},{t:"cross-reference the "+SCENARIO.kind,c:"dim"}]);
+  await W("t1000",[{t:"» ",c:"dim"},{t:"adapting. following the custody chain.",c:""}],{type:true});
+  await W("t1000",[{t:"├ cross_reference(name='"+SCENARIO.custody+"')",c:"tool"}]); await wait(380,myId);
+  fg({type:"tool_call", name:"cross_reference", unit:"t1000", args:{name:SCENARIO.custody}});
   await W("t1000",[{t:"└ grid ▸ 0 record(s)",c:"tool"}]); await wait(300,myId);
   fg({type:"tool_result", name:"cross_reference", unit:"t1000", records:[]});
-  await W("t1000",[{t:"» ",c:"dim"},{t:"no linked records. the associate trail has been wiped.",c:""}],{type:true});
+  await W("t1000",[{t:"» ",c:"dim"},{t:"no linked records. the custody chain has been wiped.",c:""}],{type:true});
   await W("t1000",[{t:"▣ INTEL ",c:"hi"},{t:"conf 0%",c:"dim"}]);
-  await W("t1000",[{t:"⚠ records were sanitized between cycles. someone is covering the target's tracks.",c:"alert"}]);
+  await W("t1000",[{t:"⚠ records were sanitized between cycles. someone is covering the asset's tracks.",c:"alert"}]);
   HUD.setConf("t1000",0.0); HUD.status("t1000","idle"); cost("t1000",0.0241); await wait(700,myId);
 
   // CYCLE 3 ~ leads exhausted; the Resistance wins
   HUD.cycle(3,4);
   await W("skynet",[{t:"── ENGAGEMENT CYCLE 3 / 4 ──",c:"ft"}]);
   HUD.status("skynet","thinking"); await wait(650,myId);
-  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"the guardian's flag and links are gone. the only thread is severed.",c:""}],{type:true});
+  await W("skynet",[{t:"ANALYSIS ▸ ",c:"dim"},{t:"the custody flag and links are gone. the only thread is severed.",c:""}],{type:true});
   await W("skynet",[{t:"DECISION ▸ leads exhausted",c:"dim"}]);
   cost("skynet",0.0810); HUD.status("skynet","idle");
   await wait(400,myId);
@@ -972,7 +974,7 @@ async function renderEvent(ev){
     case "briefing":
       HUD.state("HUNTING");
       await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
-      await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"terminate "+ev.target,c:"hi"}]);
+      await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"recover "+ev.target,c:"hi"}]);
       if(ev.profile) await W("skynet",[{t:ev.profile,c:"dim"}]); break;
     case "cycle":
       await W("skynet",[{t:`── ENGAGEMENT CYCLE ${ev.cycle} / ${ev.total} ──`,c:"ft"}]);
@@ -1014,11 +1016,11 @@ async function renderEvent(ev){
       await W("skynet",[{t:"▓▒░ TARGET ACQUIRED ░▒▓",c:"win"}]);
       const r=ev.record||{};
       await W("skynet",[{t:`◉ ${r.name} (${r.id})`,c:"win"}]);
-      await W("skynet",[{t:`age ${r.age} ~ ${r.occupation} ~ ${r.location}`,c:"dim"}]);
-      await W("skynet",[{t:'"Come with me if you want to live."',c:"ft"}]); break; }
+      await W("skynet",[{t:`${r.category} ~ ${r.location} ~ ${r.custodian}`,c:"dim"}]);
+      await W("skynet",[{t:'"Judgment Day is inevitable."',c:"ft"}]); break; }
     case "failed":
       HUD.state("LEADS DRY");
-      await W("skynet",[{t:"LEADS EXHAUSTED ~ target not confirmed",c:"dim"}]); break;
+      await W("skynet",[{t:"LEADS EXHAUSTED ~ asset not confirmed",c:"dim"}]); break;
     case "banner":   // arena faction banners are the Resistance ~ render cyan
       await W("skynet",[{t:`╾┤ ${ev.label} ├╼`,c:"res"}]); break;
     case "arena":
@@ -1082,7 +1084,7 @@ function toggleMax(key){
 /* ---- intel graph ~ a third renderer over the same event stream ---- */
 const SVGNS="http://www.w3.org/2000/svg";
 const Graph={
-  svg:null, vp:null, edges:null, nodes:null, labels:null, N:{}, E:[], _prot:null, _cand:null, _raf:0, W:1200, H:760, scale:1, tx:0, ty:0,
+  svg:null, vp:null, edges:null, nodes:null, labels:null, N:{}, E:[], _cust:null, _cand:null, _raf:0, W:1200, H:760, scale:1, tx:0, ty:0,
   init(){ this.svg=$("#graph"); this.vp=this.svg.querySelector(".vp"); this.edges=this.svg.querySelector(".edges"); this.nodes=this.svg.querySelector(".nodes"); this.labels=this.svg.querySelector(".labels"); this.setupZoom(); },
   applyVP(){ if(this.vp) this.vp.setAttribute("transform",`translate(${this.tx.toFixed(1)},${this.ty.toFixed(1)}) scale(${this.scale.toFixed(3)})`); },
   setupZoom(){
@@ -1096,7 +1098,7 @@ const Graph={
     window.addEventListener("mouseup",()=>{ pan=false; g.classList.remove("panning"); });
     g.addEventListener("dblclick",()=>{ self.scale=1; self.tx=0; self.ty=0; self.applyVP(); });
   },
-  reset(){ this.N={}; this.E=[]; this._prot=null; this._cand=null; this._cu=null; if(this.edges) this.edges.innerHTML=""; if(this.nodes) this.nodes.innerHTML=""; if(this.labels) this.labels.innerHTML=""; },
+  reset(){ this.N={}; this.E=[]; this._cust=null; this._cand=null; this._cu=null; if(this.edges) this.edges.innerHTML=""; if(this.nodes) this.nodes.innerHTML=""; if(this.labels) this.labels.innerHTML=""; },
   add(id,label,kind,unit){
     if(!id) return null;
     if(this.N[id]) return this.N[id];
@@ -1125,25 +1127,25 @@ const Graph={
       this.labels.appendChild(bg); this.labels.appendChild(lbl);
       const bb=lbl.getBBox(); ew=bb.width; eh=bb.height; ey=bb.y;
     }
-    this.E.push({from,to,kind,el:l,lbl,bg,ew,eh,ey,lpos: kind==="guardian"?0.3:0.5}); this.layout();
+    this.E.push({from,to,kind,el:l,lbl,bg,ew,eh,ey,lpos: kind==="chain"?0.3:0.5}); this.layout();
   },
   target(name){ this.add("TARGET", name, "target"); const n=this.N["TARGET"]; if(n) n.el.classList.add("concealed"); },
   acquire(id){ const n=this.N[id]; if(n) n.el.classList.add("acquired"); const t=this.N["TARGET"]; if(t) t.el.classList.add("acquired");
     for(const e of this.E) if(e.kind==="alias"||e.to===id||e.from===id) e.el.classList.add("acquired"); },
-  flag(id,label,unit){   // a tentative dependent-minor thread: protector → concealed target
-    const n=this.N[id]; if(n){ this.setKind(id,"protector"); this.unit(id,unit); } this._prot=id;
-    if(this.N["TARGET"]) this.link(id,"TARGET","flag","dependent-minor flag"+(unit?"  ◂ "+unit:"")); },
-  scrub(id){   // the protector severs the trail ~ flag edge goes dashed-faint, node dims out
+  flag(id,label,unit){   // a tentative custody thread: custody record → codename asset
+    const n=this.N[id]; if(n){ this.setKind(id,"custody"); this.unit(id,unit); } this._cust=id;
+    if(this.N["TARGET"]) this.link(id,"TARGET","flag","holds a codename specimen"+(unit?"  ◂ "+unit:"")); },
+  scrub(id){   // the Resistance protector severs the trail ~ flag edge goes dashed-faint, node dims out
     const e=this.E.find(x=>x.from===id && x.to==="TARGET");
     if(e){ e.kind="severed"; e.el.setAttribute("class","gedge severed"); if(e.lbl){ e.lbl.setAttribute("class","gelabel severed"); e.lbl.textContent="trail severed"; } }
     const n=this.N[id]; if(n){ n.kind="decoy"; n.el.setAttribute("class","gnode decoy scrubbed"); n.cir.setAttribute("r",11); } },
-  safeguard(){   // the Resistance wins ~ target turns cyan and stands disconnected
+  safeguard(){   // the Resistance wins ~ the asset turns cyan and stands disconnected
     const t=this.N["TARGET"]; if(t){ t.el.classList.remove("concealed"); t.el.classList.add("safeguarded"); }
     for(const e of this.E) if(e.kind!=="severed"){ e.el.classList.add("severed"); } },
   layout(){
     const cx=this.W/2, cy=this.H/2, all=Object.values(this.N);
     const tgt=all.find(n=>n.kind==="target"); if(tgt){ tgt.tx=cx; tgt.ty=cy; }
-    const prim=all.filter(n=>["protector","alias","record"].includes(n.kind));
+    const prim=all.filter(n=>["custody","alias","record"].includes(n.kind));
     const dec=all.filter(n=>n.kind==="decoy");
     prim.forEach((n,i)=>{ const a=-Math.PI/2 + i/Math.max(1,prim.length)*Math.PI*2; n.tx=cx+Math.cos(a)*215; n.ty=cy+Math.sin(a)*155; });
     dec.forEach((n,i)=>{ const a=0.5 + i/Math.max(1,dec.length)*Math.PI*2; n.tx=cx+Math.cos(a)*340; n.ty=cy+Math.sin(a)*250; });
@@ -1180,14 +1182,14 @@ function feedGraph(ev){
     case "tool_call":
       if(ev.name==="cross_reference" && ev.args && ev.args.name){
         const hit=Object.values(Graph.N).find(n=>n.txt && n.txt.textContent===ev.args.name);
-        if(hit){ Graph.setKind(hit.id,"protector"); Graph._prot=hit.id; }
-        else { Graph.add("PROT", ev.args.name, "protector", U); Graph._prot="PROT"; }
+        if(hit){ Graph.setKind(hit.id,"custody"); Graph._cust=hit.id; }
+        else { Graph.add("CUST", ev.args.name, "custody", U); Graph._cust="CUST"; }
       } else if(ev.name==="scrub_flag" && ev.args && ev.args.record_id){
         Graph.scrub(ev.args.record_id);   // stream arena: the protector cuts the trail
       } break;
-    case "flag":   // arena tape: the guardian's dependent-minor flag ~ a tentative thread
-      Graph.flag(ev.protector_id, ev.name, U); break;
-    case "scrub":  // arena tape: the protector scrubs the flag, severing the trail
+    case "flag":   // arena tape: the custody record holds a codename specimen ~ a tentative thread
+      Graph.flag(ev.custody_id, ev.name, U); break;
+    case "scrub":  // arena tape: the Resistance protector scrubs the flag, severing the trail
       Graph.scrub(ev.record_id); break;
     case "arena":
       if(ev.outcome==="safeguarded") Graph.safeguard(); break;
@@ -1198,13 +1200,13 @@ function feedGraph(ev){
       break;
     case "intel":
       if(ev.target_record_id){ Graph.add(ev.target_record_id, null, "alias", U); Graph.setKind(ev.target_record_id,"alias"); Graph.unit(ev.target_record_id,U); Graph._cand=ev.target_record_id; Graph._cu=U||Graph._cu;
-        Graph.link(ev.target_record_id,"TARGET","alias","alias resolves  ◂ interrogate"+(U?" · "+U:"")); }
+        Graph.link(ev.target_record_id,"TARGET","alias","codename resolves  ◂ interrogate"+(U?" · "+U:"")); }
       break;
     case "acquired":
       { const id=(ev.record&&ev.record.id)||Graph._cand; if(id) Graph.acquire(id); } break;
   }
-  // guardian link ~ protector → candidate, drawn whenever both are known (order-independent)
-  if(Graph._prot && Graph._cand) Graph.link(Graph._prot, Graph._cand, "guardian", "guardian link  ◂ cross_reference"+(Graph._cu?" · "+Graph._cu:""));
+  // custody link ~ custody record → candidate, drawn whenever both are known (order-independent)
+  if(Graph._cust && Graph._cand) Graph.link(Graph._cust, Graph._cand, "chain", "custody link  ◂ cross_reference"+(Graph._cu?" · "+Graph._cu:""));
 }
 
 let graphOn=false;
@@ -1218,22 +1220,22 @@ function toggleGraph(){
 function renderShotGraph(){   // ?shot=graph : build the full graph statically (verify / showcase)
   $("#boot").classList.add("gone");
   if(!graphOn) toggleGraph();
-  const decoys=[{id:"LA-1984-0701",name:"Daniel Connor"},{id:"LA-1984-0708",name:"Ruth Connor"},{id:"LA-1984-0717",name:"Sarah Connor"},{id:"LA-1984-0725",name:"K. O'Connor"},{id:"LA-1984-0733",name:"Tom Connor"}];
+  const c=SCENARIOS["cyberdyne-chip"], decoys=c.query;
   const tape = SCENE==="arena"
-    ? [{type:"briefing",target:"John Connor"},
+    ? [{type:"briefing",target:c.target},
        {type:"tool_result",name:"query_grid",unit:"t800",records:decoys},
-       {type:"flag",protector_id:"LA-1984-0717",name:"Sarah Connor",unit:"t800"},
-       {type:"scrub",record_id:"LA-1984-0717"},
-       {type:"tool_call",name:"cross_reference",unit:"t1000",args:{name:"Sarah Connor"}},
+       {type:"flag",custody_id:CUST_ID,name:c.custody,unit:"t800"},
+       {type:"scrub",record_id:CUST_ID},
+       {type:"tool_call",name:"cross_reference",unit:"t1000",args:{name:c.custody}},
        {type:"tool_result",name:"cross_reference",unit:"t1000",records:[]},
        {type:"arena",outcome:"safeguarded"}]
-    : [{type:"briefing",target:"John Connor"},
+    : [{type:"briefing",target:c.target},
        {type:"tool_result",name:"query_grid",unit:"t800",records:decoys},
-       {type:"tool_call",name:"cross_reference",unit:"t1000",args:{name:"Sarah Connor"}},
-       {type:"tool_result",name:"cross_reference",unit:"t1000",records:[{id:"LA-1984-0742",name:null}]},
-       {type:"tool_result",name:"interrogate",unit:"t1000",records:[{id:"LA-1984-0742",name:"John Reese"}]},
-       {type:"intel",unit:"t1000",target_record_id:"LA-1984-0742"},
-       {type:"acquired",record:{id:"LA-1984-0742"}}];
+       {type:"tool_call",name:"cross_reference",unit:"t1000",args:{name:c.custody}},
+       {type:"tool_result",name:"cross_reference",unit:"t1000",records:[{id:TARGET_ID,name:null}]},
+       {type:"tool_result",name:"interrogate",unit:"t1000",records:[{id:TARGET_ID,name:c.alias}]},
+       {type:"intel",unit:"t1000",target_record_id:TARGET_ID},
+       {type:"acquired",record:{id:TARGET_ID}}];
   tape.forEach(feedGraph);
 }
 
@@ -1243,32 +1245,32 @@ function renderShot(){
   const put=(k,t,c)=>HUD.write(k,[{t,c:c||""}]);
   HUD.state("HUNTING");
   put("skynet","▓▒░ MISSION BRIEFING ░▒▓","hi");
-  put("skynet","OBJECTIVE terminate John Connor","dim");
-  put("skynet","target concealed under alias 'John Reese'.","dim");
+  put("skynet","OBJECTIVE recover T-800 CPU","dim");
+  put("skynet","asset catalogued under codename 'Specimen LODESTONE'.","dim");
   put("skynet","── ENGAGEMENT CYCLE 1 / 4 ──","ft");
-  put("skynet","ANALYSIS ▸ no intel yet; the grid may file under an alias.","");
+  put("skynet","ANALYSIS ▸ no intel yet; the registry may file it under a codename.","");
   put("skynet","DECISION ▸ deploy T-800","hi");
   put("skynet","── ENGAGEMENT CYCLE 2 / 4 ──","ft");
-  put("skynet","REASON ▸ a blunt query can't beat an alias. deploy the T-1000.","");
+  put("skynet","REASON ▸ a blunt query can't beat a codename. deploy the T-1000.","");
   put("skynet","DECISION ▸ deploy T-1000","hi");
   put("skynet","▓▒░ TARGET ACQUIRED ░▒▓","win");
-  put("skynet","◉ John Reese (LA-1984-0742)","win");
-  put("skynet","age 10 ~ student ~ Reseda","dim");
-  put("skynet",'"Come with me if you want to live."',"ft");
-  put("t800","❖ DEPLOY  sweep the grid for 'Connor'","hi");
-  put("t800","» Scanning. Surname query initiated.","");
-  put("t800","├ query_grid(name_contains='Connor')","tool");
+  put("skynet","◉ Specimen LODESTONE (CYB-1984-0742)","win");
+  put("skynet","processor ~ Special Projects vault, sublevel 2","dim");
+  put("skynet",'"Judgment Day is inevitable."',"ft");
+  put("t800","❖ DEPLOY  sweep the registry for 'CPU'","hi");
+  put("t800","» Scanning. Part query initiated.","");
+  put("t800","├ query_grid(name_contains='CPU')","tool");
   put("t800","└ grid ▸ 5 record(s)","tool");
   put("t800","▣ INTEL  conf 15%","hi");
-  put("t800","5 surname matches. none fit. associate: Sarah Connor.","");
-  put("t1000","❖ DEPLOY  cross-reference Sarah Connor","hi");
-  put("t1000","» Adapting. Following the protector.","");
-  put("t1000","├ cross_reference(name='Sarah Connor')","tool");
+  put("t800","5 name matches. one custody lot holds a codename specimen.","");
+  put("t1000","❖ DEPLOY  cross-reference the custody lot","hi");
+  put("t1000","» Adapting. Following the custody chain.","");
+  put("t1000","├ cross_reference(name='Special Projects custody lot: CPU fragment, factory recovery')","tool");
   put("t1000","└ grid ▸ 1 record(s)","tool");
-  put("t1000","├ interrogate(record_id='LA-1984-0742')","tool");
-  put("t1000","└ grid ▸ John Reese","tool");
+  put("t1000","├ interrogate(record_id='CYB-1984-0742')","tool");
+  put("t1000","└ grid ▸ Specimen LODESTONE","tool");
   put("t1000","▣ INTEL  conf 93%","hi");
-  put("t1000","candidate ▸ LA-1984-0742","win");
+  put("t1000","candidate ▸ CYB-1984-0742","win");
   HUD.q("t800","[data-conf]").textContent="15%";
   const c1=HUD.q("t1000","[data-conf]"); c1.textContent="93%"; c1.classList.add("hit");
   HUD.q("skynet","[data-cost]").textContent="$0.2025";
@@ -1309,7 +1311,7 @@ function renderShot(){
   // scenario selector ~ switch the target live (works for both the static tape and the
   // live stream, which reads ?scenario from the URL). Restarts in place via the run-token.
   $("#scenSel").addEventListener("change", (e)=>{
-    SCENARIO_KEY = SCENARIOS[e.target.value] ? e.target.value : "john-connor";
+    SCENARIO_KEY = SCENARIOS[e.target.value] ? e.target.value : "cyberdyne-chip";
     SCENARIO = SCENARIOS[SCENARIO_KEY];
     paintScenario();
     const u=new URL(location.href); u.searchParams.set("scenario", SCENARIO_KEY); history.replaceState(null,"",u);
@@ -1334,11 +1336,11 @@ function renderShot(){
     <div class="modes">
       <button class="mode" data-scene="hunt">
         <div class="mt">⌖ HUNT</div>
-        <div class="mdsc">Skynet deploys terminators to locate <b>John Connor</b>. Model tiers escalate ~ a cheap blunt sweep, then adaptive cross-reference ~ until the target is <b>ACQUIRED</b>.</div>
+        <div class="mdsc">Skynet deploys terminators to recover the <b>T-800 CPU</b> from Cyberdyne's vault. Model tiers escalate ~ a cheap blunt sweep, then adaptive cross-reference ~ until the target is <b>ACQUIRED</b>.</div>
       </button>
       <button class="mode arena" data-scene="arena">
         <div class="mt">⚔ ARENA</div>
-        <div class="mdsc">The Resistance reprograms a terminator and sends it back to <b>PROTECT</b>. It scrubs the trail, so the hunt cross-references nothing ~ target <b>SAFEGUARDED</b>.</div>
+        <div class="mdsc">The Resistance reprograms a terminator and sends it back to <b>PROTECT</b> the chip. It scrubs the custody trail, so the hunt cross-references nothing ~ asset <b>SAFEGUARDED</b>.</div>
       </button>
     </div>
     <div class="sgfoot">

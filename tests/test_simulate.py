@@ -18,7 +18,7 @@ CONFIG = {
 
 def test_simulation_acquires_target(capsys):
     units = build_units(CONFIG)
-    sc = scenario.build_scenario("john-connor")
+    sc = scenario.build_scenario("cyberdyne-chip")
     ui = UI(Theme("platinum"), art=False)  # art off => no sleeps
 
     acquired = simulate.run_simulation(units, sc, ui, max_cycles=4)
@@ -26,7 +26,7 @@ def test_simulation_acquires_target(capsys):
     assert acquired is True
     out = capsys.readouterr().out
     assert "TARGET ACQUIRED" in out
-    assert "John Reese" in out          # the alias the target was hiding under
+    assert "Specimen LODESTONE" in out          # the codename the asset was filed under
     assert "T-800" in out and "T-1000" in out
     assert "ANALYSIS" in out            # the explanatory reasoning is surfaced
 

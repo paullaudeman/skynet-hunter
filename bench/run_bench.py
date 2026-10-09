@@ -41,7 +41,7 @@ MODEL_SETS: dict[str, dict[str, str]] = {
     # This set keeps the 4.8 commander and moves only the workers to the current generation.
     "current-workers": {"skynet": "claude-opus-4-8", "t1000": "claude-sonnet-5-5", "t800": "claude-haiku-5-5", "resistance": "claude-haiku-5-5"},
 }
-SCENARIOS = ["john-connor", "danny-dyson", "blair-brewster", "eli-vega"]
+SCENARIOS = ["cyberdyne-chip", "the-arm", "neural-net", "power-cell"]
 
 
 class RecordingClient:

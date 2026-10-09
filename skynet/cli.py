@@ -48,13 +48,13 @@ def load_dotenv(path: Path = ROOT / ".env") -> None:
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="skynet",
-        description="Agentic Terminator demo: Skynet hunts John Connor across a synthetic 1984 LA grid.",
+        description="Agentic Terminator demo: Skynet hunts the recovered T-800 CPU across a synthetic 1984 Cyberdyne asset registry.",
     )
     p.add_argument("--simulate", action="store_true", help="Run offline (no API key, deterministic).")
     p.add_argument("--arena", action="store_true", help="Two-orchestrator arena ~ Skynet hunts, the Resistance disrupts (offline).")
     p.add_argument("--tui", action="store_true", help="Launch the interactive Textual TUI (offline).")
     p.add_argument("--theme", choices=["platinum", "silver", "amber"], help="Override the terminal theme.")
-    p.add_argument("--scenario", choices=scenario.SCENARIO_CHOICES, default="john-connor",
+    p.add_argument("--scenario", choices=scenario.SCENARIO_CHOICES, default="cyberdyne-chip",
                    help="Which hunt to run. 'random' rerolls a fresh scenario.")
     p.add_argument("--seed", type=int, help="Seed for --scenario random (reproducible rerolls).")
     p.add_argument("--max-cycles", type=int, help="Override the engagement budget.")

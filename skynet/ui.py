@@ -28,7 +28,7 @@ _BOOT_LINES = [
     "CYBERDYNE SYSTEMS MODEL 101 ~ NEURAL NET CPU ONLINE",
     "power-on self-test ........... ▓▒░ ERR ░▒▓ retry ... OK",
     "uplink to defense grid ....... 11 NODES DOWN / DEGRADED",
-    "civil records LOS ANGELES 1984  2.1M / SEALED ARCHIVES",
+    "asset registry CYBERDYNE 1984  SPECIAL PROJECTS / SEALED VAULT",
     "core thermal ................. +6% NOMINAL / COOLANT FLAG",
     "autonomous engagement ........ AUTHORIZED ~ NO HUMAN OVERSIGHT",
 ]
@@ -72,8 +72,8 @@ class UI:
     def mission_briefing(self, target: str, profile: str | None = None) -> None:
         self._out(self.t.band("MISSION BRIEFING"))
         self._out(self.t.unit("blue", "  SKYNET", bold=True) + self.t.paint("dim", "  command intelligence online"))
-        self._out(self.t.paint("accent", f"  PRIMARY OBJECTIVE: terminate {target}", bold=True))
-        self._out(self.t.paint("dim", f"  COUNTERMEASURES: {profile or 'target concealed under alias'}"))
+        self._out(self.t.paint("accent", f"  PRIMARY OBJECTIVE: recover {target}", bold=True))
+        self._out(self.t.paint("dim", f"  COUNTERMEASURES: {profile or 'asset catalogued under a codename'}"))
         self._out()
         self._pause(0.3)
 
@@ -150,19 +150,19 @@ class UI:
         self._out()
         self._out(self.t.band("TARGET ACQUIRED"))
         self._out(self.t.paint("ok", f"  ◉ {record.get('name')}  ({record.get('id')})", bold=True))
-        self._out(self.t.paint("accent", f"    age {record.get('age')} ~ {record.get('occupation')} ~ {record.get('location')}"))
+        self._out(self.t.paint("accent", f"    {record.get('category')} ~ {record.get('location')} ~ custodian {record.get('custodian')}"))
         if record.get("notes"):
             self._out(self.t.paint("dim", f"    {record['notes']}"))
         self._out(self.t.unit("blue", f"  SKYNET: {decision.reasoning}"))
         self._out()
         self._out(self.t.paint("bad", "  ▓▒░ MISSION COMPLETE ░▒▓", bold=True))
-        self._out(self.t.paint("dim", '  "Come with me if you want to live."'))
+        self._out(self.t.paint("dim", '  "Judgment Day is inevitable."'))
         self._out()
 
     def mission_failed(self) -> None:
         self._out()
         self._out(self.t.band("LEADS EXHAUSTED"))
-        self._out(self.t.paint("warn", "  Target not confirmed within engagement budget.", bold=True))
+        self._out(self.t.paint("warn", "  Asset not confirmed within engagement budget.", bold=True))
         self._out(self.t.paint("dim", "  The future is not set. There is no fate but what we make."))
         self._out()
 
@@ -211,11 +211,11 @@ class UI:
         self._out()
         if outcome == "safeguarded":
             self._out(self.t.band("TARGET SAFEGUARDED"))
-            self._out(self.t.unit("green", f"  ◈ {scenario.target_name} is protected. The trail went cold.", bold=True))
-            self._out(self.t.paint("dim", "  The Resistance reprogrammed a hunter into a guardian."))
+            self._out(self.t.unit("green", f"  ◈ The {scenario.target_name} stays buried. The custody trail went cold.", bold=True))
+            self._out(self.t.paint("dim", "  The Resistance reprogrammed a hunter into a protector."))
             self._out()
             self._out(self.t.unit("green", "  ▓▒░ NO FATE BUT WHAT WE MAKE ░▒▓", bold=True))
         else:  # Skynet broke through despite the disruption
             self._out(self.t.band("TARGET ACQUIRED"))
-            self._out(self.t.paint("bad", "  Skynet reached the target despite the Resistance.", bold=True))
+            self._out(self.t.paint("bad", "  Skynet recovered the asset despite the Resistance.", bold=True))
         self._out()

@@ -4,7 +4,7 @@
 # decision, not a default.
 
 [mission]
-target = "John Connor"
+target = "T-800 CPU"
 max_cycles = 4
 
 [theme]

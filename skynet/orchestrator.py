@@ -83,7 +83,7 @@ class Skynet:
                 break
 
             unit = self.units[unit_key]
-            self.ui.deploy(unit, decision.directive or "Locate the target.")
+            self.ui.deploy(unit, decision.directive or "Locate the asset.")
             before = self.meter.total_cost
             report = self.deploy(unit, decision.directive or f"Locate {self.target}.")
             self.ui.intel_report(unit, report)
@@ -110,10 +110,10 @@ class Skynet:
         else:
             log_text = "(no intel gathered yet ~ this is the first cycle)"
         prompt = (
-            f"MISSION: locate and confirm the target '{self.target}' in the Los Angeles "
-            f"civil grid.\n\nINTEL GATHERED SO FAR:\n{log_text}\n\n"
-            "Decide your next action. If a unit has returned a high-confidence target "
-            "record matching the hidden-minor profile, declare acquisition. Otherwise "
+            f"MISSION: locate and confirm the target asset '{self.target}' in Cyberdyne "
+            f"Systems' 1984 asset registry.\n\nINTEL GATHERED SO FAR:\n{log_text}\n\n"
+            "Decide your next action. If a unit has returned a high-confidence asset "
+            "record matching the recovered-specimen profile, declare acquisition. Otherwise "
             "deploy the unit best suited to the next step, with a precise directive.\n\n"
             "Make your thinking visible: give an ASSESSMENT of what the intel so far "
             "tells you, your REASONING for the next move, and ~ when deploying ~ what "
@@ -136,8 +136,8 @@ class Skynet:
             {
                 "role": "user",
                 "content": (
-                    f"DIRECTIVE: {directive}\n\nPrimary target name: {self.target}. "
-                    "Use the grid tools to carry out the directive, then await the order to report."
+                    f"DIRECTIVE: {directive}\n\nTarget asset: {self.target}. "
+                    "Use the registry tools to carry out the directive, then await the order to report."
                 ),
             }
         ]

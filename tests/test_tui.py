@@ -57,7 +57,7 @@ def test_adapter_drives_a_full_pursuit():
     from skynet.tui.app import TextualUI
 
     units = build_units(CONFIG)
-    sc = scenario.build_scenario("john-connor")
+    sc = scenario.build_scenario("cyberdyne-chip")
     app = FakeApp()
     ui = TextualUI(app, delay=0)  # no sleeps in tests
 
@@ -65,7 +65,7 @@ def test_adapter_drives_a_full_pursuit():
 
     blob = "\n".join(app.lines)
     assert "TARGET ACQUIRED" in blob
-    assert "John Reese" in blob
+    assert "Specimen LODESTONE" in blob
     assert "ANALYSIS" in blob and "method" in blob
     assert app.done is True
     assert ("t800", "deployed") in app.statuses

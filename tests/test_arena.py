@@ -31,10 +31,10 @@ class Rec:
 
 def run() -> Rec:
     units = build_units(CONFIG)
-    sc = scenario.build_scenario("john-connor")
+    sc = scenario.build_scenario("cyberdyne-chip")
     ui = Rec()
     result = arena.run_arena_simulation(units, sc, ui, max_cycles=4)
-    assert result is False, "Skynet must NOT acquire ~ the target is safeguarded"
+    assert result is False, "Skynet must NOT acquire ~ the asset is safeguarded"
     return ui
 
 
