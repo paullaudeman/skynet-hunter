@@ -184,9 +184,9 @@
 <table>
   <thead><tr><th>Unit</th><th>Model</th><th>Thinking</th><th>Why it fits</th></tr></thead>
   <tbody>
-    <tr><td class="skynet"><b>🔵 Skynet</b></td><td><code>claude-opus-4-8</code></td><td>adaptive · <code>xhigh</code></td><td>Apex intelligence. Plans, synthesizes, decides. Expensive ~ runs once per cycle, worth it.</td></tr>
-    <tr><td class="t1000"><b>⚪ T-1000</b></td><td><code>claude-sonnet-4-6</code></td><td>adaptive</td><td>The morph <em>is</em> adaptive thinking ~ it reshapes its search when brute force stalls. Mid-tier, agile.</td></tr>
-    <tr><td class="t800"><b>🔴 T-800</b></td><td><code>claude-haiku-4-5</code></td><td>none</td><td>The original. Blunt, cheap, literal. Doesn't deliberate ~ pursues. You want ten cheap passes, not one expensive one.</td></tr>
+    <tr><td class="skynet"><b>🔵 Skynet</b></td><td><code>claude-opus-5</code></td><td>adaptive · <code>xhigh</code></td><td>Apex intelligence. Plans, synthesizes, decides. Expensive ~ runs once per cycle, worth it.</td></tr>
+    <tr><td class="t1000"><b>⚪ T-1000</b></td><td><code>claude-sonnet-5-5</code></td><td>adaptive</td><td>The morph <em>is</em> adaptive thinking ~ it reshapes its search when brute force stalls. Mid-tier, agile.</td></tr>
+    <tr><td class="t800"><b>🔴 T-800</b></td><td><code>claude-haiku-5-5</code></td><td>none</td><td>The original. Blunt, cheap, literal. Doesn't deliberate ~ pursues. You want ten cheap passes, not one expensive one.</td></tr>
   </tbody>
 </table>
 <div class="callout">
@@ -208,7 +208,7 @@
 <h3>Explanatory decisioning</h3>
 <p>Skynet doesn't just emit a verdict ~ it narrates an <b>assessment → reasoning → expectation</b> chain, and each unit reports its <b>method</b>. The viewer sees the <em>why</em>, not just the move. These are structured-output fields, so they're always present and render identically in both front ends.</p>
 <div class="codeblock">
-<pre><code><span style="color:var(--blue)">◤ SKYNET</span> <span style="color:var(--gray)">[claude-opus-4-8]</span>
+<pre><code><span style="color:var(--blue)">◤ SKYNET</span> <span style="color:var(--gray)">[claude-opus-5]</span>
 <span style="color:var(--gray)">  ANALYSIS  ▸</span> The literal sweep returned decoy parts, but the custody lot
               holds a specimen under a codename. That is the thread.
 <span style="color:var(--gray)">  REASONING ▸</span> A blunt query cannot defeat a codename. The T-1000 can follow
@@ -263,7 +263,7 @@
 <h3>AI &amp; agents</h3>
 <div class="cards">
   <div class="card"><h4>Anthropic Python SDK</h4><p><code>messages.create(tools=…)</code> drives each unit's agentic loop; <code>messages.parse(output_format=…)</code> returns validated structured output; <code>thinking={"type":"adaptive"}</code> on the reasoning tiers.</p></div>
-  <div class="card"><h4>Claude models</h4><p><code>claude-opus-4-8</code> (Skynet) · <code>claude-sonnet-4-6</code> (T-1000) · <code>claude-haiku-4-5</code> (T-800). Three tiers, one tradeoff.</p></div>
+  <div class="card"><h4>Claude models</h4><p><code>claude-opus-5</code> (Skynet) · <code>claude-sonnet-5-5</code> (T-1000) · <code>claude-haiku-5-5</code> (T-800). Three tiers, one tradeoff.</p></div>
 </div>
 
 <h3>Data &amp; validation</h3>
@@ -329,7 +329,7 @@ report = client.messages.<span class="c-fn">parse</span>(model=unit.model, messa
 <div class="codeblock">
 <button class="copy" onclick="cp(this)">copy</button>
 <pre><code>resp = client.messages.<span class="c-fn">parse</span>(
-    model=<span class="c-str">"claude-opus-4-8"</span>,
+    model=<span class="c-str">"claude-opus-5"</span>,
     thinking={<span class="c-str">"type"</span>: <span class="c-str">"adaptive"</span>},
     system=SKYNET_SYSTEM,
     messages=[{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: mission_plus_intel_log}],

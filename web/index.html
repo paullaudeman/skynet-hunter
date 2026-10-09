@@ -538,24 +538,24 @@ const Aud = {
 };
 
 const UNITS = {
-  skynet: {name:"SKYNET",  gl:"◤", model:"claude-opus-4-8"},
-  t1000:  {name:"T-1000",  gl:"❖", model:"claude-sonnet-4-6"},
-  t800:   {name:"T-800",   gl:"⚙", model:"claude-haiku-4-5"},
+  skynet: {name:"SKYNET",  gl:"◤", model:"claude-opus-5"},
+  t1000:  {name:"T-1000",  gl:"❖", model:"claude-sonnet-5-5"},
+  t800:   {name:"T-800",   gl:"⚙", model:"claude-haiku-5-5"},
 };
 
 // the model-tier-as-architecture lesson, on hover. State -> reason -> the $ spread.
 const UNIT_TIP = {
-  skynet: `<b>SKYNET · claude-opus-4-8</b>
+  skynet: `<b>SKYNET · claude-opus-5</b>
     <span class="mid">Orchestrator (Opus tier).</span> Reasons over returned intel and decides which
     worker to deploy ~ it never queries the grid itself.
     <span class="tl">tier = architecture: <em>Opus is the priciest model ($5 / $25 per Mtok)</em>, so the
     pattern spends it only on strategy, sparingly.</span>`,
-  t1000: `<b>T-1000 · claude-sonnet-4-6</b>
+  t1000: `<b>T-1000 · claude-sonnet-5-5</b>
     <span class="mid">Adaptive worker (Sonnet tier).</span> Cross-references associates and interrogates
     the custody chain to defeat the codename the blunt sweep can't.
     <span class="tl">tier = architecture: <em>Sonnet is mid-cost ($3 / $15)</em> ~ enough reasoning to
     beat a codename, a fraction of the orchestrator's price.</span>`,
-  t800: `<b>T-800 · claude-haiku-4-5</b>
+  t800: `<b>T-800 · claude-haiku-5-5</b>
     <span class="mid">Blunt worker (Haiku tier).</span> Fast literal part-name sweeps; on its own it can't
     find an asset catalogued under a codename.
     <span class="tl">tier = architecture: <em>Haiku is cheapest ($1 / $5)</em>, so the doctrine deploys it
