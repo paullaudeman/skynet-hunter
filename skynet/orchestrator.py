@@ -15,6 +15,8 @@ visible, which is the whole point of a teaching demo.
 from __future__ import annotations
 
 import json
+import re
+import uuid
 from typing import Any
 
 from . import grid
@@ -35,8 +37,14 @@ _REPORT_PROMPT = (
 )
 
 
+def new_session_id(target: str) -> str:
+    """A per-run session id: readable target slug + uuid4 hex (always 33+ chars)."""
+    slug = re.sub(r"[^a-z0-9]+", "-", target.lower()).strip("-")[:24] or "hunt"
+    return f"{slug}-{uuid.uuid4().hex}"
+
+
 class Skynet:
-    def __init__(self, client: Any, units: dict[str, Unit], db: grid.GridDatabase, ui: Any, target: str, max_cycles: int, profile: str | None = None):
+    def __init__(self, client: Any, units: dict[str, Unit], db: grid.GridDatabase, ui: Any, target: str, max_cycles: int, profile: str | None = None, session_id: str | None = None):
         self.client = client
         self.units = units
         self.db = db
@@ -46,12 +54,15 @@ class Skynet:
         self.profile = profile
         self.skynet = units["skynet"]
         self.meter = CostMeter()
+        # One session per run, not per target (Decision Card 8): two hunts for the same
+        # target must not share memory, and AgentCore Runtime wants an id of 33+ chars.
+        self.session_id = session_id or new_session_id(target)
 
     # -- the orchestration loop ------------------------------------------
     def run(self) -> bool:
         self.ui.mission_briefing(self.target, self.profile)
         store = LocalIntelStore()
-        session = self.target
+        session = self.session_id
 
         for cycle in range(1, self.max_cycles + 1):
             self.ui.cycle_header(cycle, self.max_cycles)

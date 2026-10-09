@@ -155,3 +155,13 @@ def test_orchestrator_fails_cleanly_when_skynet_stands_down():
     skynet = Skynet(client, units, db, ui, target=sc.target_name, max_cycles=4)
 
     assert skynet.run() is False
+
+
+def test_each_run_gets_its_own_session_id():
+    """Decision Card 8: the session is per run, not per target, and long enough for AgentCore."""
+    from skynet.orchestrator import new_session_id
+
+    a, b = new_session_id("John Connor"), new_session_id("John Connor")
+    assert a != b
+    assert len(a) >= 33 and len(b) >= 33
+    assert a.startswith("john-connor-")
