@@ -29,6 +29,9 @@ PRICING: dict[str, tuple[float, float]] = {
     "claude-haiku-4-5": (1.0, 5.0),    # T-800   ~ blunt literal sweep
     # Current generation, from platform.claude.com/docs/en/about-claude/pricing, read 9. Oct 2026.
     "claude-opus-5-5": (4.0, 20.0),
+    "claude-opus-5": (5.0, 25.0),
+    "claude-sonnet-5": (2.0, 10.0),
+    "claude-fable-5-1": (10.0, 50.0),
     "claude-sonnet-5-5": (2.0, 10.0),
     "claude-haiku-5-5": (0.10, 0.50),  # prompts up to 100K tokens; this demo's prompts are far smaller
 }
