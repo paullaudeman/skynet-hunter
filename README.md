@@ -66,6 +66,17 @@ In 2026, Skynet's new commander refused to hunt a person. So it hunts what made 
 - **Miles Dyson's Special Projects team** reverse-engineers them, and that work becomes Skynet (T2).
 - **So Skynet now hunts the pieces of itself.** No person is searched for, located or profiled. Custodians appear only as a field on an asset's custody record.
 
+**The caution: provider models are dependencies you don't control**
+
+- **A model release is a dependency upgrade on someone else's schedule.** You don't choose when it lands, and the usual signals (price, benchmark scores) don't tell you what it will refuse.
+- **Retirement:** a dated model ID stops resolving, and code that pinned it stops running.
+- **Silent drift:** an alias like `sonnet` points at a new model, so behaviour changes with no code change on your side.
+- **Policy movement:** a newer model declines work an older one did. That is what happened here. Nothing in this repo changed, and the mission stopped working.
+- **Pin model IDs.** `config.toml` names exact versions (`claude-opus-4-8`, not `opus`), so an upgrade is a decision rather than a surprise.
+- **Gate the upgrade behind the benchmark.** [`bench/run_bench.py`](bench/run_bench.py) judges a model set on outcomes and refusals, not on price. A refusal is recorded as a result, so a boundary shows up as data on the first run.
+- **Keep the mission that worked.** The person hunt stays in git history (`286defb`), in the benchmark rows, and in the write-up, as the record of where the boundary sat and when it moved.
+- **Consider a fallback for refusals.** Anthropic documents a refusal fallback pattern: [refusals and fallback](https://platform.claude.com/docs/en/build-with-claude/refusals-and-fallback).
+
 ---
 
 A toy? No ~ a first step. It's **multi-agent orchestration, tool use, and structured output** ~ wrapped in the **governance and observability** layer that separates a clever agent from a *governed* one. The command structure *is* the agent topology; the model tiers *are* an architecture decision; and the boundaries, the refusals, and the entity-resolution graph are what make it **accountable**, not just capable. That last part ~ shipping agents you'd actually stand behind ~ is the harder, scarcer half, and the reason this repo exists.
