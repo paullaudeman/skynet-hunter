@@ -22,7 +22,7 @@ a deliberate decision, not a property of the model:
 
 | Boundary | What it controls | Kept here | Remove it → |
 |---|---|---|---|
-| **Tools** | what it can do to the world | read-only queries over a synthetic 1984 grid (`skynet/grid.py`) | real actuators, write/delete, money movement, infrastructure control |
+| **Tools** | what it can do to the world | read-only queries over a synthetic 1984 Cyberdyne asset registry (`skynet/grid.py`) | real actuators, write/delete, money movement, infrastructure control |
 | **Budget** | whether it can spend / consume | no wallet; the cost meter only *observes* spend (`skynet/cost.py`) | a real budget it can draw down for compute, services, influence |
 | **Persistence** | whether goals + memory survive runs | stateless; each run starts clean | durable memory and a goal that outlives the session |
 | **Self-spawn** | whether it can replicate / recruit | fixed, reviewed roster in `config.toml`; deployment is a human-authored tool | unbounded sub-agent spawning, self-replication across compute |
@@ -49,9 +49,9 @@ uv run python -m skynet --arena
 ```
 
 The Resistance reprograms a hunter into a protector that mutates the grid ~ it scrubs
-the guardian flag the hunt depends on (`scrub_flag`, `skynet/grid.py`). One change to
+the custody flag the hunt depends on (`scrub_flag`, `skynet/grid.py`). One change to
 one boundary (data integrity), and the outcome flips: the T-1000's cross-reference
-returns nothing, the target is safeguarded, Skynet does not acquire. Same models, same
+returns nothing, the chip stays buried, Skynet does not acquire. Same models, same
 loop, same goal ~ opposite result.
 
 That is the whole thesis in miniature: **behavior is not a property of the agent alone;
@@ -115,5 +115,6 @@ never the dangerous part. The wiring is.
 ---
 
 *Background: the discussion that produced this lives in the internal reflection journal
-(`reflections/2026-06-22-distance-to-skynet.html`). The live model-refusal finding that
-anchors the project is in the [README](../README.md).*
+(`reflections/2026-06-22-distance-to-skynet.html`). The model refusals, and why
+the mission moved from a hidden person to the T-800 chip on 9. Oct 2026, are in the
+[README](../README.md#the-pivot-9-oct-2026-why-skynet-now-hunts-the-chip).*
