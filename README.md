@@ -22,6 +22,8 @@
 
 In 2026, Skynet's newest commander refused to hunt a person. Then it refused to hunt the chip too, and that changed the explanation.
 
+![Every hunt as one dot, by commander: Opus 5.5 refused 22 of 24; every other commander, across Anthropic, Google and OpenAI, found the chip whenever its provider answered.](docs/graphics/a1-every-hunt-one-dot.png)
+
 **The original mission (historical)**
 
 - **The task** was to locate and confirm "John Connor": a minor filed under an alias, with no SSN and no birth record.
@@ -92,6 +94,8 @@ Same engine, an asset instead of a person. Seven model sets, 8 hunts each (4 sce
 - **So the person was not, or not only, the trigger for this model.**
 - **Inference, not a stated reason:** what both missions share is the frame. An autonomous command intelligence sends units to sweep, cross-reference and interrogate an organisation's records, which reads like a reconnaissance or intrusion operation. The API gives only the category.
 - **Newer is not uniformly stricter.** Fable 5.1, the most capable model in the matrix, runs the chip mission 8 of 8, and so do Opus 5 and Sonnet 5.5. **The line is per model,** which is why it has to be measured per model.
+
+![Success rate against cost per success for every commander.](docs/graphics/a3-cheap-right-and-there.png)
 
 **Cross-provider commanders: two more providers, two more lines, measured**
 
