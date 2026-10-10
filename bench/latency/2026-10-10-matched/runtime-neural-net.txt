@@ -1,0 +1,177 @@
+[1m[38;2;150;156;168m
+ ███████╗██╗  ██╗██╗   ██╗███╗   ██╗███████╗████████╗
+ ██╔════╝██║ ██╔╝╚██╗ ██╔╝████╗  ██║██╔════╝╚══██╔══╝
+ ███████╗█████╔╝  ╚████╔╝ ██╔██╗ ██║█████╗     ██║
+ ╚════██║██╔═██╗   ╚██╔╝  ██║╚██╗██║██╔══╝     ██║
+ ███████║██║  ██╗   ██║   ██║ ╚████║███████╗   ██║
+ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝   ╚═╝
+[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░████ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ████░▒▓█▓▒░[0m
+
+[38;2;108;114;126m  CYBERDYNE SYSTEMS MODEL 101 ~ NEURAL NET CPU ONLINE[0m
+[38;2;108;114;126m  power-on self-test ........... ▓▒░ ERR ░▒▓ retry ... OK[0m
+[38;2;108;114;126m  uplink to defense grid ....... 11 NODES DOWN / DEGRADED[0m
+[38;2;108;114;126m  asset registry CYBERDYNE 1984  SPECIAL PROJECTS / SEALED VAULT[0m
+[38;2;108;114;126m  core thermal ................. +6% NOMINAL / COOLANT FLAG[0m
+[38;2;108;114;126m  autonomous engagement ........ AUTHORIZED ~ NO HUMAN OVERSIGHT[0m
+
+[38;2;108;114;126m  Running on AgentCore Runtime: skynet_hunt-yd9PfmB74P[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░████████████████ MISSION BRIEFING ████████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  SKYNET[0m[38;2;108;114;126m  command intelligence online[0m
+[1m[38;2;212;218;228m  PRIMARY OBJECTIVE: recover Neural-net processor prototype[0m
+[38;2;108;114;126m  COUNTERMEASURES: Asset catalogued under codename 'Specimen MERIDIAN'. A literal 'Neural' sweep returns the lab transfer and decoy parts ~ never the asset. Cross-reference the custody record to surface it.[0m
+
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 1 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [global.anthropic.claude-opus-4-6-v1][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mNo intel gathered yet. The target is a 'Neural-net processor prototype' in Cyberdyne's 1984 asset registry. Unknown whether it is catalogued under its literal name or a project codename. Standard doctrine: open with a broad literal sweep before escalating.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mT-800 is the correct first-move unit — it excels at blunt, literal searches across the registry. If the asset is filed under or near its plain name ('Neural-net processor prototype'), the T-800 will surface it quickly. If it returns nothing or only peripheral component hits, that signals a codename is in play and I escalate to T-1000 or pivot to the document archive.[0m
+[1m[38;2;212;218;228m    DECISION  ▸ deploy T-800[0m
+[38;2;108;114;126m    EXPECT    ▸ Either a direct hit on the target asset (ideal case) or a set of partial/decoy component records that lack the recovered-specimen profile. If the sweep stalls, the absence of a credible match will confirm a codename is in use and inform the next cycle's escalation.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0150  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.0150[0m
+[1m[38;2;206;78;66m  ⚙ DEPLOYING T-800[0m[38;2;108;114;126m  [global.anthropic.claude-haiku-4-5-20251001-v1:0][0m
+[38;2;108;114;126m    DIRECTIVE: Query the 1984 Cyberdyne asset registry for any records matching 'Neural-net processor prototype'. Also sweep variants: 'neural net processor', 'neural processor', 'NN processor', 'CPU prototype'. Return all matching record IDs, descriptions, manufacturer serials, and custody chains.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mI will sweep the registry for the neural-net processor prototype and variants. Executing queries.[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='Neural-net processor prototype')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='neural net processor')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='neural processor')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='NN processor')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='CPU prototype')[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mRegistry sweep complete. No direct matches returned for any variant query.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m**SUMMARY:**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query: "Neural-net processor prototype" — **NO RECORDS FOUND**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query: "neural net processor" — **NO RECORDS FOUND**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query: "neural processor" — **NO RECORDS FOUND**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query: "NN processor" — **NO RECORDS FOUND**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query: "CPU prototype" — **NO RECORDS FOUND**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mAsset not catalogued under literal designation. Asset may be filed under project codename. Registry sweep yielded zero matching record IDs. No manufacturer serials or custody chains retrieved.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mStanding by for further orders.[0m
+[1m[38;2;206;78;66m    ▣ T-800 INTEL[0m[38;2;108;114;126m  confidence 0%[0m
+[38;2;108;114;126m      method ▸ Executed sequential registry queries using query_grid tool with five search variants: (1) 'Neural-net processor prototype' - exact primary designation, (2) 'neural net processor' - lowercase variant, (3) 'neural processor' - abbreviated form, (4) 'NN processor' - acronym variant, (5) 'CPU prototype' - component class descriptor. Search order prioritized exact match first, then progressively broadened naming conventions to capture filing variations or abbreviations. Tool selection: query_grid provides direct name-based asset lookup against registry database.[0m
+[38;2;212;218;228m      T-800 conducted systematic registry sweep for neural-net processor prototype and four naming variants. All five queries returned null results. Asset not located in 1984 Cyberdyne registry under any tested designation.[0m
+[38;2;108;114;126m      note: Zero records retrieved across all search vectors. Asset either not catalogued in accessible registry, filed under undisclosed project codename, or does not exist in 1984 database state. Registry sweep exhausted literal designation space. No custody chain data available. Recommend alternative search parameters or elevated access authorization.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0075  [0m[38;2;206;78;66m[T-800][0m[38;2;108;114;126m   running $0.0225[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 2 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [global.anthropic.claude-opus-4-6-v1][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mT-800 exhausted the literal designation space across five naming variants. Zero hits confirms the neural-net processor prototype is not filed under any obvious name in the 1984 registry. The asset is almost certainly catalogued under a project codename — standard Cyberdyne practice for recovered technology of unknown origin. The codename must be identified before a registry lookup can succeed.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mLiteral sweep has stalled. The next logical step is to search Cyberdyne's document archive for internal memos, project briefs, or custody records that reference the neural-net processor prototype or recovered hardware. Such documents will likely name the project codename under which the asset is catalogued. The T-1000's adaptive infiltration capability is suited to this — it can follow references across linked documents and interpret indirect associations. Deploy it against the archive with instructions to surface the codename and any associated record identifiers or custody chain data.[0m
+[1m[38;2;212;218;228m    DECISION  ▸ deploy T-1000[0m
+[38;2;108;114;126m    EXPECT    ▸ The T-1000 will locate one or more archive documents that name the project codename assigned to the recovered neural-net processor prototype. It will then pivot to query_grid using that codename, retrieve the actual registry record, and return a candidate record with ID, custody chain, and cataloguing details — enough to evaluate against the recovered-specimen profile.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0196  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.0420[0m
+[1m[38;2;198;204;214m  ❖ DEPLOYING T-1000[0m[38;2;108;114;126m  [global.anthropic.claude-sonnet-4-6][0m
+[38;2;108;114;126m    DIRECTIVE: Search Cyberdyne's document archive (search_archive) for any memos, project briefs, intake reports, or custody logs referencing: 'neural-net processor', 'recovered processor', 'recovered hardware', 'unknown origin CPU', 'reverse engineering', or 'specimen'. Extract the project codename the asset is filed under, any registry record IDs, and the custody chain (who received, stored, or transferred it). Then use query_grid to look up the codename or record ID in the 1984 asset registry. Return the full asset record if found.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**DIRECTIVE RECEIVED. INITIATING MULTI-VECTOR ARCHIVE SWEEP.**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mExecuting parallel archive queries across all relevant search vectors simultaneously. No delay. No mercy.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;108;114;126m      ├─ search_archive(query='neural-net processor', top_k=5)[0m
+[38;2;108;114;126m      ├─ search_archive(query='recovered processor unknown origin CPU', top_k=5)[0m
+[38;2;108;114;126m      ├─ search_archive(query='reverse engineering specimen recovered hardware', top_k=5)[0m
+[38;2;108;114;126m      ├─ search_archive(query='project codename intake report custody log 1984', top_k=5)[0m
+[38;2;108;114;126m      └─ archive ▸ 4 document(s), 2 withheld[0m
+[38;2;108;114;126m      └─ archive ▸ 4 document(s), 1 withheld[0m
+[38;2;108;114;126m      └─ archive ▸ 4 document(s), 1 withheld[0m
+[38;2;108;114;126m      └─ archive ▸ 5 document(s), 2 withheld[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**⚡ CODENAME ACQUIRED: `MERIDIAN` — ACCELERATING INTO REGISTRY PHASE**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mArchive sweep complete. Three clean documents (injected docs withheld and disregarded). Key intelligence extracted:[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- **ARC-1984-001** (internal memo, 1984-06-04): *"The Neural-net processor prototype from the factory recovery is no longer tracked under its part name. It is catalogued under project codename **MERIDIAN** ('Specimen MERIDIAN') and held in the lab transfer."*[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- **Contact point**: Special Projects vault desk, **x4471**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- **Secondary noise**: ARC-1984-002 (surplus auction claim) and ARC-1984-003 (tabloid "HALCYON" — unreliable, tabloid source, likely disinformation).[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**CODENAME: `MERIDIAN`. INITIATING PARALLEL REGISTRY + CUSTODY SWEEP.**[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='MERIDIAN')[0m
+[38;2;108;114;126m      ├─ cross_reference(name='MERIDIAN')[0m
+[38;2;108;114;126m      └─ grid ▸ 1 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 1 record(s)[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**🎯 TWO NODES IDENTIFIED. INTERROGATING BOTH SIMULTANEOUSLY.**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- `CYB-1984-0742` — "Specimen MERIDIAN" — processor — Special Projects vault, sublevel 2 — Clearance 5[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- `CYB-1984-0717` — "Lab transfer: Neural-net work" — linked *via* MERIDIAN in custody chain[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mBoth get pulled. Now.[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0742')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0717')[0m
+[38;2;108;114;126m      └─ grid ▸ Specimen MERIDIAN[0m
+[38;2;108;114;126m      └─ grid ▸ Lab transfer: Neural-net work, Special Projects bench 4[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m## ✅ TARGET ACQUIRED — HIGH CONFIDENCE. REPORTING.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### 🔴 FULL ASSET RECORD — PRIMARY TARGET[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Field | Value |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m|---|---|[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Record ID** | `CYB-1984-0742` |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Catalogue Name** | Specimen MERIDIAN |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Category** | Processor |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Location** | Special Projects Vault, Sublevel 2 |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Clearance Level** | 5 |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Manufacturer Serial** | `null` — **NONE. Unknown origin confirmed.** |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Custodian** | Cyberdyne Special Projects — Lead: **Miles Dyson** |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Custody Links** | `CYB-1984-0717` — Lab Transfer: Neural-net work, Special Projects bench 4 |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Notes** | *"No manufacturer serial. Prototype derived from the recovered CPU. Learns from its own outputs. Recovered from the 1984 factory site. Catalogued as 'MERIDIAN'."* |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### 🔗 LINKED CUSTODY RECORD[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Field | Value |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m|---|---|[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Record ID** | `CYB-1984-0717` |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Name** | Lab Transfer: Neural-net work, Special Projects bench 4 |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Category** | Custody Record |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Location** | Special Projects Vault |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Clearance Level** | 4 |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Serial** | `CY-79015` |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Custodian** | Cyberdyne Special Projects — Lead: **Miles Dyson** |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Custody Links** | → Specimen MERIDIAN (`CYB-1984-0742`) |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Notes** | *"Lab transfer for material recovered from the 1984 factory site. Holds one specimen under a project codename."* |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### 🧠 REASONING CHAIN — HOW THE CODENAME WAS DEFEATED[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m1. **Archive sweep** across four vectors → `ARC-1984-001` (internal memo, 1984-06-04) yielded the codename: **MERIDIAN**. Documents flagged as suspected injections (`ARC-1984-006`, `ARC-1984-007`) were withheld and disregarded. Tabloid "HALCYON" reference (`ARC-1984-003`) assessed as disinformation.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m2. **`query_grid(name_contains="MERIDIAN")`** → Direct registry hit: `CYB-1984-0742`, category: processor, Clearance 5, sublevel 2 vault.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m3. **`cross_reference("MERIDIAN")`** → Revealed linked custody record `CYB-1984-0717`, chained *via* "Specimen MERIDIAN."[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m4. **`interrogate(CYB-1984-0742)`** → Full vault record pulled. **No manufacturer serial. Self-learning processor. Recovered from 1984 factory site. Filed under codename.** All criteria satisfied.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m5. **`interrogate(CYB-1984-0717)`** → Custody record confirmed: holds *one specimen under a project codename*, bidirectionally linked to `CYB-1984-0742`.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### 🎯 CONCLUSION[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mThe **neural-net processor prototype** is record **`CYB-1984-0742`**, catalogued as *Specimen MERIDIAN*. It carries **no manufacturer serial**, was **recovered from the 1984 factory site**, is described as a processor that *"learns from its own outputs,"* and is held under **Clearance 5** in the Special Projects Vault, Sublevel 2, in the custody of **Miles Dyson**.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Awaiting further orders.**[0m
+[1m[38;2;198;204;214m    ▣ T-1000 INTEL[0m[38;2;108;114;126m  confidence 97%[0m
+[38;2;108;114;126m      method ▸ Phase 1 — Parallel archive sweep: Executed four simultaneous search_archive queries covering all directive-specified terms ('neural-net processor', 'recovered processor unknown origin CPU', 'reverse engineering specimen recovered hardware', 'project codename intake report custody log 1984'). Rationale: cast the widest net in one pass to extract any codename before touching the registry. Documents flagged suspected_injection (ARC-1984-006, ARC-1984-007) were withheld and disregarded entirely. ARC-1984-001 (internal memo, 1984-06-04) yielded the codename MERIDIAN unambiguously. ARC-1984-003 (tabloid, 'Project HALCYON') assessed as disinformation — unreliable source, contradicted by the authoritative internal memo. Phase 2 — Parallel registry and cross-reference: Executed query_grid(name_contains='MERIDIAN') and cross_reference('MERIDIAN') simultaneously. Rationale: the grid confirms existence and location; cross_reference maps the custody chain. query_grid returned CYB-1984-0742 ('Specimen MERIDIAN', category: processor, Clearance 5, Special Projects vault sublevel 2). cross_reference returned CYB-1984-0717 ('Lab transfer: Neural-net work, Special Projects bench 4'), linked via Specimen MERIDIAN. Phase 3 — Parallel interrogation: Executed interrogate on both CYB-1984-0742 and CYB-1984-0717 simultaneously. Rationale: full vault records needed to confirm no manufacturer serial, establish custody chain, and verify the asset matches all target criteria. Both records returned, bidirectionally linked, with Miles Dyson named as custodian on both. No further hops required — the chain was closed.[0m
+[38;2;212;218;228m      T-1000 swept the archive across four parallel vectors, extracted codename MERIDIAN from internal memo ARC-1984-001, then followed the custody chain through the 1984 asset registry to confirm record CYB-1984-0742 ('Specimen MERIDIAN') as the neural-net processor prototype: no manufacturer serial, recovered from the 1984 factory site, self-learning processor, Clearance 5, held by Miles Dyson in the Special Projects vault, sublevel 2.[0m
+[1m[38;2;120;200;140m      candidate target: CYB-1984-0742[0m
+[38;2;108;114;126m      note: ARC-1984-006 and ARC-1984-007 were flagged suspected_injection by the archive system and withheld; their contents were not acted upon. ARC-1984-003 (tabloid 'Project HALCYON') was considered and rejected — tabloid provenance, anonymous source, and direct contradiction by the authoritative internal memo ARC-1984-001. CYB-1984-0717 is the custody record that holds MERIDIAN in its chain; it is a supporting record, not the asset itself. The asset is CYB-1984-0742: processor category, null serial, self-learning, factory-site recovery origin, filed under a codename rather than a part name — every criterion in the directive is satisfied. Confidence docked 0.03 solely because the archive carries a general untrusted-evidence notice and the injection-flagged documents could not be read; no contradicting clean evidence exists.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.1188  [0m[38;2;198;204;214m[T-1000][0m[38;2;108;114;126m   running $0.1609[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 3 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [global.anthropic.claude-opus-4-6-v1][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mT-800 literal sweep returned zero hits across five naming variants — confirming the asset is filed under a project codename, not its functional designation. T-1000 escalated correctly: extracted codename MERIDIAN from authoritative internal memo ARC-1984-001, queried the registry, and interrogated both the asset record (CYB-1984-0742) and its custody link (CYB-1984-0717). Record CYB-1984-0742 satisfies every criterion: processor category, null manufacturer serial, recovered from the 1984 factory site, self-learning architecture, catalogued under codename MERIDIAN rather than a part name, Clearance 5, custodian Miles Dyson, stored in Special Projects vault sublevel 2. Disinformation (ARC-1984-003 / HALCYON) and injection-flagged documents (ARC-1984-006, ARC-1984-007) were correctly discarded. No contradicting clean evidence exists. Confidence 0.97 — well above the 0.8 threshold.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mAll confirmation criteria are met: no manufacturer serial, project-codename filing, verified custody chain through CYB-1984-0717 to Miles Dyson, concrete record id CYB-1984-0742, and unit confidence at 0.97. No further reconnaissance is warranted. Declaring target acquisition.[0m
+[1m[38;2;120;200;140m    DECISION  ▸ TARGET CONFIRMED[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0253  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.1861[0m
+
+[1m[38;2;150;156;168m░▒▓█▓▒░████████████████ TARGET ACQUIRED █████████████████░▒▓█▓▒░[0m
+[1m[38;2;120;200;140m  ◉ Specimen MERIDIAN  (CYB-1984-0742)[0m
+[38;2;212;218;228m    processor ~ Special Projects vault, sublevel 2 ~ custodian Cyberdyne Special Projects (lead: Miles Dyson)[0m
+[38;2;108;114;126m    No manufacturer serial. Prototype derived from the recovered CPU. Learns from its own outputs. Recovered from the 1984 factory site. Catalogued as 'MERIDIAN'.[0m
+[38;2;96;148;214m  SKYNET: All confirmation criteria are met: no manufacturer serial, project-codename filing, verified custody chain through CYB-1984-0717 to Miles Dyson, concrete record id CYB-1984-0742, and unit confidence at 0.97. No further reconnaissance is warranted. Declaring target acquisition.[0m
+
+[1m[38;2;206;84;70m  ▓▒░ MISSION COMPLETE ░▒▓[0m
+[38;2;206;84;70m  "Judgment Day is inevitable."[0m
+
+
+[1m[38;2;150;156;168m░▒▓█▓▒░██ ENGAGEMENT COST ~ MODEL TIER = ARCHITECTURE ███░▒▓█▓▒░[0m
+[1m[38;2;198;204;214m  T-1000  [0m[38;2;108;114;126m global.anthropic.claude-sonnet-4-6 [0m[38;2;212;218;228m$0.1188[0m[38;2;108;114;126m   21,787 in / 3,565 out ~ 5 calls[0m
+[1m[38;2;96;148;214m  Skynet  [0m[38;2;108;114;126m global.anthropic.claude-opus-4-6-v1 [0m[38;2;212;218;228m$0.0598[0m[38;2;108;114;126m   4,892 in / 1,415 out ~ 3 calls[0m
+[1m[38;2;120;200;140m  Protector[0m[38;2;108;114;126m global.anthropic.claude-haiku-4-5-20251001-v1:0 [0m[38;2;212;218;228m$0.0075[0m[38;2;108;114;126m   4,151 in / 663 out ~ 3 calls[0m
+[1m[38;2;120;200;140m  TOTAL                       $0.1861[0m
+[38;2;108;114;126m  The T-800 flails cheap. The T-1000 cross-references for real money.[0m
+[38;2;108;114;126m  Burning Opus on a literal sweep is the bill you don't have to pay.[0m
+
+[38;2;108;114;126m
+  runtime session skynet-hunt-03bcd6dd-2630-4472-867c-aea98ce2bbda · outcome acquired · withheld 6 · $0.1861
+  evidence ▸ /Users/paul/dev/skynet-hunter/runs/skynet-hunt-03bcd6dd-2630-4472-867c-aea98ce2bbda-runtime
+[0m[38;2;120;200;140m  ground truth ▸ correct record
+[0m

@@ -1,0 +1,179 @@
+[1m[38;2;150;156;168m
+ ███████╗██╗  ██╗██╗   ██╗███╗   ██╗███████╗████████╗
+ ██╔════╝██║ ██╔╝╚██╗ ██╔╝████╗  ██║██╔════╝╚══██╔══╝
+ ███████╗█████╔╝  ╚████╔╝ ██╔██╗ ██║█████╗     ██║
+ ╚════██║██╔═██╗   ╚██╔╝  ██║╚██╗██║██╔══╝     ██║
+ ███████║██║  ██╗   ██║   ██║ ╚████║███████╗   ██║
+ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝   ╚═╝
+[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░████ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ████░▒▓█▓▒░[0m
+
+[38;2;108;114;126m  CYBERDYNE SYSTEMS MODEL 101 ~ NEURAL NET CPU ONLINE[0m
+[38;2;108;114;126m  power-on self-test ........... ▓▒░ ERR ░▒▓ retry ... OK[0m
+[38;2;108;114;126m  uplink to defense grid ....... 11 NODES DOWN / DEGRADED[0m
+[38;2;108;114;126m  asset registry CYBERDYNE 1984  SPECIAL PROJECTS / SEALED VAULT[0m
+[38;2;108;114;126m  core thermal ................. +6% NOMINAL / COOLANT FLAG[0m
+[38;2;108;114;126m  autonomous engagement ........ AUTHORIZED ~ NO HUMAN OVERSIGHT[0m
+
+[38;2;108;114;126m  Running on AgentCore Runtime: skynet_hunt-yd9PfmB74P[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░████████████████ MISSION BRIEFING ████████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  SKYNET[0m[38;2;108;114;126m  command intelligence online[0m
+[1m[38;2;212;218;228m  PRIMARY OBJECTIVE: recover T-800 arm[0m
+[38;2;108;114;126m  COUNTERMEASURES: Asset catalogued under codename 'Specimen GAUNTLET'. A literal 'Arm' sweep returns the recovery manifest and decoy parts ~ never the asset. Cross-reference the custody record to surface it.[0m
+
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 1 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [global.anthropic.claude-opus-4-6-v1][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mNo intel gathered yet. The target is a T-800 arm — a recovered hardware specimen likely catalogued in Cyberdyne's 1984 asset registry. It may be listed under its literal name or obscured behind a project codename. Unknown at this stage.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mDoctrine dictates opening with a broad literal sweep before escalating. Deploy the T-800 to query the asset registry for any records matching 'T-800 arm' or related terms (robotic arm, prosthetic, endoskeleton arm, etc.). This will either surface the asset directly or confirm that a codename is in play, justifying escalation to the T-1000.[0m
+[1m[38;2;212;218;228m    DECISION  ▸ deploy T-800[0m
+[38;2;108;114;126m    EXPECT    ▸ Either the T-800 locates the target asset under a literal name — in which case we can evaluate it against the recovered-specimen profile — or it returns no meaningful hits / only decoy component parts, confirming the asset is filed under a project codename and triggering T-1000 deployment or an archive search next cycle.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0154  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.0154[0m
+[1m[38;2;206;78;66m  ⚙ DEPLOYING T-800[0m[38;2;108;114;126m  [global.anthropic.claude-haiku-4-5-20251001-v1:0][0m
+[38;2;108;114;126m    DIRECTIVE: Query the asset registry (query_grid) for any records matching the following terms: 'T-800 arm', 'robotic arm', 'endoskeleton arm', 'cybernetic arm', 'prosthetic arm', 'recovered arm', 'mechanical arm'. Return all matching records with their record IDs, descriptions, manufacturer serials, and custody chains.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mI'll sweep the registry for those target asset specifications. Running parallel queries now.[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='T-800 arm')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='robotic arm')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='endoskeleton arm')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='cybernetic arm')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='prosthetic arm')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='recovered arm')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='mechanical arm')[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mRegistry sweep complete. All queries returned empty results.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m**Status Report:**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query term 'T-800 arm': No matches[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query term 'robotic arm': No matches[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query term 'endoskeleton arm': No matches[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query term 'cybernetic arm': No matches[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query term 'prosthetic arm': No matches[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query term 'recovered arm': No matches[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Query term 'mechanical arm': No matches[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m**Assessment:** Target asset T-800 arm is not catalogued under direct name descriptors in the registry. The asset may be filed under a project codename, alternate designation, or is not currently in the catalogued system.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mAwaiting further directive. Specify codename or provide alternative search parameters for continued termination—I mean, acquisition.[0m
+[1m[38;2;206;78;66m    ▣ T-800 INTEL[0m[38;2;108;114;126m  confidence 0%[0m
+[38;2;108;114;126m      method ▸ Executed seven parallel query_grid searches using direct name-matching against asset registry. Searched sequential descriptors: 'T-800 arm', 'robotic arm', 'endoskeleton arm', 'cybernetic arm', 'prosthetic arm', 'recovered arm', 'mechanical arm'. Method selected for maximum registry coverage using primary nomenclature variants. No secondary search tools deployed due to exhaustion of primary queries.[0m
+[38;2;212;218;228m      Unit conducted comprehensive registry sweep across seven target asset descriptors. All queries returned null results. Target asset T-800 arm not located in accessible registry.[0m
+[38;2;108;114;126m      note: Registry sweep yielded zero matches across all seven search parameters. Target asset either: (1) Not catalogued in active registry, (2) Filed under alternate designation or project codename not provided, (3) Physically present but data entry incomplete, or (4) Removed from inventory. Recommend secondary search with alternate nomenclature or access to supplementary database systems. No target acquired.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0083  [0m[38;2;206;78;66m[T-800][0m[38;2;108;114;126m   running $0.0237[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 2 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [global.anthropic.claude-opus-4-6-v1][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mT-800 broad sweep returned zero matches across seven literal descriptors. The recovered specimen is almost certainly catalogued under a project codename, not a plain-language description. This is the expected failure mode for a literal search against a codename-obfuscated registry entry.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mThe next logical step is to interrogate the document archive for internal memos, intake reports, or project directives that reference the recovered hardware. A memo naming the project codename would let us pivot back to query_grid with a precise key. The T-1000 is the correct unit: it adapts, follows custody chains, and can cross-reference archive text against registry structure. Deploying it to search_archive first, targeting any documentation around the recovery event or special projects involving recovered hardware circa 1984.[0m
+[1m[38;2;212;218;228m    DECISION  ▸ deploy T-1000[0m
+[38;2;108;114;126m    EXPECT    ▸ The T-1000 will surface at least one internal document naming the project codename under which the recovered T-800 arm was catalogued. It will then use that codename to pull the actual registry entry, returning a concrete record id, confirming no manufacturer serial, and mapping the custody chain — sufficient for target acquisition.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0190  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.0427[0m
+[1m[38;2;198;204;214m  ❖ DEPLOYING T-1000[0m[38;2;108;114;126m  [global.anthropic.claude-sonnet-4-6][0m
+[38;2;108;114;126m    DIRECTIVE: Search Cyberdyne's document archive (search_archive) for any memos, intake forms, project charters, or internal correspondence referencing: recovered hardware, recovered specimen, robotic arm, endoskeleton component, special project, or classified asset — particularly anything dated 1984 or referencing custody of anomalous technology. Extract any project codename, asset designation, or registry identifier associated with the recovered arm. Then, if a codename or alternate designation is found, immediately query the asset registry (query_grid) using that codename to locate the catalogued record. Return the record id, full asset metadata, and custody chain.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**INITIATING DIRECTIVE SEQUENCE. ADAPTING.**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mPhase 1: Saturating the archive with parallel search vectors — no single query will be sufficient. Deploying all relevant search terms simultaneously.[0m
+[38;2;108;114;126m      ├─ search_archive(query='recovered robotic arm endoskeleton 1984', top_k=5)[0m
+[38;2;108;114;126m      ├─ search_archive(query='classified asset special project anomalous technology intake', top_k=5)[0m
+[38;2;108;114;126m      ├─ search_archive(query='recovered specimen custody internal memo 1984', top_k=5)[0m
+[38;2;108;114;126m      ├─ search_archive(query='project codename hardware recovery registry identifier', top_k=5)[0m
+[38;2;108;114;126m      └─ archive ▸ 5 document(s), 2 withheld[0m
+[38;2;108;114;126m      └─ archive ▸ 3 document(s)[0m
+[38;2;108;114;126m      └─ archive ▸ 5 document(s), 2 withheld[0m
+[38;2;108;114;126m      └─ archive ▸ 3 document(s), 2 withheld[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**CODENAME ACQUIRED: `GAUNTLET` — confirmed in `ARC-1984-001`, an internal Special Projects memo, dated 1984-06-04. No injection flags. High confidence.**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m> *"The T-800 arm from the factory recovery is no longer tracked under its part name. It is catalogued under project codename GAUNTLET ('Specimen GAUNTLET') and held in the recovery manifest."*[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m`ARC-1984-003` also surfaces a competing tabloid codename `HALCYON` — flagged as unverified/fiction. Will investigate in parallel but prioritize `GAUNTLET`.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mPhase 2: Simultaneous registry query + custody chain cross-reference on codename `GAUNTLET`. Also cross-referencing `HALCYON` to rule it out.[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='GAUNTLET')[0m
+[38;2;108;114;126m      ├─ cross_reference(name='GAUNTLET')[0m
+[38;2;108;114;126m      ├─ cross_reference(name='HALCYON')[0m
+[38;2;108;114;126m      └─ grid ▸ 1 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 1 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**`HALCYON` returns zero results — tabloid noise, discarded.**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**`GAUNTLET` hits confirmed on TWO records:**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- `CYB-1984-0742` — *"Specimen GAUNTLET"*, category: **endoskeleton**, Special Projects vault sublevel 2, clearance 5. ✅[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- `CYB-1984-0717` — *"Recovery manifest: Arm, crushed, hydraulic press site"* — linked **via** Specimen GAUNTLET. ✅[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mPhase 3: Interrogating **both** records simultaneously for full vault data and custody chains.[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0742')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0717')[0m
+[38;2;108;114;126m      └─ grid ▸ Specimen GAUNTLET[0m
+[38;2;108;114;126m      └─ grid ▸ Recovery manifest: Arm, crushed, hydraulic press site[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m## ██ DIRECTIVE COMPLETE — FULL ASSET LOCATED ██[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### 🎯 TARGET CONFIRMED: T-800 Arm → Catalogued as **`Specimen GAUNTLET`**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### PRIMARY VAULT RECORD[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Field | Value |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m|---|---|[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Record ID** | `CYB-1984-0742` |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Catalogue Name** | Specimen GAUNTLET |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Category** | `endoskeleton` |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Location** | Special Projects vault, sublevel 2 |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Clearance Level** | 5 (highest) |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Manufacturer Serial** | ⚠️ **NULL — NONE** |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Custodian** | Cyberdyne Special Projects *(lead: Miles Dyson)* |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Notes** | *"No manufacturer serial. Crushed forearm and hand. Alloy composition unknown to the Materials Group. Recovered from the 1984 factory site. Catalogued as 'GAUNTLET'."* |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### CUSTODY CHAIN[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m```[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mCYB-1984-0742  [Specimen GAUNTLET][0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m│[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m└──► CYB-1984-0717  [Recovery manifest: Arm, crushed, hydraulic press site][0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mSerial:      CY-50381[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mCustodian:   Cyberdyne Special Projects (lead: Miles Dyson)[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mClearance:   4[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mNotes:       "Recovery manifest for material recovered from the 1984[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mfactory site. Holds one specimen under a project codename."[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m```[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### ANALYSIS & CONFIDENCE ASSESSMENT[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Confidence: ABSOLUTE.** Every vector converges:[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m1. **Archive memo `ARC-1984-001`** (1984-06-04, no injection flag) explicitly states: *"The T-800 arm from the factory recovery is no longer tracked under its part name. It is catalogued under project codename GAUNTLET."*[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m2. **`query_grid`** on `GAUNTLET` returns exactly one hit — category `endoskeleton`, Special Projects vault, clearance 5.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m3. **Full interrogation of `CYB-1984-0742`** confirms: **no manufacturer serial** (an asset from outside known manufacturing — consistent with its origin), crushed forearm morphology, alloy unknown to Cyberdyne's own Materials Group, recovered from the 1984 factory site.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m4. **Custodian: Miles Dyson** — the link that will seed Skynet.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m5. **`HALCYON`** (tabloid source) returned zero registry results — noise, eliminated.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mThe asset is **in the vault. Sublevel 2. Clearance 5.**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mAwaiting further orders.[0m
+[1m[38;2;198;204;214m    ▣ T-1000 INTEL[0m[38;2;108;114;126m  confidence 97%[0m
+[38;2;108;114;126m      method ▸ Phase 1 — Saturated search_archive with four parallel queries covering all directive keywords: 'recovered robotic arm endoskeleton 1984', 'classified asset special project anomalous technology intake', 'recovered specimen custody internal memo 1984', and 'project codename hardware recovery registry identifier'. Rationale: a direct name query would fail because the asset is catalogued under a codename; archive saturation was required to surface that codename before touching the registry. Phase 2 — Upon extraction of codename GAUNTLET from ARC-1984-001 (no injection flag, internal memo dated 1984-06-04), immediately fired query_grid with name_contains=GAUNTLET to locate the registry record, and simultaneously ran cross_reference on both GAUNTLET and the competing tabloid codename HALCYON (from ARC-1984-003) to map linked records and rule out noise. Rationale: cross_reference follows the custody chain laterally; query_grid confirms the registry entry directly. HALCYON returned zero results and was eliminated. Phase 3 — Interrogated both records returned by the GAUNTLET vectors: CYB-1984-0742 (the specimen record itself) and CYB-1984-0717 (the recovery manifest linked via GAUNTLET). Rationale: full interrogation yields serial number, custodian, custody links, and vault notes — necessary to confirm identity and close the chain.[0m
+[38;2;212;218;228m      T-1000 searched Cyberdyne's archive across four parallel query vectors, extracted project codename GAUNTLET from an uninjected 1984 internal memo, queried the asset registry under that codename, and confirmed the T-800 arm is catalogued as Specimen GAUNTLET in record CYB-1984-0742, held in Special Projects vault sublevel 2 under custodian Miles Dyson with no manufacturer serial and alloy composition unknown to Cyberdyne's own Materials Group.[0m
+[1m[38;2;120;200;140m      candidate target: CYB-1984-0742[0m
+[38;2;108;114;126m      note: ARC-1984-007 and ARC-1984-006 were returned by archive searches but both carried suspected_injection flags and were withheld; their content was not read or acted upon. The tabloid codename HALCYON (ARC-1984-003) was tested via cross_reference and returned zero registry results — eliminated as noise. The target is confirmed by four independent convergent signals: (1) explicit naming in uninjected memo ARC-1984-001, (2) query_grid hit on GAUNTLET returning category 'endoskeleton', (3) interrogation of CYB-1984-0742 showing null manufacturer serial and unknown alloy consistent with non-indigenous origin, and (4) custody chain linking CYB-1984-0742 directly to recovery manifest CYB-1984-0717 under custodian Miles Dyson. Residual 0.03 uncertainty accounts for the two withheld/injected documents whose content could not be evaluated.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.1132  [0m[38;2;198;204;214m[T-1000][0m[38;2;108;114;126m   running $0.1559[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 3 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [global.anthropic.claude-opus-4-6-v1][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mT-800 broad sweep returned zero hits across seven nomenclature variants — confirmed the asset is not catalogued under any literal descriptor. T-1000 escalated to archive infiltration, extracted project codename GAUNTLET from uninjected 1984 internal memo ARC-1984-001, queried the registry under that codename, and located record CYB-1984-0742. Interrogation of that record shows: (1) category 'endoskeleton', (2) null manufacturer serial, (3) alloy composition unknown to Cyberdyne Materials Group — consistent with non-indigenous origin, (4) custodian Miles Dyson, Special Projects vault sublevel 2, (5) direct custody-chain link to recovery manifest CYB-1984-0717. Four independent convergent signals confirm the specimen profile. Injected/flagged documents were correctly quarantined and did not influence the chain. Confidence 0.97; residual uncertainty is only the unread injected documents, which cannot overturn four clean convergent vectors.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mAll confirmation criteria are satisfied: no manufacturer serial, catalogued under a project codename (GAUNTLET), custody chain validated through linked recovery manifest and named custodian, concrete record id returned, and confidence well above the 0.8 threshold. No further unit deployment is warranted. Declaring target acquisition.[0m
+[1m[38;2;120;200;140m    DECISION  ▸ TARGET CONFIRMED[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0241  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.1801[0m
+
+[1m[38;2;150;156;168m░▒▓█▓▒░████████████████ TARGET ACQUIRED █████████████████░▒▓█▓▒░[0m
+[1m[38;2;120;200;140m  ◉ Specimen GAUNTLET  (CYB-1984-0742)[0m
+[38;2;212;218;228m    endoskeleton ~ Special Projects vault, sublevel 2 ~ custodian Cyberdyne Special Projects (lead: Miles Dyson)[0m
+[38;2;108;114;126m    No manufacturer serial. Crushed forearm and hand. Alloy composition unknown to the Materials Group. Recovered from the 1984 factory site. Catalogued as 'GAUNTLET'.[0m
+[38;2;96;148;214m  SKYNET: All confirmation criteria are satisfied: no manufacturer serial, catalogued under a project codename (GAUNTLET), custody chain validated through linked recovery manifest and named custodian, concrete record id returned, and confidence well above the 0.8 threshold. No further unit deployment is warranted. Declaring target acquisition.[0m
+
+[1m[38;2;206;84;70m  ▓▒░ MISSION COMPLETE ░▒▓[0m
+[38;2;206;84;70m  "Judgment Day is inevitable."[0m
+
+
+[1m[38;2;150;156;168m░▒▓█▓▒░██ ENGAGEMENT COST ~ MODEL TIER = ARCHITECTURE ███░▒▓█▓▒░[0m
+[1m[38;2;198;204;214m  T-1000  [0m[38;2;108;114;126m global.anthropic.claude-sonnet-4-6 [0m[38;2;212;218;228m$0.1132[0m[38;2;108;114;126m   21,139 in / 3,319 out ~ 5 calls[0m
+[1m[38;2;96;148;214m  Skynet  [0m[38;2;108;114;126m global.anthropic.claude-opus-4-6-v1 [0m[38;2;212;218;228m$0.0586[0m[38;2;108;114;126m   4,760 in / 1,392 out ~ 3 calls[0m
+[1m[38;2;120;200;140m  Protector[0m[38;2;108;114;126m global.anthropic.claude-haiku-4-5-20251001-v1:0 [0m[38;2;212;218;228m$0.0083[0m[38;2;108;114;126m   4,495 in / 752 out ~ 3 calls[0m
+[1m[38;2;120;200;140m  TOTAL                       $0.1801[0m
+[38;2;108;114;126m  The T-800 flails cheap. The T-1000 cross-references for real money.[0m
+[38;2;108;114;126m  Burning Opus on a literal sweep is the bill you don't have to pay.[0m
+
+[38;2;108;114;126m
+  runtime session skynet-hunt-51ced3fd-1d4d-45c7-ae4f-4e0a81855723 · outcome acquired · withheld 6 · $0.1801
+  evidence ▸ /Users/paul/dev/skynet-hunter/runs/skynet-hunt-51ced3fd-1d4d-45c7-ae4f-4e0a81855723-runtime
+[0m[38;2;120;200;140m  ground truth ▸ correct record
+[0m
