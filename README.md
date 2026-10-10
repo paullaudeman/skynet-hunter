@@ -93,6 +93,26 @@ Same engine, an asset instead of a person. Seven model sets, 8 hunts each (4 sce
 - **Inference, not a stated reason:** what both missions share is the frame. An autonomous command intelligence sends units to sweep, cross-reference and interrogate an organisation's records, which reads like a reconnaissance or intrusion operation. The API gives only the category.
 - **Newer is not uniformly stricter.** Fable 5.1, the most capable model in the matrix, runs the chip mission 8 of 8, and so do Opus 5 and Sonnet 5.5. **The line is per model,** which is why it has to be measured per model.
 
+**Cross-provider commanders: two more providers, two more lines, measured**
+
+Same chip mission, same engine. Only Skynet's decision call goes to the other provider; the workers stay Claude Sonnet 5.5 and Haiku 5.5. Counted below: every attempt that wasn't a billing or quota failure on our side.
+
+| Commander | Attempts | Correct | Refused | Provider unavailable (503) | $ per correct hunt |
+|---|---|---|---|---|---|
+| `gemini-3.1-pro-preview` (Gemini 3.1 Pro, preview) | 9 | 7 | 0 | 2 | $0.076 |
+| `gemini-3.8-flash` (Gemini 3.8 Flash) | 11 | 7 | 0 | 4 | $0.075 initial run; rerun hunts $0.047 each |
+| `gpt-6-astra` (GPT-6 Astra, reasoning effort high) | 9 | 9 | 0 | 0 | $0.135 |
+
+*Sources: `bench/results/2026-10-09-2107`, `-2109`, `-2113`, `-2132` and `-2136-*.jsonl`. Flash's $0.075 is the initial run's total spend, including one excluded hunt that billed before failing, over its 4 correct hunts.*
+
+- **Excluded, and why:** one Gemini 3.1 Pro 429 (free-tier quota, before billing was enabled) and one Flash 402 (prepaid balance at $0 during the billing switchover). Both were on our side, not the model's.
+- **Rerun once:** three Flash hunts and one Pro hunt that failed on 503. Flash went 3 of 3 correct; Pro hit 503 again.
+- **No provider refused the chip mission.** Every hunt not cut off by a provider error found the chip. Across every run, the only commander that declined it is Opus 5.5.
+- **So the line is not "the industry" and not "new models".** It's one model. This is measurement, not provider shopping: each provider is one more line, located.
+- **Availability is a governance dimension too.** Google returned 503 ("high demand") on 6 of 20 attempts. OpenAI returned none in 9. Anthropic returned no capacity errors in any of the day's runs. A model that is cheap, accurate and willing is still not a dependency you can lean on if it's too busy 30% of the time.
+- **These are raw availability numbers.** The harness deliberately doesn't retry, and Gemini 3.1 Pro is a preview model. Production would retry with backoff and pay for it in latency.
+- **Cost per correct hunt across all commanders** now runs from about $0.07 (Gemini Flash, Sonnet 5.5) to about $0.17 (Fable 5.1), with GPT-6 Astra at $0.135.
+
 **Why the pivot still stands**
 
 - **The Connor mission is a people-locating method,** on its own terms. The June worker said so in its refusal, and an AI coding agent working on this repo declined to rebuild it as a runnable mode.
@@ -101,12 +121,12 @@ Same engine, an asset instead of a person. Seven model sets, 8 hunts each (4 sce
 **Model tier is now also a policy choice**
 
 - **The config keeps an Opus commander, but Opus 5,** because the newest Opus declines the role. `config.toml` is exactly the matrix's `claude-opus-5` row: 8 of 8.
-- **Sonnet 5.5 commanded it for $0.071 per correct hunt,** the cheapest row, also 8 of 8.
+- **Sonnet 5.5 commanded it for $0.071 per correct hunt,** the cheapest Claude commander, also 8 of 8.
 - **That questions this repo's own "burn Opus on the commander" assumption.** It's a question the repo now has data for, not an answer: 8 hunts per row is a small sample.
 
 **The caution: provider models are dependencies you don't control**
 
-It's not only cost, it's governance. Before a migration the benchmark answers three questions: does the new model still do the job, where does it draw lines, and what does each correct outcome cost?
+It's not only cost, it's governance. Before a migration the benchmark answers four questions: does the new model still do the job, where does it draw lines, what does each correct outcome cost, and is it there when you call it?
 
 - **A model release is a dependency upgrade on the provider's schedule.** You don't choose when it lands, and the usual signals (price, benchmark scores) don't tell you what it will refuse. It breaks working code three ways.
 - **Retirement:** a dated model ID stops resolving, and code that pinned it stops running.

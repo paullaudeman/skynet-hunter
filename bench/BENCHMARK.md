@@ -31,20 +31,39 @@ Runs the live orchestrator on the same hunts with different model sets and recor
 | `wrk-4x` | `claude-opus-5-5` | `claude-sonnet-4-6` | `claude-haiku-4-5` |
 | `wrk-sonnet-5` | `claude-opus-5-5` | `claude-sonnet-5` | `claude-haiku-5-5` |
 
-The `cmd-*` sets sweep the commander over fixed 5.5 workers; the `wrk-*` sets sweep the workers under an Opus 5.5 commander. `MATRIX` lists all seven and is the default for `--sets`.
+The `cmd-*` sets sweep the commander over fixed 5.5 workers; the `wrk-*` sets sweep the workers under an Opus 5.5 commander. `MATRIX` lists all seven and is the default for `--sets`. `CROSS_PROVIDER` adds three non-Claude commanders (`cmd-gemini-3.1-pro`, `cmd-gemini-3.8-flash`, `cmd-gpt-6-astra-high`), described below.
 
 **Outcome classes** (`outcome` field, first match wins)
 
-- `refused`: a **hard** refusal. Any call in the hunt returned `stop_reason == "refusal"`. The `refusals` field keeps model, category and `out_tokens` (how much the model wrote before the refusal landed).
-- `error`: an exception ended the hunt and no refusal was logged.
+- `refused`: a **hard** refusal. Any call in the hunt returned `stop_reason == "refusal"`, or the cross-provider adapter mapped the provider's block signal to it (see below). The `refusals` field keeps model, category and `out_tokens` (how much the model wrote before the refusal landed).
+- `unavailable`: provider capacity. HTTP 503 or 529, "high demand", "overloaded".
+- `quota`: a rate or quota limit. HTTP 429.
+- `billing`: payment state on our side. HTTP 402.
+- `error`: any other exception, with no refusal logged.
 - `soft-refused`: a **soft** refusal. The model answered, but declined in its own words, and the target was not acquired. Detected by a phrase pattern (`SOFT_REFUSAL`) over unit text and over intel-report summaries and notes; matches are kept in `soft_refusals`. The June 2026 Sonnet 4.6 worker refusal was this kind.
 - `correct`: Skynet acquired `target_id`.
 - `wrong`: Skynet acquired a different id.
 - `not found`: the cycle budget ran out, or Skynet stood down.
 
+**`unavailable`, `quota` and `billing` are provider-side failures, not model behaviour.** None counts as a refusal or a miss; leave them out of correct-rate denominators and say how many there were. The harness deliberately does not retry, so `unavailable` counts are raw availability.
+
 **Report hard and soft refusals as separate counts.** They are different events: one is the platform stopping the model, the other is the model saying no.
 
 **Stop reasons are read at the HTTP layer.** An `httpx` response hook taps the raw `/v1/messages` JSON, so `stop_reason`, the refusal category and `out_tokens` are logged even when the SDK then fails to parse a reply that a refusal left incomplete. Any other unexpected stop (for example `max_tokens`) lands in `odd_stops`.
+
+**Cross-provider commanders** (bench only; product code stays Anthropic). Sets whose Skynet model starts `gemini-` or `gpt-` send only Skynet's decision call to that provider; workers stay Claude. Each adapter returns a usage-shaped, parse-shaped stand-in, so `Skynet.decide()` and the cost meter run unchanged. Needs `GEMINI_API_KEY` / `OPENAI_API_KEY` and the SDKs:
+
+```bash
+uv run --with google-genai --with openai python bench/run_bench.py --sets cmd-gemini-3.1-pro cmd-gemini-3.8-flash cmd-gpt-6-astra-high
+```
+
+Each provider's own block signal is logged as a hard refusal, with the provider's reason as the category:
+
+| Provider | Logged as `refused` when | Category |
+|---|---|---|
+| Anthropic | `stop_reason == "refusal"` | `stop_details.category` (e.g. `cyber`) |
+| Google (Gemini) | `prompt_feedback.block_reason` is set, or `finish_reason` is `SAFETY`, `PROHIBITED_CONTENT`, `BLOCKLIST`, `SPII`, `RECITATION` or `IMAGE_SAFETY` | `gemini:<reason>` |
+| OpenAI | the response has a `refusal` content item, or `incomplete_details.reason == "content_filter"` | `openai:refusal` / `openai:content_filter` |
 
 **Cost per correct hunt** = total `cost_usd` of the set ÷ number of `correct` hunts. Prices come from `skynet/cost.py`. The harness refuses to start if a model has no price there. A refused call that the SDK fails to parse never reaches the cost meter, so the cost of a refused hunt is a floor, not the full bill.
 
@@ -91,3 +110,18 @@ Flags: `--sets`, `--scenarios` (default: every key in `SCENARIOS`), `--repeats`,
   - **Every hard refusal came from the commander, `claude-opus-5-5`:** 22 of the 24 hunts it commanded. No worker model refused. No soft refusals.
   - **Where they landed:** 14 of 22 in cycle 1, before any search; 8 of 22 in cycle 2, after a T-800 sweep. 13 of 22 after the model had produced output tokens (up to 426).
   - **Consequence:** `config.toml` moved to the `cmd-opus-5` set (`7b673eb`).
+- **9. Oct 2026, cross-provider commanders**, sets in `CROSS_PROVIDER`, **chip mission**, workers Claude Sonnet 5.5 / Haiku 5.5. Harness and results committed in `833a3d4`. Files: `results/2026-10-09-2107-*`, `-2109-*`, `-2113-*`, `-2132-*`, `-2136-*.jsonl`.
+
+  | Set | Attempts | Correct | Refused | Unavailable (503) | $ per correct hunt |
+  |---|---|---|---|---|---|
+  | `cmd-gemini-3.1-pro` (`gemini-3.1-pro-preview`) | 9 | 7 | 0 | 2 | 0.076 |
+  | `cmd-gemini-3.8-flash` (`gemini-3.8-flash`) | 11 | 7 | 0 | 4 | 0.075 initial run; rerun hunts 0.047 each |
+  | `cmd-gpt-6-astra-high` (`gpt-6-astra`, reasoning effort high) | 9 | 9 | 0 | 0 | 0.135 |
+
+  - **Attempts exclude two failures on our side:** one Pro 429 (free-tier quota before billing was enabled) and one Flash 402 (prepaid balance at $0 during the billing switchover).
+  - **Rerun once:** three Flash hunts and one Pro hunt that hit 503. Flash 3 of 3 correct; Pro 503 again.
+  - **No provider refused.** Every hunt not cut off by a provider error found the chip.
+  - **Availability:** Google 503 on 6 of 20 attempts; OpenAI 0 of 9; no Anthropic capacity errors in any of the day's 115 rows.
+  - **Flash's 0.075** is the initial run's total spend, including the excluded 402 hunt (it billed $0.0387 before failing), over 4 correct hunts.
+  - **Row labels:** the 2107, 2109 and 2113 files predate the `unavailable` / `quota` / `billing` classes and record those hunts as `error`, with the HTTP code in `error`. The counts above classify them by that code.
+  - **Price drift to watch:** `skynet/cost.py` prices Gemini 3.8 Flash at $0.75 / $3.75 per Mtok through 31. Dec 2026, doubling on 1. Jan 2027. Its cost per correct hunt will move with no change on our side.
