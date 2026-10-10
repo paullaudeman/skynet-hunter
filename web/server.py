@@ -9,10 +9,13 @@ orchestrator (real Claude) is the same StreamUI adapter, untouched.
 
     uv run python web/server.py                 # http://localhost:8000/?live  (deterministic)
     # add ANTHROPIC_API_KEY (.env), then open .../?live&engine=claude for real Claude agents
+    # pick the commander for a live hunt: .../?live&engine=claude&commander=claude-sonnet-5-5
+    #   (allow-listed: the config.toml commander plus the Anthropic commanders in bench-summary.json)
     PORT=9000 SPEED=0.5 uv run python web/server.py
 """
 from __future__ import annotations
 
+import dataclasses
 import json
 import os
 import sys
@@ -32,15 +35,33 @@ from skynet.units import build_units                     # noqa: E402
 
 PORT = int(os.environ.get("PORT", "8000"))
 SPEED = float(os.environ.get("SPEED", "1.0"))
+BENCH_SUMMARY = os.path.join(WEB, "bench-summary.json")
 
 
-def run_hunt(emit, scenario_name: str = "cyberdyne-chip", engine: str = "sim", scene: str = "hunt") -> None:
+def allowed_commanders(config: dict | None = None) -> set[str]:
+    """Commander models a live hunt may run on: the config.toml commander, plus the Anthropic
+    commanders the 9. Oct 2026 benchmark measured. Non-Anthropic models are bench only: the
+    product path is Anthropic by design, so they never reach the orchestrator."""
+    config = config or load_config(DEFAULT_CONFIG)
+    allowed = {config["units"]["skynet"]["model"]}
+    try:
+        with open(BENCH_SUMMARY, encoding="utf-8") as f:
+            allowed |= {c["model"] for c in json.load(f)["commanders"] if c.get("provider") == "Anthropic"}
+    except (OSError, ValueError, KeyError):
+        pass  # no summary: the config commander only
+    return allowed
+
+
+def run_hunt(emit, scenario_name: str = "cyberdyne-chip", engine: str = "sim", scene: str = "hunt",
+             commander: str | None = None, client_factory=None) -> None:
     config = load_config(DEFAULT_CONFIG)
     max_cycles = config["mission"]["max_cycles"]
     if scenario_name not in scenario.SCENARIO_CHOICES:
         scenario_name = "cyberdyne-chip"
     sc = scenario.build_scenario(scenario_name)
     units = build_units(config)
+    if commander and commander not in allowed_commanders(config):
+        raise ValueError(f"commander not allowed: {commander!r}")
 
     if scene == "arena":
         # the counter-terminator ~ deterministic only (two scripted orchestrators racing)
@@ -52,14 +73,17 @@ def run_hunt(emit, scenario_name: str = "cyberdyne-chip", engine: str = "sim", s
     if engine == "claude":
         from skynet.cli import load_dotenv
         load_dotenv()
-        if not os.environ.get("ANTHROPIC_API_KEY"):
+        if client_factory is None and not os.environ.get("ANTHROPIC_API_KEY"):
             emit({"type": "note", "text": "no ANTHROPIC_API_KEY ~ running the deterministic engine instead"})
         else:
-            import anthropic
+            from skynet.client import make_client
             from skynet.orchestrator import Skynet
+            if commander:
+                units["skynet"] = dataclasses.replace(units["skynet"], model=commander)
             ui = StreamUI(emit, speed=0.0)  # real API latency paces the stream
             ui.boot()
-            client = anthropic.Anthropic()
+            emit({"type": "commander", "model": units["skynet"].model})
+            client = (client_factory or make_client)()
             try:
                 Skynet(client, units, sc.database(), ui, sc.target_name,
                        max_cycles, profile=sc.profile).run()
@@ -81,6 +105,14 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def _sse(self):
+        q = parse_qs(urlparse(self.path).query)
+        commander = q.get("commander", [None])[0]
+        if commander and commander not in allowed_commanders():
+            self.send_response(400)  # validated before the stream opens: nothing runs
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps({"error": "commander not allowed", "commander": commander}).encode())
+            return
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
@@ -92,12 +124,12 @@ class Handler(SimpleHTTPRequestHandler):
             self.wfile.write(f"data: {json.dumps(ev)}\n\n".encode())
             self.wfile.flush()
 
-        q = parse_qs(urlparse(self.path).query)
         scen = q.get("scenario", ["cyberdyne-chip"])[0]
         engine = q.get("engine", ["sim"])[0]
         scene = q.get("scene", ["hunt"])[0]
+        commander = q.get("commander", [None])[0] or None
         try:
-            run_hunt(emit, scen, engine, scene)
+            run_hunt(emit, scen, engine, scene, commander)
             emit({"type": "end"})
         except (BrokenPipeError, ConnectionResetError):
             pass  # client navigated away mid-stream
