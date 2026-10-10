@@ -237,7 +237,7 @@ class UI:
         except ImportError:                 # not a POSIX terminal: just exit
             return
         self._out(self.t.paint("dim", "  press any key to exit"))
-        up = self._rows_since_jd
+        up = self._rows_since_jd + 1     # +1: after the line's own newline the cursor already sat one row below it
         if up >= shutil.get_terminal_size((100, 30)).lines:
             return                          # the line has scrolled off screen; nothing to redraw
         red, text = self.t.rgb("bad"), self._jd_text
