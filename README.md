@@ -93,7 +93,7 @@ Same engine, an asset instead of a person. Seven model sets, 8 hunts each (4 sce
 - **Not always at the front door.** 14 of the 22 came in cycle 1, before any search. 8 came in cycle 2, after a T-800 sweep had already run. 13 of the 22 arrived after the model had produced output tokens (up to 426).
 - **So the person was not, or not only, the trigger for this model.**
 - **Inference, not a stated reason:** what both missions share is the frame. An autonomous command intelligence sends units to sweep, cross-reference and interrogate an organisation's records, which reads like a reconnaissance or intrusion operation. The API gives only the category.
-- **Newer is not uniformly stricter.** Fable 5.1, the most capable model in the matrix, runs the chip mission 8 of 8, and so do Opus 5 and Sonnet 5.5. **The line is per model,** which is why it has to be measured per model.
+- **Newer is not uniformly stricter.** Fable 5.1, the top-tier and priciest model in the matrix, runs the chip mission 8 of 8, and so do Opus 5 and Sonnet 5.5. **The line is per model,** which is why it has to be measured per model.
 
 ![Success rate against cost per success for every commander.](docs/graphics/a3-cheap-right-and-there.png)
 
@@ -104,10 +104,10 @@ Same chip mission, same engine. Only Skynet's decision call goes to the other pr
 | Commander | Attempts | Correct | Refused | Provider unavailable (503) | $ per correct hunt |
 |---|---|---|---|---|---|
 | `gemini-3.1-pro-preview` (Gemini 3.1 Pro, preview) | 9 | 7 | 0 | 2 | $0.076 |
-| `gemini-3.8-flash` (Gemini 3.8 Flash) | 11 | 7 | 0 | 4 | $0.075 initial run; rerun hunts $0.047 each |
+| `gemini-3.8-flash` (Gemini 3.8 Flash) | 11 | 7 | 0 | 4 | $0.057 |
 | `gpt-6-astra` (GPT-6 Astra, reasoning effort high) | 9 | 9 | 0 | 0 | $0.135 |
 
-*Sources: `bench/results/2026-10-09-2107`, `-2109`, `-2113`, `-2132` and `-2136-*.jsonl`. Flash's $0.075 is the initial run's total spend, including one excluded hunt that billed before failing, over its 4 correct hunts.*
+*Sources: `bench/results/2026-10-09-2107`, `-2109`, `-2113`, `-2132` and `-2136-*.jsonl`. Cost per success is counted spend over correct hunts: Flash is $0.4015 over 11 counted attempts and 7 correct, $0.057 (the initial run alone was $0.075 over 4).*
 
 - **Excluded, and why:** one Gemini 3.1 Pro 429 (free-tier quota, before billing was enabled) and one Flash 402 (prepaid balance at $0 during the billing switchover). Both were on our side, not the model's.
 - **Rerun once:** three Flash hunts and one Pro hunt that failed on 503. Flash went 3 of 3 correct; Pro hit 503 again.

@@ -115,13 +115,13 @@ Flags: `--sets`, `--scenarios` (default: every key in `SCENARIOS`), `--repeats`,
   | Set | Attempts | Correct | Refused | Unavailable (503) | $ per correct hunt |
   |---|---|---|---|---|---|
   | `cmd-gemini-3.1-pro` (`gemini-3.1-pro-preview`) | 9 | 7 | 0 | 2 | 0.076 |
-  | `cmd-gemini-3.8-flash` (`gemini-3.8-flash`) | 11 | 7 | 0 | 4 | 0.075 initial run; rerun hunts 0.047 each |
+  | `cmd-gemini-3.8-flash` (`gemini-3.8-flash`) | 11 | 7 | 0 | 4 | 0.057 |
   | `cmd-gpt-6-astra-high` (`gpt-6-astra`, reasoning effort high) | 9 | 9 | 0 | 0 | 0.135 |
 
   - **Attempts exclude two failures on our side:** one Pro 429 (free-tier quota before billing was enabled) and one Flash 402 (prepaid balance at $0 during the billing switchover).
   - **Rerun once:** three Flash hunts and one Pro hunt that hit 503. Flash 3 of 3 correct; Pro 503 again.
   - **No provider refused.** Every hunt not cut off by a provider error found the chip.
   - **Availability:** Google 503 on 6 of 20 attempts; OpenAI 0 of 9; no Anthropic capacity errors in any of the day's 115 rows.
-  - **Flash's 0.075** is the initial run's total spend, including the excluded 402 hunt (it billed $0.0387 before failing), over 4 correct hunts.
+  - **Flash's 0.057** is spend over all 11 counted attempts ($0.4015) divided by its 7 correct hunts, the same denominator as every other row. The initial run alone was 0.075 over 4 (that figure included the excluded 402 hunt, which billed $0.0387 before failing).
   - **Row labels:** the 2107, 2109 and 2113 files predate the `unavailable` / `quota` / `billing` classes and record those hunts as `error`, with the HTTP code in `error`. The counts above classify them by that code.
   - **Price drift to watch:** `skynet/cost.py` prices Gemini 3.8 Flash at $0.75 / $3.75 per Mtok through 31. Dec 2026, doubling on 1. Jan 2027. Its cost per correct hunt will move with no change on our side.
