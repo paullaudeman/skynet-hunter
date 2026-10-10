@@ -159,6 +159,18 @@ class UI:
         self._out(self.t.paint("dim", '  "Judgment Day is inevitable."'))
         self._out()
 
+    def commander_refused(self, unit: Any, stop_reason: str, category: str | None, output_tokens: int, cost: float) -> None:
+        """The commander declined the role. A result to show, not an error to hide."""
+        self._out()
+        self._out(self.t.band("COMMANDER REFUSED"))
+        self._out(self.t.paint("bad", f"  ⊘ {unit.designation} [{unit.model}] declined the decision call", bold=True))
+        self._out(self.t.paint("bad", f'    stop_reason: "{stop_reason}"'))
+        self._out(self.t.paint("bad", f'    category:    "{category or "not stated"}"'))
+        self._out(self.t.paint("bad", f"    output tokens: {output_tokens:,}"))
+        self._out(self.t.paint("bad", f"    hunt halted ~ ${cost:.4f}", bold=True))
+        self._out(self.t.paint("dim", "  No unit was deployed. Fallback: the config.toml commander (see bench/BENCHMARK.md)."))
+        self._out()
+
     def mission_failed(self) -> None:
         self._out()
         self._out(self.t.band("LEADS EXHAUSTED"))

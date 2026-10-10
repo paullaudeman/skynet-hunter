@@ -17,6 +17,8 @@ from __future__ import annotations
 import json
 import re
 import uuid
+from dataclasses import dataclass
+from types import SimpleNamespace
 from typing import Any
 
 from . import grid
@@ -35,6 +37,31 @@ _REPORT_PROMPT = (
     "you examined, any candidate ids, the confirmed target id if you have one, and "
     "your confidence (0.0-1.0)."
 )
+
+
+@dataclass
+class CommanderRefusal:
+    """The commander declined the decision call (stop_reason "refusal").
+
+    A first-class outcome, not a crash: the hunt stops, the UI says why, and the
+    cost meter still bills the call. `category` comes from `stop_details.category`
+    when the API sends one (the 9. Oct 2026 Opus 5.5 refusals all said "cyber").
+    """
+
+    model: str
+    stop_reason: str
+    category: str | None
+    output_tokens: int
+    cost: float
+
+
+def _refusal_from(model: str, stop_details: Any, usage: Any, cost: float) -> CommanderRefusal:
+    if isinstance(stop_details, dict):
+        category = stop_details.get("category")
+    else:
+        category = getattr(stop_details, "category", None)
+    out = int(getattr(usage, "output_tokens", 0) or 0) if usage is not None else 0
+    return CommanderRefusal(model, "refusal", category, out, cost)
 
 
 def new_session_id(target: str) -> str:
@@ -57,6 +84,7 @@ class Skynet:
         # One session per run, not per target (Decision Card 8): two hunts for the same
         # target must not share memory, and AgentCore Runtime wants an id of 33+ chars.
         self.session_id = session_id or new_session_id(target)
+        self.refusal: CommanderRefusal | None = None
 
     # -- the orchestration loop ------------------------------------------
     def run(self) -> bool:
@@ -68,6 +96,15 @@ class Skynet:
             self.ui.cycle_header(cycle, self.max_cycles)
             before = self.meter.total_cost
             decision = self.decide(store.retrieve(session))
+            if isinstance(decision, CommanderRefusal):
+                # The commander said no. Stop here: no worker is deployed on a refused order.
+                self.refusal = decision
+                self._cost_tick(self.skynet, self.meter.total_cost - before)
+                if hasattr(self.ui, "commander_refused"):
+                    self.ui.commander_refused(self.skynet, decision.stop_reason, decision.category,
+                                              decision.output_tokens, decision.cost)
+                self._cost_summary()
+                return False
             self.ui.skynet_decision(self.skynet, decision)
             self._cost_tick(self.skynet, self.meter.total_cost - before)
 
@@ -104,7 +141,7 @@ class Skynet:
             self.ui.cost_summary(self.meter, self.units)
 
     # -- Skynet's structured decision ------------------------------------
-    def decide(self, intel_log: list[dict[str, Any]]) -> SkynetDecision:
+    def decide(self, intel_log: list[dict[str, Any]]) -> SkynetDecision | CommanderRefusal:
         if intel_log:
             log_text = json.dumps(intel_log, indent=2, ensure_ascii=False)
         else:
@@ -119,15 +156,32 @@ class Skynet:
             "tells you, your REASONING for the next move, and ~ when deploying ~ what "
             "you EXPECT that unit to achieve."
         )
-        resp = self.client.messages.parse(
-            model=self.skynet.model,
-            max_tokens=SKYNET_MAX_TOKENS,
-            system=self.skynet.system_prompt,
-            thinking=self.skynet.thinking_param() or {"type": "adaptive"},
-            messages=[{"role": "user", "content": prompt}],
-            output_format=SkynetDecision,
-        )
-        self.meter.record(self.skynet.model, getattr(resp, "usage", None))
+        model = self.skynet.model
+        if hasattr(self.client, "last_reply"):
+            self.client.last_reply = None  # never read a previous call's reply as this one's
+        try:
+            resp = self.client.messages.parse(
+                model=model,
+                max_tokens=SKYNET_MAX_TOKENS,
+                system=self.skynet.system_prompt,
+                thinking=self.skynet.thinking_param() or {"type": "adaptive"},
+                messages=[{"role": "user", "content": prompt}],
+                output_format=SkynetDecision,
+            )
+        except Exception:
+            # A refusal that lands mid-answer leaves cut-off JSON, and the SDK raises while
+            # parsing it. The tapped client (skynet/client.py) still holds the raw reply.
+            body = getattr(self.client, "last_reply", None) or {}
+            if body.get("stop_reason") != "refusal":
+                raise
+            usage = SimpleNamespace(**(body.get("usage") or {}))
+            cost = self.meter.record(model, usage)
+            return _refusal_from(model, body.get("stop_details"), usage, cost)
+
+        usage = getattr(resp, "usage", None)
+        cost = self.meter.record(model, usage)
+        if getattr(resp, "stop_reason", None) == "refusal":
+            return _refusal_from(model, getattr(resp, "stop_details", None), usage, cost)
         return resp.parsed_output
 
     # -- deploy one unit: manual agentic tool loop -----------------------

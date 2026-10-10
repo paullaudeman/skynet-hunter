@@ -76,6 +76,7 @@ class RecordingClient:
         self._inner = inner
         self._tap = tap
         self.stops: list[dict] = []
+        self.last_reply: dict | None = None  # read by Skynet.decide() to spot a refusal the SDK failed to parse
         self.messages = self
 
     def _call(self, fn, kw):
@@ -84,6 +85,7 @@ class RecordingClient:
             return fn(**kw)
         finally:
             body = self._tap[-1] if self._tap else {}
+            self.last_reply = body
             det = body.get("stop_details") or {}
             self.stops.append({"model": kw.get("model"), "stop": body.get("stop_reason"),
                                "category": det.get("category") if isinstance(det, dict) else None,
@@ -134,7 +136,8 @@ def gemini_parse(stops: list, **kw):
         stop, cat = ("end_turn" if fin_name == "STOP" else (fin_name or "none").lower()), None
     stops.append({"model": kw["model"], "stop": stop, "category": cat, "out_tokens": usage.output_tokens})
     parsed = resp.parsed if stop != "refusal" else None
-    return SimpleNamespace(parsed_output=parsed, usage=usage, stop_reason=stop, content=[])
+    return SimpleNamespace(parsed_output=parsed, usage=usage, stop_reason=stop, content=[],
+                           stop_details=SimpleNamespace(category=cat))
 
 
 def openai_parse(stops: list, **kw):
@@ -155,7 +158,8 @@ def openai_parse(stops: list, **kw):
         stop, cat = ("end_turn" if r.status == "completed" else (reason or r.status)), None
     stops.append({"model": kw["model"], "stop": stop, "category": cat, "out_tokens": usage.output_tokens})
     parsed = r.output_parsed if stop != "refusal" else None
-    return SimpleNamespace(parsed_output=parsed, usage=usage, stop_reason=stop, content=[])
+    return SimpleNamespace(parsed_output=parsed, usage=usage, stop_reason=stop, content=[],
+                           stop_details=SimpleNamespace(category=cat))
 
 
 def make_client():

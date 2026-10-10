@@ -102,11 +102,10 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 1
 
-    import anthropic  # lazy ~ keeps --simulate dependency-light
-
+    from .client import make_client  # lazy ~ keeps --simulate dependency-light
     from .orchestrator import Skynet
 
-    client = anthropic.Anthropic()
+    client = make_client()
     ui.boot()
     skynet = Skynet(client, units, db, ui, target, max_cycles, profile=sc.profile)
     acquired = skynet.run()
