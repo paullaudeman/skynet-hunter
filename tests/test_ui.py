@@ -17,3 +17,11 @@ def test_judgment_day_prints_once_with_art_off(capsys):
     UI(Theme("amber"), art=False).judgment_day('  "Judgment Day is inevitable."')
     out = capsys.readouterr().out
     assert out.count("Judgment Day is inevitable.") == 1 and "\r" not in out
+
+
+def test_hold_returns_at_once_when_not_interactive(capsys):
+    """Scripts, pipes and tests must exit: hold() is a no-op without a terminal."""
+    ui = UI(Theme("amber"), art=True)
+    ui.judgment_day('  "Judgment Day is inevitable."')
+    ui.hold()                       # capsys is not a tty: returns immediately
+    assert "press any key" not in capsys.readouterr().out

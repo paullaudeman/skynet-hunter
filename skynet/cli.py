@@ -90,6 +90,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.simulate:
         simulate.run_simulation(units, sc, ui, max_cycles)
+        ui.hold()
         return 0
 
     # Live path needs a key.
@@ -109,6 +110,7 @@ def main(argv: list[str] | None = None) -> int:
     ui.boot()
     skynet = Skynet(client, units, db, ui, target, max_cycles, profile=sc.profile)
     acquired = skynet.run()
+    ui.hold()
     return 0 if acquired else 2
 
 

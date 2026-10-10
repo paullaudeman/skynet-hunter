@@ -7,6 +7,8 @@ so it doesn't care whether the intel came from a live agent or the simulator.
 from __future__ import annotations
 
 import json
+import re
+import shutil
 import sys
 import time
 from typing import Any
@@ -34,15 +36,29 @@ _BOOT_LINES = [
 ]
 
 
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
 class UI:
     def __init__(self, theme: Theme, art: bool = True):
         self.t = theme
         self.art = art
+        self._jd_text: str | None = None   # the acquisition line, once shown
+        self._rows_since_jd = 0            # screen rows printed below it, for redrawing it in place
 
     # -- low-level --------------------------------------------------------
     def _out(self, s: str = "") -> None:
         sys.stdout.write(s + "\n")
         sys.stdout.flush()
+        self._count_rows(s)
+
+    def _count_rows(self, s: str) -> None:
+        """Track how many terminal rows sit below the Judgment Day line (wrapped lines count as several)."""
+        if self._jd_text is None:
+            return
+        cols = max(20, shutil.get_terminal_size((100, 30)).columns)
+        for line in _ANSI.sub("", s).split("\n"):
+            self._rows_since_jd += max(1, -(-len(line) // cols))
 
     def _type(self, s: str, delay: float = 0.0008) -> None:
         if not self.art:
@@ -54,6 +70,7 @@ class UI:
             time.sleep(delay)
         sys.stdout.write("\n")
         sys.stdout.flush()
+        self._count_rows(s)
 
     def _pause(self, seconds: float) -> None:
         if self.art:
@@ -201,6 +218,52 @@ class UI:
             self._pause(0.1)
         sys.stdout.write("\n")
         sys.stdout.flush()
+        self._jd_text, self._rows_since_jd = text, 0
+
+    def hold(self) -> None:
+        """Keep the Judgment Day line pulsing at the end of a run until a key is pressed.
+
+        Only when the line was shown with art on, and both stdin and stdout are a terminal; otherwise it
+        returns at once, so scripts, pipes, tests and --no-art exit normally. The line is redrawn in place
+        (cursor saved, moved up, restored) with the same rhythm as the HUD: rise, two flickers, hold, fade.
+        Any key or Ctrl-C ends it, and the terminal mode is always restored.
+        """
+        if self._jd_text is None or not (self.art and sys.stdin.isatty() and sys.stdout.isatty()):
+            return
+        try:
+            import select
+            import termios
+            import tty
+        except ImportError:                 # not a POSIX terminal: just exit
+            return
+        self._out(self.t.paint("dim", "  press any key to exit"))
+        up = self._rows_since_jd
+        if up >= shutil.get_terminal_size((100, 30)).lines:
+            return                          # the line has scrolled off screen; nothing to redraw
+        red, text = self.t.rgb("bad"), self._jd_text
+
+        def draw(level: float) -> None:
+            rgb = tuple(int(c * level) for c in red)
+            sys.stdout.write(f"\0337\033[{up}A\r" + fg(rgb) + text + RESET + "\0338")
+            sys.stdout.flush()
+
+        frames = ([0.5 + 0.5 * (i / 12) ** 2 for i in range(1, 13)] + [0.15, 1.0, 0.15, 1.0]
+                  + [1.0] * 16 + [1.0 - 0.5 * (i / 20) for i in range(1, 21)])
+        fd = sys.stdin.fileno()
+        saved = termios.tcgetattr(fd)
+        try:
+            tty.setcbreak(fd)
+            while True:
+                for level in frames:
+                    draw(level)
+                    if select.select([sys.stdin], [], [], 0.1)[0]:
+                        sys.stdin.read(1)
+                        return
+        except KeyboardInterrupt:
+            pass
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, saved)
+            draw(0.5)
 
     def mission_failed(self) -> None:
         self._out()
