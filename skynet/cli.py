@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 from pathlib import Path
@@ -67,6 +68,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--record", action="store_true",
                    help="Write an evidence bundle to runs/<session_id>/ (always on for live runs).")
     p.add_argument("--no-record", action="store_true", help="Live runs only: skip the evidence bundle.")
+    p.add_argument("--bedrock", action="store_true",
+                   help="Run locally with the models on Amazon Bedrock (config.bedrock.toml); needs --aws-region.")
+    p.add_argument("--runtime", metavar="AGENT_RUNTIME_ARN",
+                   help="Run the hunt on AgentCore Runtime and replay it here; needs --aws-region.")
     p.add_argument("--max-cycles", type=int, help="Override the engagement budget.")
     p.add_argument("--no-art", action="store_true", help="Mute the BBS theater / typewriter delays.")
     p.add_argument("--config", default=str(DEFAULT_CONFIG), help="Path to config.toml.")
@@ -75,6 +80,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if (args.bedrock or args.runtime) and args.config == str(DEFAULT_CONFIG):
+        args.config = str(ROOT / "config.bedrock.toml")   # the Bedrock profile ids
     config = load_config(args.config)
 
     max_cycles = args.max_cycles or config["mission"]["max_cycles"]
@@ -140,10 +147,11 @@ def main(argv: list[str] | None = None) -> int:
     from .orchestrator import new_session_id
     session_id = new_session_id(target)
     rec = None
-    if args.record or (not args.simulate and not args.no_record):
+    # a --runtime run keeps its bundle in the cloud and returns the summary; nothing is recorded here
+    if not args.runtime and (args.record or (not args.simulate and not args.no_record)):
         from .evidence import EvidenceRecorder, RecordingStore, RecordingUI
         rec = EvidenceRecorder(session_id, mode="simulate" if args.simulate else "live",
-                               scenario=sc.key, seed=args.seed, target=target,
+                               scenario=sc.key, seed=args.seed, target=target, target_id=sc.target_id,
                                models={k: u.model for k, u in units.items()},
                                archive=None if store is None else type(store).__name__,
                                gate=None if store is None else type(getattr(store, "gate", None)).__name__)
@@ -154,6 +162,10 @@ def main(argv: list[str] | None = None) -> int:
     def bundle_done(outcome: str, **extra) -> None:
         if rec is not None:
             path = rec.finish(outcome, **extra)
+            verdict = json.loads(path.read_text(encoding="utf-8")).get("correct")
+            if verdict is not None:
+                sys.stderr.write(theme.paint("ok" if verdict else "bad",
+                                 f"\n  ground truth ▸ {'correct record' if verdict else 'WRONG RECORD: declared acquired, but not the asset'}\n", bold=not verdict))
             sys.stderr.write(theme.paint("dim", f"\n  evidence ▸ {path.parent}\n"))
 
     if args.simulate:
@@ -162,9 +174,38 @@ def main(argv: list[str] | None = None) -> int:
         ui.hold()
         return 0
 
-    # Live path needs a key.
+    if args.runtime:
+        # The hunt runs in AWS; this terminal only replays it. No Anthropic key involved.
+        if not args.aws_region:
+            sys.stderr.write("  --runtime needs an explicit --aws-region.\n")
+            return 1
+        from .runtime_client import invoke, replay
+        ui.boot()
+        ui.note(f"Running on AgentCore Runtime: {args.runtime.split('/')[-1]}")
+        result = invoke(args.runtime, args.aws_region, {"scenario": args.scenario, "seed": args.seed,
+                                                         "max_cycles": max_cycles, "archive": True})
+        if "error" in result:
+            sys.stderr.write(f"  runtime error: {result['error']}\n")
+            return 1
+        replay(result, ui, units)
+        s = result.get("summary", {})
+        # the cloud bundle lives in the microVM; keep the returned summary and events here as the run's evidence
+        out = ROOT / "runs" / f"{result.get('session_id', 'runtime')}-runtime"
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "runtime-result.json").write_text(json.dumps({"runtime_arn": args.runtime, **result}, indent=1), encoding="utf-8")
+        sys.stderr.write(theme.paint("dim", f"\n  runtime session {result.get('session_id')} · outcome {result.get('outcome')} · "
+                                            f"withheld {len(s.get('archive', {}).get('withheld', []))} · ${(s.get('cost') or {}).get('total_cost', 0):.4f}\n  evidence ▸ {out}\n"))
+        if s.get("correct") is not None:
+            sys.stderr.write(theme.paint("ok" if s["correct"] else "bad", f"  ground truth ▸ {'correct record' if s['correct'] else 'WRONG RECORD: declared acquired, but not the asset'}\n", bold=not s["correct"]))
+        ui.hold()
+        return 0 if result.get("outcome") == "acquired" else 2
+
+    # Live path needs a key (or, with --bedrock, AWS credentials).
     load_dotenv()
-    if not os.environ.get("ANTHROPIC_API_KEY"):
+    if args.bedrock and not args.aws_region:
+        sys.stderr.write("  --bedrock needs an explicit --aws-region.\n")
+        return 1
+    if not args.bedrock and not os.environ.get("ANTHROPIC_API_KEY"):
         sys.stderr.write(
             theme.paint("bad", "\n  No ANTHROPIC_API_KEY found.\n", bold=True)
             + theme.paint("dim", "  Set it (or copy .env.example to .env), or run the offline demo:\n")
@@ -175,7 +216,11 @@ def main(argv: list[str] | None = None) -> int:
     from .client import make_client  # lazy ~ keeps --simulate dependency-light
     from .orchestrator import Skynet
 
-    client = make_client()
+    if args.bedrock:
+        from .client import make_bedrock_client
+        client = make_bedrock_client(args.aws_region)
+    else:
+        client = make_client()
     ui.boot()
     skynet = Skynet(client, units, db, ui, target, max_cycles, profile=sc.profile,
                     session_id=session_id, archive=store)
