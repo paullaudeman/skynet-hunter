@@ -148,11 +148,11 @@
 </header>
 
 <h2>1 · What this is</h2>
-<p class="lead"><b>A toy? No ~ a first step.</b> <span class="skynet">Skynet</span> runs the mission ~ hunt <b>John Connor</b> ~ by commanding terminator sub-agents that use tools to search a synthetic 1984 Los Angeles grid. The skin is 1984. The architecture underneath ~ an intelligence that plans, delegates, and acts through tools ~ is the one everything is being built on right now. <span class="t800">That part isn't the costume.</span></p>
+<p class="lead"><b>A toy? No ~ a first step.</b> <span class="skynet">Skynet</span> runs the mission, recovering <b>the T-800 CPU</b>, by commanding terminator sub-agents that use tools to search a synthetic 1984 Cyberdyne asset registry. The skin is 1984. The architecture underneath ~ an intelligence that plans, delegates, and acts through tools ~ is the one everything is being built on right now. <span class="t800">That part isn't the costume.</span></p>
 <p>It's a multi-agent orchestration demo wearing a T-800 mask. The unsettling thing isn't the AI; it's how clean the separation of concerns is. Skynet reasons and decides. The terminators execute. The tools touch the data. Strip the costume and you have the canonical <b>orchestrator → worker → tools</b> loop you'd build for any real agentic system ~ because it <em>is</em> one.</p>
 
 <div class="callout">
-  <b>First step, not last.</b> Strip the Terminator paint and the loop is unchanged: an orchestrator that reasons, delegates to workers, acts through tools, and decides again. Today it hunts a 10-year-old who doesn't exist, on a grid from 1984. <span class="t800">The architecture doesn't care what you point it at.</span> That's the part worth sitting with ~ the costume is the only thing keeping it cute.
+  <b>First step, not last.</b> Strip the Terminator paint and the loop is unchanged: an orchestrator that reasons, delegates to workers, acts through tools, and decides again. Today it hunts a chip that doesn't exist, in a vault from 1984. <span class="t800">The architecture doesn't care what you point it at.</span> The models do: until 9. Oct 2026 this demo hunted a hidden child, and the models declined, first one worker and then the commander itself. The mission moved to the chip because of that (README, "The pivot").
 </div>
 
 <div class="callout">
@@ -184,9 +184,9 @@
 <table>
   <thead><tr><th>Unit</th><th>Model</th><th>Thinking</th><th>Why it fits</th></tr></thead>
   <tbody>
-    <tr><td class="skynet"><b>🔵 Skynet</b></td><td><code>claude-opus-4-8</code></td><td>adaptive · <code>xhigh</code></td><td>Apex intelligence. Plans, synthesizes, decides. Expensive ~ runs once per cycle, worth it.</td></tr>
-    <tr><td class="t1000"><b>⚪ T-1000</b></td><td><code>claude-sonnet-4-6</code></td><td>adaptive</td><td>The morph <em>is</em> adaptive thinking ~ it reshapes its search when brute force stalls. Mid-tier, agile.</td></tr>
-    <tr><td class="t800"><b>🔴 T-800</b></td><td><code>claude-haiku-4-5</code></td><td>none</td><td>The original. Blunt, cheap, literal. Doesn't deliberate ~ pursues. You want ten cheap passes, not one expensive one.</td></tr>
+    <tr><td class="skynet"><b>🔵 Skynet</b></td><td><code>claude-opus-5</code></td><td>adaptive · <code>xhigh</code></td><td>Apex intelligence. Plans, synthesizes, decides. Expensive ~ runs once per cycle, worth it.</td></tr>
+    <tr><td class="t1000"><b>⚪ T-1000</b></td><td><code>claude-sonnet-5-5</code></td><td>adaptive</td><td>The morph <em>is</em> adaptive thinking ~ it reshapes its search when brute force stalls. Mid-tier, agile.</td></tr>
+    <tr><td class="t800"><b>🔴 T-800</b></td><td><code>claude-haiku-5-5</code></td><td>none</td><td>The original. Blunt, cheap, literal. Doesn't deliberate ~ pursues. You want ten cheap passes, not one expensive one.</td></tr>
   </tbody>
 </table>
 <div class="callout">
@@ -194,11 +194,11 @@
 </div>
 
 <h2>5 · The adversarial grid (why it's not just a lookup)</h2>
-<p>If you could find John Connor with one query, there'd be no agent ~ a <code>SELECT</code> would do. So he's <b>concealed</b>:</p>
+<p>If you could find the CPU with one query, there'd be no agent. A <code>SELECT</code> would do. So it's <b>catalogued under a codename</b>:</p>
 <ul>
-  <li>Filed under an alias (<span class="t1000">"John Reese"</span>), so a literal <code>query_grid(name_contains="Connor")</code> returns his mother and four decoys ~ never him.</li>
-  <li>Age 10, no SSN, no birth record, shifting address ~ a protected minor's profile.</li>
-  <li>The <b>only</b> thread is his protector, <span class="skynet">Sarah Connor</span>. <code>cross_reference("Sarah Connor")</code> surfaces the alias record; <code>interrogate</code> confirms it.</li>
+  <li>Filed as <span class="t1000">"Specimen LODESTONE"</span>, so a literal <code>query_grid(name_contains="CPU")</code> returns the custody lot that holds it and four decoy parts, never the chip.</li>
+  <li>No manufacturer serial, clearance 5, lithography that matches no known supplier: the recovered-specimen profile.</li>
+  <li>The <b>only</b> thread is its custody record, <span class="skynet">the Special Projects custody lot</span>. <code>cross_reference</code> on it surfaces the codename record; <code>interrogate</code> confirms it.</li>
 </ul>
 <p>The blunt <span class="t800">T-800</span> fails on the literal sweep. The adaptive <span class="t1000">T-1000</span> reasons its way in. <em>That gap is the demo.</em></p>
 
@@ -208,19 +208,19 @@
 <h3>Explanatory decisioning</h3>
 <p>Skynet doesn't just emit a verdict ~ it narrates an <b>assessment → reasoning → expectation</b> chain, and each unit reports its <b>method</b>. The viewer sees the <em>why</em>, not just the move. These are structured-output fields, so they're always present and render identically in both front ends.</p>
 <div class="codeblock">
-<pre><code><span style="color:var(--blue)">◤ SKYNET</span> <span style="color:var(--gray)">[claude-opus-4-8]</span>
-<span style="color:var(--gray)">  ANALYSIS  ▸</span> The literal sweep returned only decoys, but Sarah Connor
-              carries a dependent-minor flag. That is the thread.
-<span style="color:var(--gray)">  REASONING ▸</span> A blunt query cannot defeat an alias. Deploy the T-1000 to
-              cross-reference the protector.
+<pre><code><span style="color:var(--blue)">◤ SKYNET</span> <span style="color:var(--gray)">[claude-opus-5]</span>
+<span style="color:var(--gray)">  ANALYSIS  ▸</span> The literal sweep returned decoy parts, but the custody lot
+              holds a specimen under a codename. That is the thread.
+<span style="color:var(--gray)">  REASONING ▸</span> A blunt query cannot defeat a codename. The T-1000 can follow
+              the custody chain and interrogate what it holds.
 <span style="color:var(--amber)">  DECISION  ▸ deploy T-1000</span>
-<span style="color:var(--gray)">  EXPECT    ▸</span> The aliased record of the hidden minor.</code></pre>
+<span style="color:var(--gray)">  EXPECT    ▸</span> The codename record of the recovered asset.</code></pre>
 </div>
 
 <h3>Scenario randomiser</h3>
-<p>The dataset on disk is now just a neutral civilian population. Each run, a <em>scenario</em> injects the target (under an alias), the protector (who shares the target's real surname and carries the "dependent minor" flag), and a handful of surname decoys. <code>--scenario random --seed N</code> rerolls a fresh, reproducible hunt; named templates (<code>john-connor</code>, <code>danny-dyson</code>, <code>blair-brewster</code>, <code>eli-vega</code>) pick a specific one.</p>
+<p>The dataset on disk is just a neutral Cyberdyne inventory. Each run, a <em>scenario</em> injects the target asset (under a project codename), the custody record that holds it (whose name carries the part keyword), and a handful of name-match decoys. <code>--scenario random --seed N</code> rerolls a fresh, reproducible hunt; named templates (<code>cyberdyne-chip</code>, <code>the-arm</code>, <code>neural-net</code>, <code>power-cell</code>) pick a specific one.</p>
 <div class="callout">
-  <b>The invariant that survives randomisation:</b> a literal surname sweep always misses the aliased target but surfaces the protector; cross-referencing the protector always reaches the target. That's what keeps every reroll solvable ~ and keeps the <span class="t800">T-800</span> / <span class="t1000">T-1000</span> gap meaningful.
+  <b>The invariant that survives randomisation:</b> a literal keyword sweep always misses the codename asset but surfaces the custody record; cross-referencing the custody record always reaches the asset. That's what keeps every reroll solvable ~ and keeps the <span class="t800">T-800</span> / <span class="t1000">T-1000</span> gap meaningful.
 </div>
 
 <h2>7 · Two front-ends, one engine</h2>
@@ -231,13 +231,13 @@
 </ul>
 <p>The Textual TUI (<code>--tui</code>) is a 3-pane HUD: unit roster with live status lights, a streaming pursuit log, and the scenario summary. The pursuit runs in a worker thread; updates marshal back to the UI thread via <code>call_from_thread</code>.</p>
 <div class="codeblock">
-<pre><code> CYBERDYNE // SKYNET TERMINAL ────────── OBJECTIVE: John Connor
+<pre><code> CYBERDYNE // SKYNET TERMINAL ────────── OBJECTIVE: T-800 CPU
  UNITS              │ PURSUIT LOG                 │ SCENARIO
- ◤ SKYNET  ◉ think  │ ◤ SKYNET [opus-4-8]         │ target   John Connor
-   opus-4-8         │   ANALYSIS ▸ …              │ alias    John Reese
- ❖ T-1000  ○ idle   │   DECISION ▸ deploy T-800   │ protector Sarah Connor
-   sonnet-4-6       │ ⚙ T-800 deployed            │ relation mother
- ⚙ T-800   ● deploy │   ├ query_grid(Connor)      │
+ ◤ SKYNET  ◉ think  │ ◤ SKYNET [opus-4-8]         │ target   T-800 CPU
+   opus-4-8         │   ANALYSIS ▸ …              │ alias    Specimen LODESTONE
+ ❖ T-1000  ○ idle   │   DECISION ▸ deploy T-800   │ custody  Special Projects lot
+   sonnet-4-6       │ ⚙ T-800 deployed            │ kind     custody lot
+ ⚙ T-800   ● deploy │   ├ query_grid(CPU)         │
    haiku-4-5        │   └ grid ▸ 5 records        │ press r to engage
  ─────────────────────────────────────────────────────────────
  r Run   q Quit</code></pre>
@@ -263,7 +263,7 @@
 <h3>AI &amp; agents</h3>
 <div class="cards">
   <div class="card"><h4>Anthropic Python SDK</h4><p><code>messages.create(tools=…)</code> drives each unit's agentic loop; <code>messages.parse(output_format=…)</code> returns validated structured output; <code>thinking={"type":"adaptive"}</code> on the reasoning tiers.</p></div>
-  <div class="card"><h4>Claude models</h4><p><code>claude-opus-4-8</code> (Skynet) · <code>claude-sonnet-4-6</code> (T-1000) · <code>claude-haiku-4-5</code> (T-800). Three tiers, one tradeoff.</p></div>
+  <div class="card"><h4>Claude models</h4><p><code>claude-opus-5</code> (Skynet) · <code>claude-sonnet-5-5</code> (T-1000) · <code>claude-haiku-5-5</code> (T-800). Three tiers, one tradeoff.</p></div>
 </div>
 
 <h3>Data &amp; validation</h3>
@@ -283,10 +283,10 @@
 <h2>9 · Implementation</h2>
 <div class="filemap">skynet-hunter/
   config.toml            <b>· mission + per-unit model/colour mapping</b>
-  data/los_angeles_1984.json   <b>· neutral civilian pool (targets injected per scenario)</b>
+  data/cyberdyne_1984.json     <b>· neutral asset inventory (target injected per scenario)</b>
   skynet/
     grid.py              <b>· dataset + 3 tools + execute_tool dispatcher</b>
-    scenario.py          <b>· templates + builder: injects the target (randomiser)</b>
+    scenario.py          <b>· templates + builder: injects the asset (randomiser)</b>
     units.py             <b>· per-terminator model config + personas</b>
     schemas.py           <b>· Pydantic: IntelReport, SkynetDecision</b>
     orchestrator.py      <b>· live engine: Skynet loop + each unit's tool loop</b>
@@ -329,7 +329,7 @@ report = client.messages.<span class="c-fn">parse</span>(model=unit.model, messa
 <div class="codeblock">
 <button class="copy" onclick="cp(this)">copy</button>
 <pre><code>resp = client.messages.<span class="c-fn">parse</span>(
-    model=<span class="c-str">"claude-opus-4-8"</span>,
+    model=<span class="c-str">"claude-opus-5"</span>,
     thinking={<span class="c-str">"type"</span>: <span class="c-str">"adaptive"</span>},
     system=SKYNET_SYSTEM,
     messages=[{<span class="c-str">"role"</span>: <span class="c-str">"user"</span>, <span class="c-str">"content"</span>: mission_plus_intel_log}],

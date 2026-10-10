@@ -65,6 +65,9 @@ class Theme:
         self._c = THEMES[self.name]
 
     # -- chrome colors --
+    def rgb(self, key: str) -> tuple[int, int, int]:
+        return self._c.get(key) or UNIT_RGB.get(key) or self._c["accent"]
+
     def paint(self, key: str, text: str, bold: bool = False) -> str:
         rgb = self._c.get(key) or UNIT_RGB.get(key) or self._c["accent"]
         return f"{BOLD if bold else ''}{fg(rgb)}{text}{RESET}"

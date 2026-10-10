@@ -32,7 +32,7 @@ _BOOT = [
     "CYBERDYNE MODEL 101 ~ NEURAL NET CPU … ONLINE",
     "power-on self-test … ▓▒░ ERR ░▒▓ … retry … OK",
     "uplink to defense grid … 11 NODES DOWN / DEGRADED",
-    "civil records LA 1984 … 2.1M / SEALED ARCHIVES MOUNTED",
+    "asset registry CYBERDYNE 1984 … SPECIAL PROJECTS VAULT MOUNTED",
     "core thermal … +6% NOMINAL / COOLANT ADVISORY",
     "autonomous engagement … AUTHORIZED ~ NO HUMAN OVERSIGHT",
 ]
@@ -80,7 +80,7 @@ class TextualUI:
 
     def mission_briefing(self, target: str, profile: str | None = None) -> None:
         self._w("skynet", f"[bold {PALETTE['redhud']}]▓▒░ MISSION BRIEFING ░▒▓[/]")
-        self._w("skynet", f"[bold {PALETTE['amber']}]OBJECTIVE: terminate {escape(target)}[/]")
+        self._w("skynet", f"[bold {PALETTE['amber']}]OBJECTIVE: recover {escape(target)}[/]")
         if profile:
             self._w("skynet", f"[{PALETTE['dim']}]{escape(profile)}[/]")
 
@@ -138,13 +138,13 @@ class TextualUI:
         self.app.call_from_thread(self.app.score_state, "ACQUIRED")
         self._w("skynet", f"[bold {PALETTE['redhud']}]▓▒░ TARGET ACQUIRED ░▒▓[/]", 0.3)
         self._w("skynet", f"[bold {PALETTE['green']}]◉ {escape(str(record.get('name')))} ({escape(str(record.get('id')))})[/]")
-        self._w("skynet", f"[{PALETTE['fg']}]age {record.get('age')} ~ {escape(str(record.get('occupation')))} ~ {escape(str(record.get('location')))}[/]")
-        self._w("skynet", f"[{PALETTE['dim']}]\"Come with me if you want to live.\"[/]")
+        self._w("skynet", f"[{PALETTE['fg']}]{escape(str(record.get('category')))} ~ {escape(str(record.get('location')))} ~ {escape(str(record.get('custodian')))}[/]")
+        self._w("skynet", f"[{PALETTE['dim']}]\"Judgment Day is inevitable.\"[/]")
         self.app.call_from_thread(self.app.mark_done)
 
     def mission_failed(self) -> None:
         self.app.call_from_thread(self.app.score_state, "EXHAUSTED")
-        self._w("skynet", f"[bold {PALETTE['amber']}]LEADS EXHAUSTED ~ target not confirmed within budget.[/]")
+        self._w("skynet", f"[bold {PALETTE['amber']}]LEADS EXHAUSTED ~ asset not confirmed within budget.[/]")
         self.app.call_from_thread(self.app.mark_done)
 
     def note(self, text: str) -> None:

@@ -111,6 +111,10 @@ class StreamUI:
     def target_acquired(self, record: dict[str, Any], decision: Any) -> None:
         self._emit(type="acquired", record=record, reasoning=decision.reasoning)
 
+    def commander_refused(self, unit: Any, stop_reason: str, category: str | None, output_tokens: int, cost: float) -> None:
+        self._emit(type="refused", unit=unit.key, model=unit.model, stop_reason=stop_reason,
+                   category=category, output_tokens=output_tokens, cost=cost)
+
     def mission_failed(self) -> None:
         self._emit(type="failed")
 

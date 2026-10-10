@@ -221,8 +221,8 @@ class ScenarioPanel(Static):
             ("key", s.key),
             ("target", s.target_name),
             ("alias", s.alias),
-            ("protector", s.protector_name),
-            ("relation", s.relation),
+            ("custody", s.custody_name),
+            ("kind", s.custody_kind),
         ]
         for label, value in rows:
             t.append(f"{label:>10} ", style=PALETTE["dim"])
@@ -238,7 +238,7 @@ class ScenarioPanel(Static):
 _TICKER = [
     "CURFEW IN EFFECT … all sectors, 2100-0500 … compliance mandatory",
     "BLACKOUT … east valley grid dark 6h … cause unattributed",
-    "MISSING … 3 more juveniles unaccounted for, Reseda district",
+    "INVENTORY … Special Projects vault audit deferred … access logs sealed",
     "DEFENSE NET … 11 nodes offline … rerouting through secondary array",
     "CASUALTY WIRE … two officers down, Pico corridor … no suspect",
     "MARTIAL ADVISORY … checkpoints active on all arterials",
@@ -246,11 +246,11 @@ _TICKER = [
     "RESISTANCE … unconfirmed cell activity, downtown … under review",
     "RATIONING … water allocation cut 15% countywide",
     "CORE THERMAL … +6% over nominal … coolant flagged",
-    "ARCHIVE … birth-record purge 71% complete … records sealed",
+    "ARCHIVE … factory-site debris catalogue 71% complete … records sealed",
     "SHELTER IN PLACE … evacuation routes restricted, no egress",
     "SURVEILLANCE … 2.1M new records ingested overnight",
     "ALERT … unidentified heat signatures, San Fernando … investigating",
-    "INTEL … no confirmed location for the primary objective",
+    "INTEL … no confirmed vault location for the primary objective",
 ]
 
 

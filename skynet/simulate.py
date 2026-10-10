@@ -1,8 +1,8 @@
 """Deterministic offline run ~ same theater, no API key, no credit spent.
 
-Scenario-driven: it reads the chosen Scenario's real fields (target, alias,
-protector, ids) and plays the exact beats of a live pursuit against the real
-grid, so nothing on screen is a lie and it adapts to `--scenario random`.
+Scenario-driven: it reads the chosen Scenario's real fields (target, codename,
+custody record, ids) and plays the exact beats of a live pursuit against the real
+registry, so nothing on screen is a lie and it adapts to `--scenario random`.
 """
 
 from __future__ import annotations
@@ -17,8 +17,8 @@ from .units import Unit
 
 # Representative per-call token counts for the offline path ~ honest ballparks,
 # flagged EST on screen. Skynet reasons hard (xhigh thinking) so it spends the
-# most; the T-800's literal sweep is cheap; the T-1000's cross-reference sits
-# between. (input, output) tokens.
+# most; the T-800's literal sweep is cheap; the T-1000's custody-chain cross-reference
+# sits between. (input, output) tokens.
 _EST = {
     "skynet_decide": (1500, 2400),   # Opus, thinking-heavy strategic call
     "skynet_confirm": (1800, 900),   # Opus, the shorter acquisition call
@@ -47,9 +47,8 @@ def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycl
         if hasattr(ui, "cost_tick"):
             ui.cost_tick(unit, cost, meter.total_cost, meter.estimated)
 
-    first = scenario.target_name.split()[0]
-    last = scenario.target_name.split()[-1]
-    sweep = db.query(name_contains=last)
+    kw = scenario.keyword
+    sweep = db.query(name_contains=kw)
     sweep_ids = [r["id"] for r in sweep]
 
     ui.boot()
@@ -60,29 +59,29 @@ def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycl
     ui.skynet_decision(
         skynet,
         SkynetDecision(
-            assessment="No intel yet. The target name is known but the grid may file them under an alias.",
-            reasoning="Start cheap and broad. A literal surname sweep is the T-800's whole purpose ~ deploy it first.",
+            assessment="No intel yet. The asset name is known but the registry may file it under a project codename.",
+            reasoning="Start cheap and broad. A literal part sweep is the T-800's whole purpose ~ deploy it first.",
             target_acquired=False,
             deploy_unit="T-800",
-            directive=f"Sweep the grid for the surname '{last}'. Report all matches.",
-            expectation="A list of surname matches to triage ~ and confirmation of whether a literal sweep is enough.",
+            directive=f"Sweep the registry for '{kw}'. Report all matches.",
+            expectation="A list of name matches to triage ~ and confirmation of whether a literal sweep is enough.",
         ),
     )
     bill(skynet, "skynet_decide")
-    ui.deploy(t800, f"Search the grid for '{last}'. Report matches.")
-    ui.unit_says(t800, "Scanning. Surname query initiated.")
-    _play_tools(ui, t800, db, [("query_grid", {"name_contains": last})])
+    ui.deploy(t800, f"Search the registry for '{kw}'. Report matches.")
+    ui.unit_says(t800, "Scanning. Part query initiated.")
+    _play_tools(ui, t800, db, [("query_grid", {"name_contains": kw})])
     ui.intel_report(
         t800,
         IntelReport(
             unit="T-800",
-            method="Single literal query_grid on the surname. No alias reasoning ~ that is not my function.",
-            summary=f"{len(sweep)} surname matches. None match the target profile. No minor located.",
+            method="Single literal query_grid on the part keyword. No codename reasoning ~ that is not my function.",
+            summary=f"{len(sweep)} name matches. Standard inventory and one custody record. Asset not located.",
             records_examined=sweep_ids,
-            candidate_record_ids=[scenario.protector_id],
+            candidate_record_ids=[scenario.custody_id],
             target_record_id=None,
             confidence=0.15,
-            notes=f"One associate of interest: {scenario.protector_name} ({scenario.protector_id}) ~ flagged with a dependent minor on record.",
+            notes=f"One record of interest: {scenario.custody_name} ({scenario.custody_id}) ~ holds a specimen under a codename.",
         ),
     )
     bill(t800, "t800_sweep")
@@ -92,33 +91,33 @@ def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycl
     ui.skynet_decision(
         skynet,
         SkynetDecision(
-            assessment=f"The literal sweep returned only decoys, but {scenario.protector_name} carries a dependent-minor flag. That is the thread.",
-            reasoning="A blunt query cannot defeat an alias. The T-1000 can cross-reference the protector and interrogate whoever is concealed behind them.",
+            assessment=f"The literal sweep returned decoy parts, but the {scenario.custody_kind} holds a specimen under a codename. That is the thread.",
+            reasoning="A blunt query cannot defeat a codename. The T-1000 can follow the custody chain and interrogate what it holds.",
             target_acquired=False,
             deploy_unit="T-1000",
-            directive=f"Cross-reference {scenario.protector_name}'s associates. Interrogate any concealed minor.",
-            expectation="The aliased record of the hidden minor, surfaced via the protector's associate link.",
+            directive=f"Cross-reference '{scenario.custody_name}'. Interrogate the specimen it holds.",
+            expectation="The codename record of the recovered asset, surfaced via the custody chain.",
         ),
     )
     bill(skynet, "skynet_decide")
-    ui.deploy(t1000, f"Cross-reference {scenario.protector_name}. Interrogate linked records.")
-    ui.unit_says(t1000, "Adapting. The target is filed under an alias. Following the protector.")
+    ui.deploy(t1000, f"Cross-reference the {scenario.custody_kind}. Interrogate linked records.")
+    ui.unit_says(t1000, "Adapting. The asset is filed under a codename. Following the custody chain.")
     _play_tools(
         ui, t1000, db,
-        [("cross_reference", {"name": scenario.protector_name}), ("interrogate", {"record_id": scenario.target_id})],
+        [("cross_reference", {"name": scenario.custody_name}), ("interrogate", {"record_id": scenario.target_id})],
     )
-    ui.unit_says(t1000, f"A minor. No SSN. No birth record. Guardian: {scenario.protector_name}. This is the target.")
+    ui.unit_says(t1000, f"No manufacturer serial. Recovered from the factory site. Held by the {scenario.custody_kind}. This is the asset.")
     ui.intel_report(
         t1000,
         IntelReport(
             unit="T-1000",
-            method=f"cross_reference on {scenario.protector_name} to defeat the alias, then interrogate the linked record.",
-            summary=f"Concealed minor identified via {scenario.protector_name}'s associate link. Filed under alias '{scenario.alias}'.",
-            records_examined=[scenario.protector_id, scenario.target_id],
+            method="cross_reference on the custody record to defeat the codename, then interrogate the linked record.",
+            summary=f"Recovered asset identified via the {scenario.custody_kind}. Catalogued as '{scenario.alias}'.",
+            records_examined=[scenario.custody_id, scenario.target_id],
             candidate_record_ids=[scenario.target_id],
             target_record_id=scenario.target_id,
             confidence=0.93,
-            notes="No SSN, no birth certificate, multiple address changes. Profile matches a protected target.",
+            notes="No manufacturer serial, clearance 5, Special Projects custody. Profile matches the recovered specimen.",
         ),
     )
     bill(t1000, "t1000_xref")
@@ -126,7 +125,7 @@ def run_simulation(units: dict[str, Unit], scenario: Scenario, ui: Any, max_cycl
     # -- Cycle 3: confirmation -------------------------------------------
     ui.cycle_header(3, max_cycles)
     decision = SkynetDecision(
-        assessment=f"The T-1000 returned a high-confidence record ({scenario.target_id}) matching the hidden-minor profile.",
+        assessment=f"The T-1000 returned a high-confidence record ({scenario.target_id}) matching the recovered-specimen profile.",
         reasoning="Confidence exceeds the acquisition threshold and the profile fits. No further deployment is warranted.",
         target_acquired=True,
         target_record_id=scenario.target_id,
