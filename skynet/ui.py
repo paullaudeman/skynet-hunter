@@ -11,7 +11,7 @@ import sys
 import time
 from typing import Any
 
-from .theme import Theme
+from .theme import RESET, Theme, fg
 
 _W = 64
 
@@ -156,7 +156,7 @@ class UI:
         self._out(self.t.unit("blue", f"  SKYNET: {decision.reasoning}"))
         self._out()
         self._out(self.t.paint("bad", "  ▓▒░ MISSION COMPLETE ░▒▓", bold=True))
-        self._out(self.t.paint("dim", '  "Judgment Day is inevitable."'))
+        self.judgment_day('  "Judgment Day is inevitable."')
         self._out()
 
     def commander_refused(self, unit: Any, stop_reason: str, category: str | None, output_tokens: int, cost: float) -> None:
@@ -170,6 +170,37 @@ class UI:
         self._out(self.t.paint("bad", f"    hunt halted ~ ${cost:.4f}", bold=True))
         self._out(self.t.paint("dim", "  No unit was deployed. Fallback: the config.toml commander (see bench/BENCHMARK.md)."))
         self._out()
+
+    def judgment_day(self, text: str) -> None:
+        """Slow fade, blink, hold, slow fade: the acquisition line's one beat.
+
+        Redrawn in place with a carriage return on a truecolor ramp of the theme's red.
+        With art off, or when stdout is not a terminal, it prints once, plainly.
+        """
+        red = self.t.rgb("bad")
+        if not (self.art and sys.stdout.isatty()):
+            self._out(self.t.paint("bad", text))
+            return
+
+        def draw(level: float) -> None:
+            rgb = tuple(int(c * level) for c in red)
+            sys.stdout.write("\r" + fg(rgb) + text + RESET)
+            sys.stdout.flush()
+
+        for i in range(1, 16):              # slow fade in, ~1.5 s, ease-in
+            draw(0.12 + 0.88 * (i / 15) ** 2)
+            self._pause(0.1)
+        for _ in range(2):                  # two quick CRT flickers
+            draw(0.15)
+            self._pause(0.06)
+            draw(1.0)
+            self._pause(0.06)
+        self._pause(1.6)                    # hold at full
+        for i in range(1, 11):              # slow fade down to a dim resting red, ~1 s
+            draw(1.0 - 0.5 * (i / 10))
+            self._pause(0.1)
+        sys.stdout.write("\n")
+        sys.stdout.flush()
 
     def mission_failed(self) -> None:
         self._out()

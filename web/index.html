@@ -345,6 +345,23 @@ body{
 .boot .warn{color:var(--amber); }
 .boot .big{font-family:var(--disp); font-size:44px; letter-spacing:6px; margin-bottom:18px; color:var(--amber)}
 
+/* ---- the acquisition line: slow fade, blink, hold, slow fade (once) ----
+   6.34 s: fade in 1.6 s (ease-in) · two 120 ms flickers · hold 2.5 s · fade to a 35% resting glow over 2 s */
+.jday{ color:var(--red); opacity:0; text-shadow:0 0 8px rgba(255,106,77,.75);
+  animation:jday 6.34s linear 1 forwards; }
+@keyframes jday{
+  0%    { opacity:0;   text-shadow:0 0 0 rgba(255,106,77,0);     animation-timing-function:ease-in; }
+  25.2% { opacity:1;   text-shadow:0 0 9px rgba(255,106,77,.8); }
+  25.3% { opacity:.12; } 26.1% { opacity:.12; }
+  26.2% { opacity:1; }   27.1% { opacity:1; }
+  27.2% { opacity:.12; } 28.0% { opacity:.12; }
+  28.1% { opacity:1; }
+  68.5% { opacity:1;   text-shadow:0 0 9px rgba(255,106,77,.8);  animation-timing-function:ease-out; }
+  100%  { opacity:.35; text-shadow:0 0 3px rgba(255,106,77,.25); }
+}
+.jday.still{ animation:none; opacity:1; }
+@media (prefers-reduced-motion: reduce){ .jday{ animation:none; opacity:1; } }
+
 /* ---- commander refusal (E2) ~ the one place red owns a whole pane ---- */
 .col.refused{ border-color:var(--red); box-shadow:0 0 16px rgba(255,106,77,.18); }
 .col.refused .hd{ border-bottom-color:var(--red); }
@@ -986,7 +1003,7 @@ async function runHunt(myId){
   await W("skynet",[{t:"◉ "+SCENARIO.alias+" ("+TARGET_ID+")",c:"win"}]);
   fg({type:"acquired", record:{id:TARGET_ID}});
   await W("skynet",[{t:SCENARIO.category+" ~ Special Projects vault, sublevel 2",c:"dim"}]);
-  await W("skynet",[{t:'"Judgment Day is inevitable."',c:"ft"}]);
+  await W("skynet",[{t:'"Judgment Day is inevitable."',c:"jday"}]);
 }
 
 /* ---- ARENA tape ~ the counter-terminator (mirrors skynet/arena.py) ----
@@ -1160,7 +1177,7 @@ async function renderEvent(ev){
       const r=ev.record||{};
       await W("skynet",[{t:`◉ ${r.name} (${r.id})`,c:"win"}]);
       await W("skynet",[{t:`${r.category} ~ ${r.location} ~ ${r.custodian}`,c:"dim"}]);
-      await W("skynet",[{t:'"Judgment Day is inevitable."',c:"ft"}]); break; }
+      await W("skynet",[{t:'"Judgment Day is inevitable."',c:"jday"}]); break; }
     case "failed":
       HUD.state("LEADS DRY");
       await W("skynet",[{t:"LEADS EXHAUSTED ~ asset not confirmed",c:"dim"}]); break;
@@ -1404,7 +1421,7 @@ function renderShot(){
   put("skynet","▓▒░ TARGET ACQUIRED ░▒▓","win");
   put("skynet","◉ Specimen LODESTONE (CYB-1984-0742)","win");
   put("skynet","processor ~ Special Projects vault, sublevel 2","dim");
-  put("skynet",'"Judgment Day is inevitable."',"ft");
+  put("skynet",'"Judgment Day is inevitable."',"jday still");
   put("t800","❖ DEPLOY  sweep the registry for 'CPU'","hi");
   put("t800","» Scanning. Part query initiated.","");
   put("t800","├ query_grid(name_contains='CPU')","tool");
