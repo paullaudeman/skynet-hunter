@@ -83,6 +83,11 @@ class Scenario:
     profile: str            # one-line description of the obfuscation, for the briefing
     records: list[dict]
 
+    @property
+    def codename(self) -> str:
+        """The bare codename, e.g. 'LODESTONE' from 'Specimen LODESTONE'."""
+        return self.alias.removeprefix("Specimen ")
+
     def database(self) -> grid.GridDatabase:
         return grid.GridDatabase(self.records)
 
