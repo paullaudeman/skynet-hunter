@@ -269,6 +269,22 @@ Named scenarios:
 
 Each run, Skynet narrates its **assessment → reasoning → expectation** and each unit reports its **method**, so the viewer sees the *why*, not just the verdict.
 
+### On Amazon Bedrock AgentCore
+
+The same hunt, unchanged, deployed to **AgentCore Runtime** with its models on **Amazon Bedrock** (10. Oct 2026, us-east-1, Terraform in [`infra/runtime/`](infra/runtime/)):
+
+- **Runtime:** direct code deploy (ARM64, Python 3.13), one microVM per session, an execution role scoped to three model profiles, one Knowledge Base and one guardrail. [`skynet/agentcore_app.py`](skynet/agentcore_app.py) is the entrypoint.
+- **Replay:** the runtime returns the hunt's UI calls as events; `--runtime <arn>` replays them in this terminal, so a cloud run reads like a local one.
+- **Models:** Claude Opus 4.6, Sonnet 4.6 and Haiku 4.5 on `global.` profiles ([`config.bedrock.toml`](config.bedrock.toml)). The 5 generation is not yet enabled for the account on Bedrock; `--bedrock` runs the same set locally.
+- **Ground truth:** every run checks the record it declared acquired against the scenario's answer and prints **WRONG RECORD** when it misses.
+
+```bash
+./infra/runtime/build_runtime.sh && terraform -chdir=infra/runtime apply -var region=us-east-1
+uv run python -m skynet --runtime <agent-runtime-arn> --aws-region us-east-1
+```
+
+**Measured, four scenarios per arm, archive on:** $0.194 and 99 s a hunt on Bedrock (4.x) against $0.144 and 70 s on the Anthropic API (5 generation), all correct. A same-model latency probe ([`bench/latency/`](bench/latency/)) puts the gap on the model generation, not on Bedrock: the 4.x models were no faster on the Anthropic API. Runtime compute is at most 1.9% of the token bill.
+
 ### In the browser
 
 The [deployed link](https://paullaudeman.github.io/skynet-hunter/) plays a baked event tape. To stream the **real engine** into the same CRT HUD over SSE (stdlib only, no key):
