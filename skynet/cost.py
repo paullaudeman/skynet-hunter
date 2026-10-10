@@ -32,6 +32,11 @@ PRICING: dict[str, tuple[float, float]] = {
     "claude-opus-5": (5.0, 25.0),
     "claude-sonnet-5": (2.0, 10.0),
     "claude-fable-5-1": (10.0, 50.0),
+    # Cross-provider commanders for the benchmark, read 9. Oct 2026: ai.google.dev pricing (paid tier,
+    # prompts under 200K) and developers.openai.com pricing (standard, short context).
+    "gemini-3.1-pro-preview": (2.0, 12.0),
+    "gemini-3.8-flash": (0.75, 3.75),  # through 31. Dec 2026; doubles 1. Jan 2027
+    "gpt-6-astra": (10.0, 50.0),
     "claude-sonnet-5-5": (2.0, 10.0),
     "claude-haiku-5-5": (0.10, 0.50),  # prompts up to 100K tokens; this demo's prompts are far smaller
 }

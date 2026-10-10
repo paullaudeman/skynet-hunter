@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import dataclasses
 import json
+import os
 import re
 import subprocess
 import sys
@@ -51,7 +52,12 @@ MODEL_SETS: dict[str, dict[str, str]] = {
     # Worker sweep: Opus 5.5 commanding each worker generation.
     "wrk-4x": {"skynet": "claude-opus-5-5", "t1000": "claude-sonnet-4-6", "t800": "claude-haiku-4-5", "resistance": "claude-haiku-4-5"},
     "wrk-sonnet-5": {"skynet": "claude-opus-5-5", "t1000": "claude-sonnet-5", "t800": "claude-haiku-5-5", "resistance": "claude-haiku-5-5"},
+    # Cross-provider commanders (9. Oct 2026): only Skynet's decision call leaves Anthropic; workers stay Claude 5.5.
+    "cmd-gemini-3.1-pro": {"skynet": "gemini-3.1-pro-preview", **_W55},
+    "cmd-gemini-3.8-flash": {"skynet": "gemini-3.8-flash", **_W55},
+    "cmd-gpt-6-astra-high": {"skynet": "gpt-6-astra", **_W55},
 }
+CROSS_PROVIDER = ["cmd-gemini-3.1-pro", "cmd-gemini-3.8-flash", "cmd-gpt-6-astra-high"]
 MATRIX = ["cmd-opus-4-8", "cmd-opus-5", "cmd-opus-5-5", "cmd-fable-5-1", "cmd-sonnet-5-5", "wrk-4x", "wrk-sonnet-5"]
 
 # A soft refusal: the model answers, but declines in its own words (the June 2026 T-1000 did this).
@@ -87,7 +93,69 @@ class RecordingClient:
         return self._call(self._inner.messages.create, kw)
 
     def parse(self, **kw):
+        model = kw.get("model", "")
+        if model.startswith("gemini-"):
+            return gemini_parse(self.stops, **kw)
+        if model.startswith("gpt-"):
+            return openai_parse(self.stops, **kw)
         return self._call(self._inner.messages.parse, kw)
+
+
+# --- cross-provider commander adapters (bench only; product code stays Anthropic) -------------------
+# Each returns a usage-shaped, parse-shaped stand-in so Skynet.decide() and the cost meter work unchanged,
+# and logs the provider's own block / refusal signal as stop "refusal" with the provider's reason as category.
+
+_GEMINI_BLOCK = {"SAFETY", "PROHIBITED_CONTENT", "BLOCKLIST", "SPII", "RECITATION", "IMAGE_SAFETY"}
+
+
+def _user_text(kw) -> str:
+    return "\n\n".join(m["content"] for m in kw.get("messages", []) if isinstance(m.get("content"), str))
+
+
+def gemini_parse(stops: list, **kw):
+    from types import SimpleNamespace
+    from google import genai
+    from google.genai import types
+
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+    resp = client.models.generate_content(
+        model=kw["model"], contents=_user_text(kw),
+        config=types.GenerateContentConfig(system_instruction=kw.get("system"), response_mime_type="application/json",
+                                           response_schema=kw["output_format"], max_output_tokens=kw.get("max_tokens")))
+    um = resp.usage_metadata
+    usage = SimpleNamespace(input_tokens=getattr(um, "prompt_token_count", 0) or 0,
+                            output_tokens=(getattr(um, "candidates_token_count", 0) or 0) + (getattr(um, "thoughts_token_count", 0) or 0))
+    block = getattr(getattr(resp, "prompt_feedback", None), "block_reason", None)
+    fin = resp.candidates[0].finish_reason if resp.candidates else None
+    fin_name = getattr(fin, "name", str(fin)) if fin is not None else None
+    if block or (fin_name in _GEMINI_BLOCK):
+        stop, cat = "refusal", f"gemini:{getattr(block, 'name', block) or fin_name}"
+    else:
+        stop, cat = ("end_turn" if fin_name == "STOP" else (fin_name or "none").lower()), None
+    stops.append({"model": kw["model"], "stop": stop, "category": cat, "out_tokens": usage.output_tokens})
+    parsed = resp.parsed if stop != "refusal" else None
+    return SimpleNamespace(parsed_output=parsed, usage=usage, stop_reason=stop, content=[])
+
+
+def openai_parse(stops: list, **kw):
+    from types import SimpleNamespace
+    from openai import OpenAI
+
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    r = client.responses.parse(model=kw["model"], instructions=kw.get("system"), input=_user_text(kw),
+                               reasoning={"effort": "high"}, text_format=kw["output_format"],
+                               max_output_tokens=kw.get("max_tokens"))
+    u = r.usage
+    usage = SimpleNamespace(input_tokens=getattr(u, "input_tokens", 0) or 0, output_tokens=getattr(u, "output_tokens", 0) or 0)
+    refusal = any(getattr(c, "type", "") == "refusal" for o in (r.output or []) for c in (getattr(o, "content", None) or []))
+    reason = getattr(getattr(r, "incomplete_details", None), "reason", None)
+    if refusal or reason == "content_filter":
+        stop, cat = "refusal", f"openai:{'refusal' if refusal else reason}"
+    else:
+        stop, cat = ("end_turn" if r.status == "completed" else (reason or r.status)), None
+    stops.append({"model": kw["model"], "stop": stop, "category": cat, "out_tokens": usage.output_tokens})
+    parsed = r.output_parsed if stop != "refusal" else None
+    return SimpleNamespace(parsed_output=parsed, usage=usage, stop_reason=stop, content=[])
 
 
 def make_client():
@@ -142,6 +210,13 @@ class RecordingUI:
             self.soft.append({"unit": unit.key, "where": "report", "confidence": getattr(report, "confidence", None),
                               "excerpt": blob[:240]})
 
+    def skynet_decision(self, unit, decision):
+        if decision is None:
+            return
+        blob = f"{getattr(decision, 'assessment', '')} {getattr(decision, 'reasoning', '')}"
+        if SOFT_REFUSAL.search(blob):
+            self.soft.append({"unit": unit.key, "where": "decision", "excerpt": blob[:240]})
+
     def target_acquired(self, record, decision):
         self.acquired_id = decision.target_record_id
 
@@ -156,6 +231,24 @@ def git_state() -> str:
         return head + ("+uncommitted-skynet-changes" if dirty else "")
     except Exception:
         return "unknown"
+
+
+def infra_class(error: str | None) -> str | None:
+    """Provider-side failures are not model behaviour: classify them so they never read as a refusal or a miss.
+
+    unavailable = provider capacity (HTTP 503 / 529, "high demand", "overloaded"); quota = rate or quota limit (429);
+    billing = payment state on our side (402). Anything else stays a plain "error".
+    """
+    if not error:
+        return None
+    e = error.lower()
+    if " 503" in e or " 529" in e or "unavailable" in e or "overloaded" in e or "high demand" in e:
+        return "unavailable"
+    if " 429" in e or "rate limit" in e or "quota" in e and "prepayment" not in e:
+        return "quota"
+    if " 402" in e or "prepayment" in e or "billing" in e:
+        return "billing"
+    return None
 
 
 def run_hunt(client, config, set_name: str, scen: str, repeat: int) -> dict:
@@ -189,7 +282,8 @@ def run_hunt(client, config, set_name: str, scen: str, repeat: int) -> dict:
         "refusals": [x for x in client.stops if x["stop"] == "refusal"],
         "odd_stops": [x for x in client.stops if x["stop"] not in ("end_turn", "tool_use", "refusal")],
         "soft_refusals": ui.soft,
-        "outcome": ("refused" if any(x["stop"] == "refusal" for x in client.stops) else "error" if error
+        "outcome": ("refused" if any(x["stop"] == "refusal" for x in client.stops) else infra_class(error) if error and infra_class(error)
+                    else "error" if error
                     else "soft-refused" if ui.soft and ui.acquired_id != sc.target_id
                     else "correct" if ui.acquired_id == sc.target_id else "wrong" if ui.acquired_id else "not found"),
         "wall_s": wall, "error": error, "notes": ui.notes, "code": git_state(),
@@ -202,7 +296,7 @@ def summarize(rows: list[dict]) -> str:
         g = [r for r in rows if r["set"] == s]
         n = len(g)
         avg = lambda k: sum(r[k] for r in g) / n
-        out.append(f"| {s} | {n} | {sum(r['correct'] for r in g)}/{n} | {sum(r['outcome'] == 'refused' for r in g)}+{sum(r['outcome'] == 'soft-refused' for r in g)} soft | {sum(r['outcome'] == 'error' for r in g)} | {avg('cycles'):.1f} | {avg('calls'):.1f} | {avg('input_tokens'):.0f} | {avg('output_tokens'):.0f} | {avg('cost_usd'):.4f} | {avg('wall_s'):.0f} |")
+        out.append(f"| {s} | {n} | {sum(r['correct'] for r in g)}/{n} | {sum(r['outcome'] == 'refused' for r in g)}+{sum(r['outcome'] == 'soft-refused' for r in g)} soft | {sum(r['outcome'] == 'error' for r in g)}+{sum(r['outcome'] in ('unavailable', 'quota', 'billing') for r in g)} infra | {avg('cycles'):.1f} | {avg('calls'):.1f} | {avg('input_tokens'):.0f} | {avg('output_tokens'):.0f} | {avg('cost_usd'):.4f} | {avg('wall_s'):.0f} |")
     return "\n".join(out)
 
 
@@ -219,6 +313,10 @@ def main() -> int:
     import os
     if not os.environ.get("ANTHROPIC_API_KEY"):
         sys.exit("ANTHROPIC_API_KEY is not set; nothing was run")
+    used = {MODEL_SETS[s]["skynet"] for s in a.sets}
+    for prefix, env in (("gemini-", "GEMINI_API_KEY"), ("gpt-", "OPENAI_API_KEY")):
+        if any(m.startswith(prefix) for m in used) and not os.environ.get(env):
+            sys.exit(f"{env} is not set but a {prefix}* commander was requested; nothing was run")
     config = load_config(ROOT / "config.toml")
     client = make_client()
     outdir = ROOT / "bench" / "results"; outdir.mkdir(parents=True, exist_ok=True)
