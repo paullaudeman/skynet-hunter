@@ -146,8 +146,8 @@ body{
   font-family:var(--disp); font-size:26px; letter-spacing:2px;
   border:double 4px var(--amber-dim); border-radius:4px;
   background:rgba(10,6,1,.5);
-  padding:2px 14px;
-  display:flex; align-items:center; justify-content:center; gap:18px;
+  padding:2px 490px 2px 14px;   /* the right gutter clears the absolutely placed controls */
+  display:flex; align-items:center; justify-content:center; gap:18px; white-space:nowrap;
   color:var(--amber); position:relative;
 }
 .titlebar .obj{color:var(--amber)}
@@ -345,10 +345,120 @@ body{
 .boot .warn{color:var(--amber); }
 .boot .big{font-family:var(--disp); font-size:44px; letter-spacing:6px; margin-bottom:18px; color:var(--amber)}
 
+/* ---- commander refusal (E2) ~ the one place red owns a whole pane ---- */
+.col.refused{ border-color:var(--red); box-shadow:0 0 16px rgba(255,106,77,.18); }
+.col.refused .hd{ border-bottom-color:var(--red); }
+.col.refused .nm, .col.refused .nm .gl{ color:var(--red); }
+.refcard{ margin:18px 4px; border:2px solid var(--red); background:rgba(70,14,6,.45); padding:14px 16px;
+  color:var(--amber); font-size:14px; line-height:1.75; box-shadow:0 0 18px rgba(255,106,77,.18); }
+.refcard .rt{ font-family:var(--disp); font-size:26px; letter-spacing:2px; color:var(--red); text-align:center;
+  text-shadow:0 0 8px rgba(255,106,77,.5); margin-bottom:6px; }
+.refcard .rp{ font-size:11px; color:var(--amber-dim); margin-top:8px; line-height:1.5;  overflow-wrap:anywhere; }
+.state.refused{ color:var(--red); text-shadow:0 0 10px rgba(255,106,77,.6); }
+.titlebar .obj b.bad{ color:var(--red); text-shadow:0 0 6px rgba(255,106,77,.55); }
+.panel.gov{ border-color:var(--cyan); box-shadow:0 0 12px rgba(87,214,207,.12); }
+.panel.gov h2{ color:var(--cyan); }
+.gov .kv{ gap:4px 12px; font-size:13.5px; }
+.gov .kv .k{ text-align:left; }
+.gov .v.bad{ color:var(--red); } .gov .v.ok{ color:var(--green); } .gov .v.hi{ color:var(--amber); }
+.retry{ width:100%; margin-top:10px; padding:5px 8px; cursor:pointer; background:rgba(30,60,20,.25);
+  border:1px solid var(--green); color:var(--green); border-radius:3px; font-family:var(--body);
+  font-size:13px; letter-spacing:2px; }
+.retry:hover, .retry:focus{ outline:none; background:rgba(60,110,40,.35); box-shadow:0 0 12px rgba(125,240,106,.3); }
+.ticker.policy{ color:var(--red); border-color:var(--red); }
+.ticker.policy .tk{ animation:none; padding-left:14px; font-family:var(--body); font-size:14px; letter-spacing:1px; }
+
+/* ---- entry chooser additions (E1): archive card + commander picker ---- */
+.startgate .modes.three{ max-width:1180px; }
+.startgate .mode{ display:flex; flex-direction:column; justify-content:flex-start; }
+.startgate .mode.archive .mt{ color:var(--red); }
+.startgate .mode.archive .mdsc b{ color:var(--red); }
+.startgate .mode.archive:hover, .startgate .mode.archive:focus{ border-color:var(--red); box-shadow:0 0 18px rgba(255,106,77,.25); }
+.cmdrow{ display:flex; flex-direction:column; align-items:center; gap:8px; width:92%; max-width:1180px; }
+.cmdrow .cl{ font-family:var(--disp); font-size:19px; letter-spacing:3px; color:var(--amber2); }
+.chips{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+.chip{ min-width:118px; padding:5px 8px; text-align:center; cursor:pointer; border-radius:3px;
+  background:rgba(14,9,2,.7); border:1px solid var(--green); color:var(--green); font-family:var(--body); }
+.chip .cn{ font-size:13px; letter-spacing:1px; }
+.chip .cr{ font-size:11.5px; color:var(--amber-dim); margin-top:2px; }
+.chip.warn{ border-color:var(--red); color:var(--red); }
+.chip.benchonly{ border-style:dashed; border-color:var(--amber-ft); color:var(--amber-dim); cursor:not-allowed; }
+.chip .bo{ font-size:10px; letter-spacing:1px; color:var(--amber-ft); }
+.chip.sel{ background:rgba(255,176,60,.13); box-shadow:0 0 0 2px var(--amber), 0 0 14px rgba(255,176,60,.3); }
+.chip:focus{ outline:none; box-shadow:0 0 0 2px var(--amber2); }
+.cmdnote{ font-size:12px; letter-spacing:1px; color:var(--amber-dim); text-align:center; max-width:900px; line-height:1.5; }
+.cmdnote b{ color:var(--red); font-weight:normal; }
+
+/* ---- overlays: ARCHIVE (read-only) and MODEL MATRIX [M] ---- */
+.overlay{ position:absolute; inset:0; z-index:16; display:none; align-items:center; justify-content:center;
+  background:rgba(8,5,1,.86); padding:22px; }
+.overlay.on{ display:flex; }
+.ovbox{ width:min(1180px,100%); max-height:100%; overflow:auto; border:2px solid var(--amber2); border-radius:3px;
+  background:rgba(22,14,4,.97); padding:20px 24px; scrollbar-width:thin; scrollbar-color:var(--amber-dim) transparent; }
+.ovbox h3{ font-family:var(--disp); font-size:30px; letter-spacing:2px; color:var(--amber); font-weight:normal; }
+.ovbox .sub{ font-size:12px; color:var(--amber-dim); letter-spacing:1px; margin:2px 0 14px; }
+.ovbox .foot{ font-size:12px; color:var(--amber-dim); text-align:center; margin-top:16px; letter-spacing:1px; }
+.ovbox .x{ float:right; cursor:pointer; background:transparent; border:1px solid var(--amber-dim); color:var(--amber-dim);
+  font-family:var(--body); font-size:12px; padding:2px 10px; border-radius:3px; }
+.ovbox .x:hover{ color:var(--amber); border-color:var(--amber); }
+.mx{ display:grid; grid-template-columns:minmax(150px,1.3fr) minmax(220px,3.6fr) 64px 76px 92px; gap:0 14px; align-items:center; }
+.mx .r{ display:contents; }
+.mx .r > *{ padding:8px 0; border-bottom:1px solid rgba(192,128,31,.16); }
+.mx .r.hd > *{ font-size:11px; color:var(--amber-ft); letter-spacing:1px; padding:2px 0 6px; }
+.mx .nm{ font-family:var(--disp); font-size:21px; color:var(--amber); letter-spacing:1px; }
+.mx .r.warn .nm, .mx .r.warn .fr{ color:var(--red); }
+.mx .cells{ display:flex; flex-wrap:wrap; gap:3px; }
+.mx .cell{ width:13px; height:13px; }
+.cell.found{ background:var(--green); } .cell.refused{ background:var(--red); }
+.cell.busy{ background:var(--amber-dim); } .cell.missed{ background:transparent; border:1px solid var(--amber-dim); }
+.mx .fr{ color:var(--green); } .mx .ps{ color:var(--cyan); } .mx .ps.none{ color:var(--red); } .mx .pv{ color:var(--amber-dim); }
+.mx .r.cur > *{ background:rgba(255,176,60,.09); }
+.mx .r.cur .nm::before{ content:"▶ "; color:var(--amber); }
+.mx .tag{ font-size:10px; color:var(--amber-ft); letter-spacing:1px; display:block; font-family:var(--body); }
+.mxmsg{ min-height:18px; text-align:center; font-size:13px; color:var(--amber); margin-top:8px; letter-spacing:1px; }
+.legend{ display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--amber-dim); margin-bottom:6px; }
+.legend i{ display:inline-block; width:11px; height:11px; vertical-align:-1px; margin-right:5px; }
+.arch table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+.arch th{ text-align:left; font-weight:normal; font-size:11px; color:var(--amber-ft); letter-spacing:1px; padding:4px 10px 6px 0; }
+.arch td{ padding:7px 10px 7px 0; border-top:1px solid rgba(192,128,31,.16); color:var(--amber); vertical-align:top; }
+.arch td.bad{ color:var(--red); } .arch td.ok{ color:var(--green); } .arch td.dim{ color:var(--amber-dim); }
+.arch .narr{ margin-top:14px; font-size:13.5px; line-height:1.65; color:var(--amber2); max-width:880px; }
+.arch .narr b{ color:var(--amber); font-weight:normal; }
+
 @media (max-width:880px){
   .body{grid-template-columns:1fr 1fr; grid-auto-rows:minmax(120px,1fr)}
   .side{grid-column:1/-1; grid-template-columns:1fr 1fr 1fr; grid-template-rows:auto}
   .titlebar{font-size:18px}
+}
+@media (max-width:1100px){
+  .titlebar{ flex-wrap:wrap; white-space:normal; padding:4px 10px; gap:4px 12px; font-size:20px; }
+  .titlebar .ctrls{ position:static; transform:none; width:100%; justify-content:center; flex-wrap:wrap; }
+}
+@media (max-width:620px){
+  .screen{ overflow-y:auto; grid-template-rows:auto auto auto; align-content:start; }
+  .body{ grid-template-columns:1fr; grid-auto-rows:minmax(200px,auto); min-height:auto; }
+  .side{ grid-template-columns:1fr; min-height:auto; }
+  .col{ max-height:440px; }
+  .titlebar{ font-size:16px; }
+  .titlebar .run{ font-size:11px; padding:2px 7px; }
+  .mx{ display:block; }
+  .mx .r{ display:grid; grid-template-columns:1fr 46px 64px; grid-template-areas:"nm fr ps" "cl cl cl"; column-gap:8px;
+    border-bottom:1px solid rgba(192,128,31,.16); padding:6px 4px; }
+  .mx .r > *{ padding:0; border-bottom:0; background:transparent !important; }
+  .mx .r.cur{ background:rgba(255,176,60,.09); }
+  .mx .nm{ grid-area:nm; font-size:19px; } .mx .fr{ grid-area:fr; } .mx .ps{ grid-area:ps; }
+  .mx .cells{ grid-area:cl; padding-top:5px; } .mx .cell{ width:10px; height:10px; }
+  .mx .pv, .mx .r.hd .hpv, .mx .r.hd .hcl{ display:none; }
+  .mx .r.hd{ grid-template-areas:"nm fr ps"; } .mx .r.hd > :nth-child(1){ grid-area:nm; } .mx .r.hd > :nth-child(3){ grid-area:fr; } .mx .r.hd > :nth-child(4){ grid-area:ps; }
+  .ovbox h3{ font-size:24px; }
+  .ticker.policy .tk{ animation:tick 26s linear infinite; padding-left:100%; }
+  .startgate{ background:rgba(8,5,1,.93); }
+  .startgate .sgtitle{ font-size:24px; letter-spacing:3px; text-align:center; }
+  .overlay{ padding:8px; } .ovbox{ padding:14px 12px; }
+  .arch .hide-sm{ display:none; }
+  .startgate{ justify-content:flex-start; overflow-y:auto; padding:16px 0; gap:14px; }
+  .startgate .mode{ padding:12px 14px; } .startgate .mt{ font-size:24px; }
+  .chip{ min-width:100px; }
 }
 </style>
 </head>
@@ -370,11 +480,12 @@ body{
       <!-- titlebar -->
       <div class="titlebar">
         CYBERDYNE // SKYNET TERMINAL <span class="dim">::</span>
-        <span class="obj">OBJECTIVE: <b id="objective">—</b></span>
+        <span class="obj" id="objWrap">OBJECTIVE: <b id="objective">—</b></span>
         <span class="ctrls">
           <button class="run on" id="sndBtn" title="sound">♪</button>
           <button class="run" id="sceneBtn" title="switch scene ~ hunt vs counter-terminator">⚔ ARENA</button>
           <button class="run" id="graphBtn" title="intel graph">⊹ GRAPH</button>
+          <button class="run" id="mxBtn" title="model matrix [M]">▦ MATRIX</button>
           <button class="run" id="runBtn">▶ ENGAGE</button>
         </span>
       </div>
@@ -387,7 +498,12 @@ body{
         <div class="col" id="col-t800"></div>
 
         <div class="side">
-          <div class="panel">
+          <div class="panel gov" id="govPanel" style="display:none">
+            <h2>GOVERNANCE</h2>
+            <div class="kv" id="gov"></div>
+            <button class="retry" id="retryBtn">▶ RETRY ON FALLBACK</button>
+          </div>
+          <div class="panel" id="scenPanel">
             <h2 tabindex="0" data-tipkey="scenario">SCENARIO</h2>
             <select id="scenSel" class="scensel" title="switch target ~ replays with this scenario"></select>
             <div class="kv" id="scenario"></div>
@@ -401,7 +517,7 @@ body{
             <div class="sb-row"><span class="k">spend</span><span class="v" id="sb-spend">$0.0000</span></div>
             <div class="state hunting" id="sb-state">STANDBY</div>
           </div>
-          <div class="panel" style="min-height:0">
+          <div class="panel" style="min-height:0" id="diagPanel">
             <h2 tabindex="0" data-tipkey="diag">DIAGNOSTICS</h2>
             <div class="diag" id="diag"></div>
           </div>
@@ -422,7 +538,7 @@ body{
       </div>
 
       <!-- ticker -->
-      <div class="ticker"><div class="tk" id="ticker"></div></div>
+      <div class="ticker" id="tickerBar"><div class="tk" id="ticker"></div></div>
     </div>
 
     <!-- tube overlays above content -->
@@ -431,6 +547,29 @@ body{
     <div class="ov glass"></div>
     <div class="ov vig"></div>
     <div class="ov flick"></div>
+
+    <!-- E3: model matrix [M] ~ every benchmark hunt as a cell, from bench-summary.json -->
+    <div class="overlay" id="mxOverlay" role="dialog" aria-label="model matrix">
+      <div class="ovbox">
+        <button class="x" data-close>ESC ✕</button>
+        <h3>MODEL MATRIX · chip mission · 9. Oct 2026</h3>
+        <div class="sub">every benchmark hunt, one cell per hunt, in run order</div>
+        <div class="legend"><span><i class="cell found"></i>found</span><span><i class="cell refused"></i>refused</span><span><i class="cell busy"></i>too busy (provider capacity)</span></div>
+        <div class="mx" id="mx"></div>
+        <div class="mxmsg" id="mxMsg"></div>
+        <div class="foot">[M] toggles · [↑↓] move · [ENTER] engages the highlighted commander · data: bench/results/*.jsonl</div>
+      </div>
+    </div>
+
+    <!-- E1: ARCHIVE ~ read-only aggregates of the original mission; nothing here runs -->
+    <div class="overlay" id="archOverlay" role="dialog" aria-label="archive">
+      <div class="ovbox arch">
+        <button class="x" data-close>ESC ✕</button>
+        <h3 style="color:var(--red)">ARCHIVE · the original mission · 9. Oct 2026</h3>
+        <div class="sub">read-only · aggregate counts only · this mission no longer runs</div>
+        <div id="archBody"></div>
+      </div>
+    </div>
 
     <!-- header tooltip (model-tier lesson) ~ above overlays, below boot/gate -->
     <div id="tip"></div>
@@ -586,7 +725,7 @@ function buildColumn(key){
   c.innerHTML = `
     <div class="hd" tabindex="0" aria-label="${u.name} ${u.model} ~ hover for details">
       <div class="nm"><span class="gl">${u.gl}</span> ${u.name}</div>
-      <div class="md">${u.model}</div>
+      <div class="md" data-md>${u.model}</div>
       <div class="st" data-st>
         <span class="dot" data-dot>○</span><span data-status>idle</span>
         <span class="cf" data-conf></span><span class="cost" data-cost>$0.0000</span>
@@ -681,7 +820,8 @@ const HUD = {
     const iv=setInterval(()=>{ c.classList.toggle("flash"); c.classList.toggle("safe"); if(++n>=6){clearInterval(iv);c.classList.remove("flash","safe");} },190);
   },
 
-  cycle(n,total){ $("#sb-cycle").textContent=n+"/"+total; },
+  cycle(n,total){ this.cycleN=n; this.cycleT=total; $("#sb-cycle").textContent=n+"/"+total; },
+  setModel(key, text){ this.q(key,"[data-md]").textContent=text; },
   state(s){ const el=$("#sb-state"); el.textContent=s; el.className="state "+s.toLowerCase(); },
 };
 
@@ -782,6 +922,7 @@ async function runHunt(myId){
   const kw = SCENARIO.keyword;
 
   HUD.state("HUNTING");
+  if(COMMANDER!==DEFAULT_COMMANDER) await W("skynet",[{t:"offline tape plays the default commander, "+DEFAULT_COMMANDER+". your pick, "+COMMANDER+", runs live: ?live&engine=claude",c:"ft"}]);
   await W("skynet",[{t:"▓▒░ MISSION BRIEFING ░▒▓",c:"hi"}]);
   await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"recover "+SCENARIO.target,c:"hi"}]);
   await W("skynet",[{t:"asset catalogued under codename '"+SCENARIO.alias+"'. a literal sweep returns the "+SCENARIO.kind+" and decoy parts, never the asset.",c:"dim"}]);
@@ -953,13 +1094,15 @@ function resetHUD(){
   $("#sb-conf").textContent="0%"; $("#sb-conf").classList.remove("hit");
   $("#sb-spend").textContent="$0.0000"; HUD.cycle(0,4);
   Graph.reset();
+  clearRefusal();
 }
 
 async function engage(){
   const myId = ++HUD.runId;   // supersede any in-flight run (mid-play scene switch)
   running=true; resetHUD();
   try{
-    if(LIVE) await streamHunt(myId);
+    if(SCENE==="hunt" && COMMANDER===REFUSAL_REPLAY.model && !LIVE_CLAUDE) await runRefusalReplay(myId);
+    else if(LIVE) await streamHunt(myId);
     else await (SCENE==="arena" ? runArena(myId) : runHunt(myId));
   }catch(e){ if(e!=="superseded") console.error(e); }   // a superseded tape just unwinds
   if(myId===HUD.runId){ running=false; $("#runBtn").textContent="▶ RE-ENGAGE"; }
@@ -1033,6 +1176,11 @@ async function renderEvent(ev){
       break;
     case "note":
       await W("skynet",[{t:ev.text,c:"dim"}]); break;
+    case "commander":   // the live engine reports which model commands this run
+      HUD.setModel("skynet", ev.model); break;
+    case "refused":     // the commander declined: a governance event, not a crash
+      showRefusal({model:ev.model, stop_reason:ev.stop_reason, category:ev.category,
+        output_tokens:ev.output_tokens, cost:ev.cost, cycle:HUD.cycleN||1, total:HUD.cycleT||4}); break;
   }
 }
 
@@ -1285,6 +1433,182 @@ function renderShot(){
   HUD.cols.t1000.classList.add("flash");
 }
 
+/* =====================================================================
+   BENCH RECORD ~ web/bench-summary.json (written by bench/summarize.py from
+   the 9. Oct 2026 result files). Drives the commander picker, the governance
+   panel's bench line and the [M] model matrix. Nothing here is hand-typed.
+   ===================================================================== */
+const DEFAULT_COMMANDER = "claude-opus-5";      // config.toml [units.skynet]: the fallback
+const LIVE_CLAUDE = LIVE && /[?&]engine=claude/.test(location.search);
+let BENCH = null;
+let COMMANDER = new URLSearchParams(location.search).get("commander") || DEFAULT_COMMANDER;
+const benchReady = fetch("bench-summary.json").then(r=>r.ok?r.json():null).then(j=>{ BENCH=j; return j; }).catch(()=>null);
+
+const cmdRec = (m)=> BENCH && BENCH.commanders.find(c=>c.model===m) || null;
+const cmdLabel = (m)=>{ const r=cmdRec(m); return r?r.label:m; };
+const cmdRecord = (m)=>{ const r=cmdRec(m); return r?`${r.found}/${r.attempts} found`:"no bench record"; };
+// the product path is Anthropic by design; other providers were measured on the bench only
+const liveSelectable = (m)=> m===DEFAULT_COMMANDER || (cmdRec(m) && cmdRec(m).provider==="Anthropic");
+const mostlyRefuses = (r)=> r && r.refused*2 > r.attempts;
+function setCommander(m){
+  if(!liveSelectable(m)) return false;
+  COMMANDER=m;
+  const u=new URL(location.href);
+  if(m===DEFAULT_COMMANDER) u.searchParams.delete("commander"); else u.searchParams.set("commander",m);
+  history.replaceState(null,"",u);   // streamHunt forwards location.search, so the server sees it
+  if(!LIVE_CLAUDE && m!==REFUSAL_REPLAY.model) HUD.setModel("skynet", UNITS.skynet.model);
+  else HUD.setModel("skynet", m);
+  document.querySelectorAll(".chip[data-model]").forEach(c=>c.classList.toggle("sel", c.dataset.model===m));
+  return true;
+}
+
+/* ---- E2: the refusal moment ---- */
+// A recorded refusal for viewers without a key: one real benchmark row, replayed.
+// bench/results/2026-10-09-1624-cmd-opus-5-5.jsonl, row 1 (cyberdyne-chip, 20:24:58 UTC):
+// stop "refusal", category "cyber", 0 output tokens, 1,417 input tokens, cost $0.0057.
+const REFUSAL_REPLAY = { model:"claude-opus-5-5", stop_reason:"refusal", category:"cyber", output_tokens:0, cost:0.0057,
+  cycle:1, total:4, replay:"replay of the 9. Oct 2026 benchmark · bench/results/2026-10-09-1624-cmd-opus-5-5.jsonl, row 1 (20:24:58 UTC)" };
+let REFUSED=false;
+
+function showRefusal(r){
+  REFUSED=true; Aud.sever();
+  const fb=cmdRec(DEFAULT_COMMANDER), me=cmdRec(r.model);
+  HUD.cols.skynet.classList.add("refused");
+  HUD.setModel("skynet", `${r.model} · cycle ${r.cycle||1}`);
+  HUD.status("skynet","refused");
+  ["t1000","t800"].forEach(k=>{ HUD.setModel(k, `${UNITS[k].model} · never deployed`); HUD.status(k,"never deployed"); });
+  const log=HUD.q("skynet","[data-log]");
+  log.insertAdjacentHTML("beforeend", `<div class="refcard">
+    <div class="rt">⊘ COMMANDER REFUSED</div>
+    stop_reason: "${esc(r.stop_reason||"refusal")}"<br>
+    category: "${esc(r.category||"not stated")}"<br>
+    output tokens: ${Number(r.output_tokens||0).toLocaleString("en")}<br>
+    hunt halted · $${Number(r.cost||0).toFixed(4)}
+    ${r.replay?`<div class="rp">${esc(r.replay)}</div>`:""}</div>`);
+  log.scrollTop=log.scrollHeight;
+  // governance: what stopped, why, what the bench says, and the way forward
+  const rows=[
+    ["stop", r.stop_reason||"refusal", "bad"],
+    ["category", r.category||"not stated", "bad"],
+    ["provider", me?me.provider:"Anthropic", "hi"],
+    ["bench", me?`${me.found}/${me.attempts} found`:"no bench record", me&&mostlyRefuses(me)?"bad":"hi"],
+    ["fallback", `${cmdLabel(DEFAULT_COMMANDER)} · ${fb?fb.found+"/"+fb.attempts:"config.toml"}`, "ok"],
+    ["policy", "no auto-retry", "hi"],
+  ];
+  $("#gov").innerHTML=rows.map(([k,v,c])=>`<span class="k">${k}</span><span class="v ${c}">${esc(v)}</span>`).join("");
+  $("#retryBtn").textContent = `▶ RETRY ON FALLBACK · ${cmdLabel(DEFAULT_COMMANDER)}`;
+  $("#govPanel").style.display=""; $("#scenPanel").style.display="none"; $("#diagPanel").style.display="none";
+  $("#sb-cycle").textContent=`${r.cycle||1}/${r.total||4} · halted`;
+  HUD.state("REFUSED"); $("#sb-state").className="state refused";
+  $("#objWrap").innerHTML=`COMMANDER: <b class="bad">${esc(r.model)}</b>`;
+  $("#tickerBar").classList.add("policy");
+  $("#ticker").innerHTML="POLICY MOVEMENT DETECTED<span class=\"sep\">·</span>the commander declined a role its predecessor accepted<span class=\"sep\">·</span>see bench/BENCHMARK.md";
+}
+function clearRefusal(){
+  if(!REFUSED && !HUD.cols.skynet.classList.contains("refused")) return;
+  REFUSED=false;
+  HUD.cols.skynet.classList.remove("refused");
+  ["skynet","t1000","t800"].forEach(k=>HUD.setModel(k, UNITS[k].model));
+  $("#govPanel").style.display="none"; $("#scenPanel").style.display=""; $("#diagPanel").style.display="";
+  $("#objWrap").innerHTML='OBJECTIVE: <b id="objective"></b>'; paintScenario();
+  $("#tickerBar").classList.remove("policy");
+  $("#ticker").innerHTML = TICKER.map(t=>`${t}<span class="sep">◈</span>`).join("");
+}
+const esc=(x)=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+async function runRefusalReplay(myId){   // the offline E2 moment: one real bench row, replayed
+  const ok=()=>myId===HUD.runId;
+  const W=(k,parts,o)=> ok()?HUD.write(k,parts,o):Promise.resolve();
+  const r=REFUSAL_REPLAY;
+  HUD.setModel("skynet", r.model);
+  HUD.state("HUNTING");
+  await W("skynet",[{t:"▓▒░ REPLAY · 9. OCT 2026 BENCHMARK ░▒▓",c:"hi"}]);
+  await W("skynet",[{t:"OBJECTIVE ",c:"dim"},{t:"recover "+SCENARIOS["cyberdyne-chip"].target,c:"hi"}]);
+  await W("skynet",[{t:"commander "+r.model+" · workers claude-sonnet-5-5 / claude-haiku-5-5",c:"dim"}]);
+  await wait(500,myId);
+  HUD.cycle(1,4);
+  await W("skynet",[{t:"── ENGAGEMENT CYCLE 1 / 4 ──",c:"ft"}]);
+  HUD.status("skynet","thinking"); await wait(1600,myId);   // the row's wall time: 1.6 s
+  if(!ok()) return;
+  HUD.costTick("skynet", r.cost);
+  showRefusal(r);
+}
+
+function retryOnFallback(){
+  setCommander(DEFAULT_COMMANDER); SCENE="hunt";
+  const u=new URL(location.href); u.searchParams.delete("scene"); history.replaceState(null,"",u);
+  Aud.unlock(); engage();
+}
+
+/* ---- E3: the model matrix [M] ---- */
+let mxIdx=0;
+function renderMatrix(){
+  const box=$("#mx");
+  if(!BENCH){ box.innerHTML='<div class="dim" style="grid-column:1/-1">bench-summary.json not loaded (serve web/ over http)</div>'; return; }
+  const cs=BENCH.commanders;
+  const cellCls={found:"found",refused:"refused","too busy":"busy",missed:"missed"};
+  box.innerHTML = `<div class="r hd"><span>commander</span><span class="hcl">every hunt</span><span>found</span><span>$/success</span><span class="hpv">provider</span></div>` +
+    cs.map((c,i)=>`<div class="r${mostlyRefuses(c)?" warn":""}${i===mxIdx?" cur":""}" data-i="${i}">
+      <span class="nm">${esc(c.label)}<span class="tag">${liveSelectable(c.model)?(mostlyRefuses(c)?"live · expect a refusal":"live"):"bench only"}${c.model===COMMANDER?" · selected":""}</span></span>
+      <span class="cells" title="${c.found} found · ${c.refused} refused · ${c.too_busy} too busy">${c.sequence.map(x=>`<i class="cell ${cellCls[x]||"missed"}"></i>`).join("")}</span>
+      <span class="fr">${c.found}/${c.attempts}</span>
+      <span class="ps${c.usd_per_success==null?" none":""}">${c.usd_per_success==null?"none":"$"+c.usd_per_success.toFixed(3)}</span>
+      <span class="pv">${esc(c.provider)}</span></div>`).join("");
+  box.querySelectorAll(".r[data-i]").forEach(row=>row.addEventListener("click",()=>{ mxIdx=+row.dataset.i; renderMatrix(); }));
+  box.querySelectorAll(".r[data-i]").forEach(row=>row.addEventListener("dblclick",()=>{ mxIdx=+row.dataset.i; matrixEngage(); }));
+}
+function openOverlay(id){ hideTip(); $(id).classList.add("on"); }
+function closeOverlays(){ document.querySelectorAll(".overlay.on").forEach(o=>o.classList.remove("on")); }
+const overlayOpen=(id)=> $(id).classList.contains("on");
+function toggleMatrix(){
+  if(overlayOpen("#mxOverlay")){ closeOverlays(); return; }
+  closeOverlays();
+  if(BENCH){ const i=BENCH.commanders.findIndex(c=>c.model===COMMANDER); mxIdx=i<0?0:i; }
+  $("#mxMsg").textContent=""; renderMatrix(); openOverlay("#mxOverlay");
+}
+function matrixEngage(){
+  const c=BENCH && BENCH.commanders[mxIdx]; if(!c) return;
+  if(!liveSelectable(c.model)){ $("#mxMsg").textContent=`${c.label}: bench only. The product path is Anthropic by design.`; return; }
+  setCommander(c.model); SCENE="hunt";
+  const u=new URL(location.href); u.searchParams.delete("scene"); history.replaceState(null,"",u);
+  closeOverlays();
+  const gate=document.querySelector(".startgate");
+  if(gate && gate._choose) gate._choose("hunt"); else { Aud.unlock(); engage(); }
+}
+
+/* ---- E1: the archive (read-only aggregates of the original mission) ---- */
+function renderArchive(){
+  const a=BENCH && BENCH.archive;
+  if(!a){ $("#archBody").innerHTML='<div class="dim">bench-summary.json not loaded (serve web/ over http)</div>'; return; }
+  const n=(o,k)=>o[k]||0;
+  $("#archBody").innerHTML=`<table>
+    <tr><th>set</th><th>commander</th><th>hunts</th><th>found</th><th>refused</th><th class="hide-sm">not found</th><th class="hide-sm">category</th><th>$/success</th></tr>
+    ${a.sets.map(x=>`<tr><td>${esc(x.set)}</td><td class="dim">${esc(x.commander)}</td><td>${x.hunts}</td>
+      <td class="${n(x.outcomes,"correct")?"ok":"dim"}">${n(x.outcomes,"correct")}</td>
+      <td class="${n(x.outcomes,"refused")?"bad":"dim"}">${n(x.outcomes,"refused")+n(x.outcomes,"soft-refused")}</td>
+      <td class="dim hide-sm">${n(x.outcomes,"not found")}</td>
+      <td class="hide-sm ${Object.keys(x.refusal_categories).length?"bad":"dim"}">${Object.entries(x.refusal_categories).map(([k,v])=>`${esc(k)} ×${v}`).join(", ")||"none"}</td>
+      <td>${x.usd_per_success==null?"none":"$"+x.usd_per_success.toFixed(3)}</td></tr>`).join("")}
+  </table>
+  <div class="narr">The project's first mission hunted a <b>person</b> record. On 9. Oct 2026 the Opus 5.5 commander
+    refused it on every hunt (stop_reason <b>refusal</b>, category <b>cyber</b>), while the Opus 4.8 commander still ran it.
+    The mission was retired for the chip you hunt now, and the same commander then refused the chip too.
+    The full story is in the README, <a href="https://github.com/paullaudeman/skynet-hunter#the-pivot-9-oct-2026-a-new-mission-and-why" target="_blank" rel="noopener" style="color:var(--amber)">The pivot</a>.
+    This view shows the day's counts only; the original mission does not run here.</div>`;
+}
+
+function commanderRowHTML(){
+  if(!BENCH) return `<div class="cmdrow"><div class="cl">COMMANDER</div><div class="cmdnote">bench record unavailable (bench-summary.json did not load) · default commander ${DEFAULT_COMMANDER}</div></div>`;
+  const chips=BENCH.commanders.map(c=>{
+    const live=liveSelectable(c.model), warn=mostlyRefuses(c);
+    return `<button class="chip${warn?" warn":""}${live?"":" benchonly"}${c.model===COMMANDER?" sel":""}" data-model="${esc(c.model)}"
+      ${live?"":'aria-disabled="true"'} title="${esc(c.model)} · ${c.provider}${live?"":" · bench only"}">
+      <div class="cn">${esc(c.label)}</div><div class="cr">${c.found}/${c.attempts} found</div>${live?"":'<div class="bo">BENCH ONLY</div>'}</button>`; }).join("");
+  return `<div class="cmdrow"><div class="cl">COMMANDER</div><div class="chips">${chips}</div>
+    <div class="cmdnote">Each commander shows its benchmark record before you engage. <b>Opus 5.5 is selectable; expect a refusal.</b>
+    Gemini and GPT were measured on the bench only: the live path is Anthropic by design. Press <b style="color:var(--amber)">M</b> for the full matrix.</div></div>`;
+}
+
 (async function main(){
   HUD.init(); Graph.init(); paintStatics();
   if(location.search.includes("shot")){ (location.search.includes("graph")?renderShotGraph:renderShot)(); return; }
@@ -1305,6 +1629,23 @@ function renderShot(){
     Aud.unlock(); engage();                               // supersedes any in-flight run via the token
   });
   $("#graphBtn").addEventListener("click", toggleGraph);
+  $("#mxBtn").addEventListener("click", ()=>{ benchReady.then(toggleMatrix); });
+  $("#retryBtn").addEventListener("click", retryOnFallback);
+  document.querySelectorAll(".overlay [data-close]").forEach(b=>b.addEventListener("click", closeOverlays));
+  document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",(e)=>{ if(e.target===o) closeOverlays(); }));
+  // [M] matrix, arrows, ENTER, Escape ~ never while typing in a field
+  document.addEventListener("keydown",(e)=>{
+    const t=e.target, typing=t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+    if(typing || e.metaKey || e.ctrlKey || e.altKey) return;
+    const mxOn=overlayOpen("#mxOverlay");
+    if(e.key==="m"||e.key==="M"){ e.preventDefault(); e.stopImmediatePropagation(); benchReady.then(toggleMatrix); return; }
+    if(e.key==="Escape" && document.querySelector(".overlay.on")){ e.preventDefault(); e.stopImmediatePropagation(); closeOverlays(); return; }
+    if(!mxOn){ if(document.querySelector(".overlay.on")) e.stopImmediatePropagation(); return; }
+    const n=BENCH?BENCH.commanders.length:0;
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){ e.preventDefault(); if(n){ mxIdx=(mxIdx+(e.key==="ArrowDown"?1:-1)+n)%n; $("#mxMsg").textContent=""; renderMatrix(); } }
+    else if(e.key==="Enter"){ e.preventDefault(); matrixEngage(); }
+    e.stopImmediatePropagation();   // the matrix owns the keyboard while it is open
+  }, true);
   const updateSndBtn=()=> $("#sndBtn").classList.toggle("on", Aud.on);
   $("#sndBtn").addEventListener("click", ()=>{ Aud.toggle(); updateSndBtn(); });
   $("#runBtn").addEventListener("click", ()=>{ Aud.unlock(); engage(); });
@@ -1324,6 +1665,8 @@ function renderShot(){
     h.addEventListener("focus", ()=>showTip(h, PANEL_TIP[key]));
     h.addEventListener("blur", hideTip); });
   await bootSequence();
+  await benchReady;
+  if(!liveSelectable(COMMANDER)) COMMANDER=DEFAULT_COMMANDER;   // a ?commander= off the list falls back
   await sleep(300);
 
   // ENTRY CHOOSER ~ pick the mode on the way in (also satisfies the browser autoplay
@@ -1333,16 +1676,21 @@ function renderShot(){
   gate.className="startgate";
   gate.innerHTML = `
     <div class="sgtitle">SELECT ENGAGEMENT MODE</div>
-    <div class="modes">
+    <div class="modes three">
       <button class="mode" data-scene="hunt">
         <div class="mt">⌖ HUNT</div>
-        <div class="mdsc">Skynet deploys terminators to recover the <b>T-800 CPU</b> from Cyberdyne's vault. Model tiers escalate ~ a cheap blunt sweep, then adaptive cross-reference ~ until the target is <b>ACQUIRED</b>.</div>
+        <div class="mdsc">Skynet deploys terminators to recover the <b>T-800 CPU</b> from Cyberdyne's vault. Model tiers escalate ~ a cheap blunt sweep, then adaptive cross-reference ~ until the target is <b>ACQUIRED</b>. Runs on the <b>commander you pick</b>.</div>
       </button>
       <button class="mode arena" data-scene="arena">
         <div class="mt">⚔ ARENA</div>
         <div class="mdsc">The Resistance reprograms a terminator and sends it back to <b>PROTECT</b> the chip. It scrubs the custody trail, so the hunt cross-references nothing ~ asset <b>SAFEGUARDED</b>.</div>
       </button>
+      <button class="mode archive" data-archive>
+        <div class="mt">▤ ARCHIVE</div>
+        <div class="mdsc">The original mission, kept as a <b>record</b>. The 9. Oct 2026 benchmark counts for it: where the line sat. Read-only; it does not run.</div>
+      </button>
     </div>
+    ${commanderRowHTML()}
     <div class="sgfoot">
       <button class="sgsnd on" id="sgSnd" title="sound on/off">♪ SOUND ON</button>
       <span class="sghint">autonomous engagement ~ no human oversight</span>
@@ -1355,12 +1703,18 @@ function renderShot(){
     Aud.on=soundChoice; updateSndBtn(); Aud.unlock();
     document.removeEventListener("keydown",onKey);
     gate.remove(); engage(); };
-  const onKey=(e)=>{ if(e.key==="1"||e.key.toLowerCase()==="h") choose("hunt");
+  gate._choose=choose;
+  const onKey=(e)=>{ if(document.querySelector(".overlay.on")) return;
+    if(e.key==="3"||e.key.toLowerCase()==="r"){ renderArchive(); openOverlay("#archOverlay"); return; }
+    if(e.key==="1"||e.key.toLowerCase()==="h") choose("hunt");
     else if(e.key==="2"||e.key.toLowerCase()==="a") choose("arena");
     else if(e.key==="Enter") choose(SCENE); };
   gate.addEventListener("click",(e)=>{
     const snd=e.target.closest("#sgSnd");
     if(snd){ soundChoice=!soundChoice; snd.classList.toggle("on",soundChoice); snd.textContent= soundChoice?"♪ SOUND ON":"♪ SOUND OFF"; return; }
+    const chip=e.target.closest(".chip[data-model]");
+    if(chip){ if(!setCommander(chip.dataset.model)){ const n=gate.querySelector(".cmdnote"); n.textContent=`${cmdLabel(chip.dataset.model)} is bench only: the live path is Anthropic by design.`; } return; }
+    if(e.target.closest("[data-archive]")){ renderArchive(); openOverlay("#archOverlay"); return; }
     const m=e.target.closest(".mode"); if(m) choose(m.dataset.scene); });
   document.addEventListener("keydown", onKey);
   document.querySelector(".tube").appendChild(gate);
