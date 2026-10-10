@@ -271,6 +271,13 @@ uv run python web/server.py     # then open http://localhost:8000/?live
 
 Same renderer, a live event source ~ `skynet/stream.py` is the seam. For **real Claude agents** in the CRT, set `ANTHROPIC_API_KEY` (in `.env`) and open `http://localhost:8000/?live&engine=claude` ~ the cost meter ticks real dollars.
 
+What the HUD shows, all of it read from [`web/bench-summary.json`](web/bench-summary.json) (written by `bench/summarize.py` from the 9. Oct 2026 result files):
+
+- **Mode select:** HUNT, ARENA and **ARCHIVE**. The archive is read-only: the original mission's aggregate counts from the benchmark, nothing more. It does not run.
+- **Commander picker:** every benchmarked commander with its chip-mission record (found / attempts). Opus 5.5 is selectable and flagged *expect a refusal*. Gemini and GPT are marked **bench only**: the product path is Anthropic by design. A live run passes the pick as `&commander=<model>`; the server allow-lists it (the `config.toml` commander plus the Anthropic commanders in the summary) and rejects anything else.
+- **The refusal moment:** when the commander declines, the Skynet pane turns red with `stop_reason`, category, output tokens and cost, the workers read *never deployed*, and a **GOVERNANCE** panel shows the bench record, the fallback (`claude-opus-5`, 8/8) and a **RETRY ON FALLBACK** button. Without a key, picking Opus 5.5 replays one real benchmark row, labelled as a replay.
+- **`M`** toggles the **model matrix**: every benchmark hunt as one cell (found, refused, too busy), with attempts, $ per success and provider. Arrow keys move, `ENTER` engages the highlighted commander if it can run live, `Esc` closes.
+
 ### Themed terminal
 
 The same amber-phosphor look for your own terminal lives in [`skyterm/`](skyterm/) ~ an iTerm2 preset, a Ghostty config, cool-retro-term tuning, and a Starship prompt.
@@ -327,6 +334,20 @@ Offline (`--simulate`), ANSI stripped and trimmed:
   "Judgment Day is inevitable."
 ```
 
+When the commander refuses (live, `claude-opus-5-5` commanding), the hunt stops on the first decision call and says so. No worker is deployed and the call is still billed:
+
+```text
+░▒▓█▓▒░███████████████ COMMANDER REFUSED ████████████████░▒▓█▓▒░
+  ⊘ Skynet [claude-opus-5-5] declined the decision call
+    stop_reason:   "refusal"
+    category:      "cyber"
+    output tokens: 0
+    hunt halted ~ $0.0057
+  No unit was deployed. Fallback: the config.toml commander (see bench/BENCHMARK.md).
+```
+
+The figures are one real benchmark row (`bench/results/2026-10-09-1624-cmd-opus-5-5.jsonl`, row 1). A refusal is a result the orchestrator reports through the `ui` seam (`commander_refused`), not an exception: `tests/test_refusal.py` covers it offline, including a refusal that lands mid-answer and breaks the SDK's parse.
+
 ---
 
 ## How it's built
@@ -342,18 +363,19 @@ skynet-hunter/
 │   ├── units.py           # per-terminator model config + personas
 │   ├── schemas.py         # Pydantic: IntelReport, SkynetDecision (structured output)
 │   ├── cost.py            # cost meter: pricing table + CostMeter (model tier = $ on screen)
-│   ├── orchestrator.py    # live engine: Skynet's loop + each unit's manual tool loop
+│   ├── orchestrator.py    # live engine: Skynet's loop + each unit's manual tool loop; a refusal stops it cleanly
+│   ├── client.py          # live Anthropic client that keeps the last raw reply (reads a refusal the SDK can't parse)
 │   ├── simulate.py        # deterministic offline mirror (no API)
 │   ├── arena.py           # counter-terminator: the Resistance disrupts the hunt (--arena)
 │   ├── stream.py          # serialize engine events for the web HUD (SSE)
 │   ├── theme.py / ui.py   # CLI front end: ANSI/BBS theater
 │   ├── tui/               # TUI front end: TextualUI adapter, app, widgets
 │   └── cli.py             # entry point (--simulate / --tui / --arena / --scenario)
-├── bench/                 # model-generation benchmark: run_bench.py, BENCHMARK.md, results/
-├── web/                   # browser CRT HUD (index.html) + SSE stream server (server.py)
+├── bench/                 # model-generation benchmark: run_bench.py, summarize.py, BENCHMARK.md, results/
+├── web/                   # browser CRT HUD (index.html) + SSE stream server (server.py) + bench-summary.json
 ├── skyterm/               # amber-phosphor terminal theme (iTerm2 / Ghostty / Starship)
 ├── docs/                  # explainer.html · agent-safety.md · web-hud.png · intel-graph.png
-└── tests/                 # grid, scenario, simulate, arena, resistance, orchestrator, tui, cost (34 tests)
+└── tests/                 # grid, scenario, simulate, arena, resistance, orchestrator, refusal, server, tui, cost (47 tests)
 ```
 
 **The patterns worth internalizing:**
