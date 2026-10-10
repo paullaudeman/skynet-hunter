@@ -345,10 +345,22 @@ body{
 .boot .warn{color:var(--amber); }
 .boot .big{font-family:var(--disp); font-size:44px; letter-spacing:6px; margin-bottom:18px; color:var(--amber)}
 
-/* ---- the acquisition line: slow fade, blink, hold, slow fade (once) ----
-   6.34 s: fade in 1.6 s (ease-in) · two 120 ms flickers · hold 2.5 s · fade to a 35% resting glow over 2 s */
+/* ---- the acquisition line: slow fade, blink, hold, slow fade, then keep pulsing ----
+   first beat, 6.34 s: fade in 1.6 s (ease-in) · two 120 ms flickers · hold 2.5 s · fade to a 35% glow over 2 s
+   then, while the screen stays up (Paul, 10. Oct 2026: "keep it flashing"), a 5.2 s loop from that glow:
+   rise 1.2 s · two flickers · hold 1.6 s · slow fade back to 35% */
 .jday{ color:var(--red); opacity:0; text-shadow:0 0 8px rgba(255,106,77,.75);
-  animation:jday 6.34s linear 1 forwards; }
+  animation:jday 6.34s linear 0s 1 forwards, jdayloop 5.2s linear 6.34s infinite; }
+@keyframes jdayloop{
+  0%    { opacity:.35; text-shadow:0 0 3px rgba(255,106,77,.25); animation-timing-function:ease-in; }
+  23%   { opacity:1;   text-shadow:0 0 9px rgba(255,106,77,.8); }
+  23.1% { opacity:.12; } 25.4% { opacity:.12; }
+  25.5% { opacity:1; }   27.8% { opacity:1; }
+  27.9% { opacity:.12; } 30.2% { opacity:.12; }
+  30.3% { opacity:1; }
+  61%   { opacity:1;   text-shadow:0 0 9px rgba(255,106,77,.8);  animation-timing-function:ease-out; }
+  100%  { opacity:.35; text-shadow:0 0 3px rgba(255,106,77,.25); }
+}
 @keyframes jday{
   0%    { opacity:0;   text-shadow:0 0 0 rgba(255,106,77,0);     animation-timing-function:ease-in; }
   25.2% { opacity:1;   text-shadow:0 0 9px rgba(255,106,77,.8); }
