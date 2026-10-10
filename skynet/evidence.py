@@ -72,7 +72,25 @@ class EvidenceRecorder:
         with (self.dir / f"{stream}.jsonl").open("a", encoding="utf-8") as f:
             f.write(json.dumps(line, ensure_ascii=False) + "\n")
 
+    def _acquired_id(self) -> str | None:
+        """The record id the hunt declared acquired, read back from its own event log."""
+        f = self.dir / "hunt.jsonl"
+        if not f.exists():
+            return None
+        found = None
+        for line in f.read_text(encoding="utf-8").splitlines():
+            e = json.loads(line)
+            if e.get("event") == "target_acquired" and e.get("args"):
+                found = (e["args"][0] or {}).get("id")
+        return found
+
     def finish(self, outcome: str, **extra: Any) -> Path:
+        # Ground truth exists in a synthetic scenario: say whether "acquired" was the right record.
+        # A commander can declare the wrong one with full confidence (10. Oct 2026, Opus 4.6 on Bedrock).
+        truth = self.context.get("target_id")
+        if truth and outcome == "acquired":
+            got = self._acquired_id()
+            extra = {"acquired_id": got, "correct": got == truth, **extra}
         summary = {
             "session_id": self.session_id, "outcome": outcome,
             "started": self.started, "ended": _now(),

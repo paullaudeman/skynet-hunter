@@ -27,6 +27,7 @@ PRICING: dict[str, tuple[float, float]] = {
     "claude-opus-4-8": (5.0, 25.0),    # Skynet  ~ reasons hard and rarely
     "claude-sonnet-4-6": (3.0, 15.0),  # T-1000  ~ adaptive infiltrator
     "claude-haiku-4-5": (1.0, 5.0),    # T-800   ~ blunt literal sweep
+    "claude-opus-4-6": (5.0, 25.0),    # read 10. Oct 2026, platform.claude.com/docs/en/about-claude/pricing
     # Current generation, from platform.claude.com/docs/en/about-claude/pricing, read 9. Oct 2026.
     "claude-opus-5-5": (4.0, 20.0),
     "claude-opus-5": (5.0, 25.0),
@@ -51,9 +52,29 @@ CACHE_WRITE_MULT = 1.25
 _FALLBACK = (5.0, 25.0)
 
 
+# Bedrock inference profiles: `global.` is billed at the base rate; a regional or geo profile (`us.`, `eu.`,
+# `apac.`) carries a 10% premium (platform.claude.com pricing page, read 10. Oct 2026).
+_GEO_PREMIUM = 1.10
+
+
+def base_model(model: str) -> tuple[str, float]:
+    """Map a Bedrock profile id to the plain model name and its price multiplier.
+    `global.anthropic.claude-opus-4-6-v1` -> (`claude-opus-4-6`, 1.0); `us.anthropic.claude-haiku-4-5-20251001-v1:0`
+    -> (`claude-haiku-4-5`, 1.1); a plain name passes through unchanged."""
+    import re
+    m = re.match(r"^(?:(global|us|eu|apac|jp|au)\.)?anthropic\.(claude-[a-z]+-[0-9]+(?:-[0-9]+)?)", model)
+    if not m:
+        return model, 1.0
+    geo, name = m.group(1), m.group(2)
+    name = re.sub(r"-\d{8}$", "", name)
+    return name, (_GEO_PREMIUM if geo and geo != "global" else 1.0)
+
+
 def cost_for(model: str, input_tokens: int, output_tokens: int, cache_read: int = 0, cache_write: int = 0) -> float:
-    """Dollars for one call's token usage on `model`."""
-    in_rate, out_rate = PRICING.get(model, _FALLBACK)
+    """Dollars for one call's token usage on `model` (a plain model name or a Bedrock profile id)."""
+    name, mult = base_model(model)
+    in_rate, out_rate = PRICING.get(name, _FALLBACK)
+    in_rate, out_rate = in_rate * mult, out_rate * mult
     return (
         input_tokens * in_rate
         + output_tokens * out_rate

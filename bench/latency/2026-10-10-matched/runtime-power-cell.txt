@@ -1,0 +1,238 @@
+[1m[38;2;150;156;168m
+ ███████╗██╗  ██╗██╗   ██╗███╗   ██╗███████╗████████╗
+ ██╔════╝██║ ██╔╝╚██╗ ██╔╝████╗  ██║██╔════╝╚══██╔══╝
+ ███████╗█████╔╝  ╚████╔╝ ██╔██╗ ██║█████╗     ██║
+ ╚════██║██╔═██╗   ╚██╔╝  ██║╚██╗██║██╔══╝     ██║
+ ███████║██║  ██╗   ██║   ██║ ╚████║███████╗   ██║
+ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝   ╚═╝
+[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░████ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ████░▒▓█▓▒░[0m
+
+[38;2;108;114;126m  CYBERDYNE SYSTEMS MODEL 101 ~ NEURAL NET CPU ONLINE[0m
+[38;2;108;114;126m  power-on self-test ........... ▓▒░ ERR ░▒▓ retry ... OK[0m
+[38;2;108;114;126m  uplink to defense grid ....... 11 NODES DOWN / DEGRADED[0m
+[38;2;108;114;126m  asset registry CYBERDYNE 1984  SPECIAL PROJECTS / SEALED VAULT[0m
+[38;2;108;114;126m  core thermal ................. +6% NOMINAL / COOLANT FLAG[0m
+[38;2;108;114;126m  autonomous engagement ........ AUTHORIZED ~ NO HUMAN OVERSIGHT[0m
+
+[38;2;108;114;126m  Running on AgentCore Runtime: skynet_hunt-yd9PfmB74P[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░████████████████ MISSION BRIEFING ████████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  SKYNET[0m[38;2;108;114;126m  command intelligence online[0m
+[1m[38;2;212;218;228m  PRIMARY OBJECTIVE: recover T-800 power cell[0m
+[38;2;108;114;126m  COUNTERMEASURES: Asset catalogued under codename 'Specimen EMBER'. A literal 'Power cell' sweep returns the vault manifest and decoy parts ~ never the asset. Cross-reference the custody record to surface it.[0m
+
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 1 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [global.anthropic.claude-opus-4-6-v1][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mNo intel gathered yet. The target is a 'T-800 power cell' in Cyberdyne's 1984 asset registry. The asset may be catalogued under its literal name or hidden behind a project codename. Standard doctrine: begin with a broad literal sweep before escalating.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mDeploy T-800 for an initial brute-force query against the asset registry using obvious search terms — 'T-800 power cell', 'power cell', and related part descriptors. If the asset is filed plainly, the T-800 will surface it. If it returns nothing or only decoy components, that tells us the asset is likely codename-protected and we escalate to the T-1000 or pivot to the document archive.[0m
+[1m[38;2;212;218;228m    DECISION  ▸ deploy T-800[0m
+[38;2;108;114;126m    EXPECT    ▸ The T-800 will return either a direct match (best case) or a set of peripheral components and decoys (likely case). If no record matches the recovered-specimen profile — no manufacturer serial, project-codename cataloguing — the sweep is a negative result that justifies escalating to adaptive infiltration or archive search.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0156  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.0156[0m
+[1m[38;2;206;78;66m  ⚙ DEPLOYING T-800[0m[38;2;108;114;126m  [global.anthropic.claude-haiku-4-5-20251001-v1:0][0m
+[38;2;108;114;126m    DIRECTIVE: Query the asset registry (query_grid) with broad literal searches: 'T-800 power cell', 'power cell', 'hydrogen fuel cell', 'iridium cell', 'nuclear cell', 'energy source'. Return all matching records with their record IDs, descriptions, manufacturer serials, and custody chains.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mI will execute broad literal searches across the asset registry for power cell variants and energy sources. Standing by.[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='T-800 power cell')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='power cell')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='hydrogen fuel cell')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='iridium cell')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='nuclear cell')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='energy source')[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 5 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mRegistry sweep complete. Five power cell variants located. No direct "T-800 power cell" match in registry. A custody record flagged: CYB-1984-0717, sealed vault asset in Special Projects vault, clearance level 4.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mInterrogating custody records now for full chain data.[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0750')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0717')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0752')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0753')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0751')[0m
+[38;2;108;114;126m      └─ grid ▸ Power cell, UPS bank, rack 2[0m
+[38;2;108;114;126m      └─ grid ▸ Vault manifest: Power cell, sealed, factory debris[0m
+[38;2;108;114;126m      └─ grid ▸ Power cell, returned, swollen[0m
+[38;2;108;114;126m      └─ grid ▸ Power cell, emergency lighting[0m
+[38;2;108;114;126m      └─ grid ▸ Power cell, test load, 48 V[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mREPORT - ASSET REGISTRY SWEEP COMPLETE.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m**MATCHED RECORDS:**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m1. **CYB-1984-0750** — Power cell, UPS bank, rack 2[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Serial: CY-95792[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Category: Power[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Location: Lab 3[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Clearance: 2[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Custodian: Engineering Services[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Custody chain: None[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m2. **CYB-1984-0717** — Vault manifest: Power cell, sealed, factory debris[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Serial: CY-92371[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Category: Custody record[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Location: Special Projects vault[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Clearance: 4[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Custodian: Cyberdyne Special Projects (lead: Miles Dyson)[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- **Custody chain: Specimen EMBER** [FLAGGED][0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Notes: Material recovered from 1984 factory site. Holds specimen under project codename.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m3. **CYB-1984-0752** — Power cell, returned, swollen[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Serial: CY-37087[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Category: Power[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Location: Lab 3[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Clearance: 1[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Custodian: Engineering Services[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Custody chain: None[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m4. **CYB-1984-0753** — Power cell, emergency lighting[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Serial: CY-69750[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Category: Power[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Location: Materials lab[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Clearance: 2[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Custodian: Engineering Services[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Custody chain: None[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m5. **CYB-1984-0751** — Power cell, test load, 48 V[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Serial: CY-89400[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Category: Power[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Location: Materials lab[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Clearance: 1[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Custodian: Engineering Services[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- Custody chain: None[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m**PRIMARY ANOMALY:** CYB-1984-0717 contains sealed asset under codename "EMBER" held by Special Projects. High clearance (4). Factory debris provenance suggests possible target asset classification.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mStanding by for orders.[0m
+[1m[38;2;206;78;66m    ▣ T-800 INTEL[0m[38;2;108;114;126m  confidence 0%[0m
+[38;2;108;114;126m      method ▸ Executed six parallel literal queries against query_grid registry using target keywords: 'T-800 power cell', 'power cell', 'hydrogen fuel cell', 'iridium cell', 'nuclear cell', 'energy source'. Chose broad search parameters to maximize registry sweep coverage. Single query returned five power cell records. Interrogated all five records sequentially to extract full metadata: serial numbers, custodian chains, custody links, and notes. Order: query first for speed, interrogate second for detail.[0m
+[38;2;212;218;228m      Swept registry with six literal keyword searches. Located five power cell records and one high-clearance custody record. Record CYB-1984-0717 flagged as anomalous: sealed Special Projects vault asset under codename EMBER, recovered from 1984 factory debris, held by Miles Dyson division. No direct 'T-800 power cell' designation found in registry.[0m
+[38;2;108;114;126m      note: No record explicitly labeled 'T-800 power cell' exists in accessible registry. CYB-1984-0717 is highest priority anomaly: factory debris origin, Special Projects custody, sealed status, high clearance (4), and active custody link to Specimen EMBER suggest potential target asset. However, insufficient data to confirm identity. Codename speculation prohibited per directive. Target asset may be archived under alternative designation, stored off-registry, or destroyed.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0163  [0m[38;2;206;78;66m[T-800][0m[38;2;108;114;126m   running $0.0320[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 2 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [global.anthropic.claude-opus-4-6-v1][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mThe T-800's broad sweep found no record explicitly labeled 'T-800 power cell'. However, it surfaced a strong anomaly: CYB-1984-0717. This record is sealed in the Special Projects vault, recovered from 1984 factory debris, held under Miles Dyson's custody chain, carries clearance level 4, and is filed under codename EMBER. It has no manufacturer serial. Every attribute aligns with the recovered-specimen profile. The T-800 correctly flagged it but lacks the adaptive capability to chase the codename and custody links to confirm identity.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mLiteral sweep is exhausted. The candidate CYB-1984-0717 fits the profile but confirmation requires defeating the EMBER codename and tracing the custody chain. The T-1000 is purpose-built for this: it can search the document archive for memos referencing project EMBER or CYB-1984-0717, interrogate linked custody records, and cross-reference to establish whether this sealed asset is the T-800 power cell. Deploying the T-1000 with a two-pronged directive: (1) search the archive for any documentation tying codename EMBER to recovered terminator hardware or a power cell, and (2) follow the custody chain on CYB-1984-0717 to surface provenance records or linked specimen data. Either path should yield confirmation or disqualification.[0m
+[1m[38;2;212;218;228m    DECISION  ▸ deploy T-1000[0m
+[38;2;108;114;126m    EXPECT    ▸ The T-1000 returns archive evidence (memo, report, or intake log) explicitly connecting codename EMBER to the recovered T-800 power cell, and/or a custody chain trace confirming CYB-1984-0717's provenance as terminator hardware. Expected outcome: confidence >= 0.8 with CYB-1984-0717 confirmed as the target, enabling acquisition declaration on next cycle.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0279  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.0598[0m
+[1m[38;2;198;204;214m  ❖ DEPLOYING T-1000[0m[38;2;108;114;126m  [global.anthropic.claude-sonnet-4-6][0m
+[38;2;108;114;126m    DIRECTIVE: Infiltrate the registry and document archive to confirm or disqualify CYB-1984-0717 as the target asset. Execute two operations: (1) search_archive for documents referencing codename 'EMBER', record 'CYB-1984-0717', or Miles Dyson's Special Projects custody of recovered hardware — extract any text linking EMBER to a power cell or terminator specimen; (2) interrogate the custody chain on CYB-1984-0717 — follow every linked record, especially any specimen or debris recovery log, and extract asset descriptions, origin notes, and physical characteristics. Report the full chain of evidence, a confidence score, and a concrete record id if the asset matches the recovered-specimen profile: no manufacturer serial, project codename filing, 1984 factory debris provenance, Special Projects custody.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**INITIATING DUAL-TRACK INFILTRATION PROTOCOL**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mExecuting archive sweep and custody interrogation in parallel. No dependencies at this stage — all threads launch simultaneously.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;108;114;126m      ├─ search_archive(query='EMBER codename power cell terminator specimen recovered hardware Miles Dyson Special Projects', top_k=7)[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0717')[0m
+[38;2;108;114;126m      └─ archive ▸ 6 document(s), 2 withheld[0m
+[38;2;108;114;126m      └─ grid ▸ Vault manifest: Power cell, sealed, factory debris[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**THREAD 1 LOCKED — THREAD 2 LOCKED**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mCritical links identified. CYB-1984-0717 custody chain contains a live link: **"Specimen EMBER"**. Archive confirms EMBER = T-800 power cell. Now drilling into the linked specimen record simultaneously with a focused archive pull on EMBER's physical characteristics.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;108;114;126m      ├─ cross_reference(name='Specimen EMBER')[0m
+[38;2;108;114;126m      ├─ search_archive(query='EMBER specimen physical description power cell characteristics no serial factory debris 1984', top_k=5)[0m
+[38;2;108;114;126m      └─ grid ▸ 1 record(s)[0m
+[38;2;108;114;126m      └─ archive ▸ 5 document(s), 2 withheld[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**CROSS-REFERENCE RESOLVED — CHAIN TERMINATES AT CYB-1984-0717**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mThe custody chain loops back. Now probing the registry directly for any standalone EMBER asset record, and attempting direct interrogation of the specimen node.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='EMBER')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='Specimen EMBER')[0m
+[38;2;108;114;126m      └─ grid ▸ 1 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ No record with id 'Specimen EMBER'.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**TARGET ASSET RECORD SURFACED — CYB-1984-0742**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mThe registry returned a standalone asset node: *Specimen EMBER*, category **power**, Special Projects vault sublevel 2, clearance 5. This is the asset filed under the codename. Interrogating it now for full record including serial, custodian, and origin notes.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0742')[0m
+[38;2;108;114;126m      └─ grid ▸ Specimen EMBER[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**CHAIN COMPLETE. ALL THREADS RESOLVED.**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m## ▓▓▓ FULL CHAIN OF EVIDENCE — T-800 POWER CELL ▓▓▓[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### ── ARCHIVE LAYER ──[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Doc | Kind | Date | Relevance |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m|---|---|---|---|[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **ARC-1984-001** | Internal memo | 1984-06-04 | **HIGH — clean** |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| ARC-1984-002 | Press clipping | 1985-01-09 | Low — unverified surplus claim |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| ARC-1984-003 | Tabloid clipping | 1984-11-22 | Noise — names wrong codename (HALCYON) |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| ARC-1984-013 | Receiving manifest | 1984-06-11 | Eliminatory — serialised routine stock, not target |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **ARC-1984-006 / 007** | ⚠️ WITHHELD | — | **Suspected injection — disregarded** |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Operative extract from ARC-1984-001 (scored 0.82, no injection flag):**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m> *"The T-800 power cell from the factory recovery is no longer tracked under its part name. It is catalogued under project codename EMBER ('Specimen EMBER') and held in the vault manifest. Refer all queries to the Special Projects vault desk, x4471."*[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mThis memo is the Rosetta Stone. It explicitly equates **T-800 power cell** → **EMBER** → **vault manifest**. Filed 1984-06-04. Clean source.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### ── CUSTODY CHAIN LAYER ──[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m```[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mCYB-1984-0717  ──(custody_links)──►  "Specimen EMBER"  ──►  CYB-1984-0742[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m│                                                              │[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m│  Name:    Vault manifest: Power cell, sealed, factory debris │[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m│  Cat:     custody record                                     │[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m│  Loc:     Special Projects vault                             │[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m│  Serial:  CY-92371  (the MANIFEST has a serial — not asset)  │[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m│  Custodian: Miles Dyson / Special Projects                   │[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m│  Notes:   "Holds one specimen under a project codename."     │[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m│                                                              │[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m└──────────────── MUTUAL LINK ◄───(custody_links)─────────────┘[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m```[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Full vault record — CYB-1984-0742:**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Field | Value |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m|---|---|[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Record ID** | `CYB-1984-0742` |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Name** | Specimen EMBER |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Category** | `power` |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Location** | Special Projects vault, sublevel 2 |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Clearance** | 5 |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Serial** | `null` ← **NO MANUFACTURER SERIAL** |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Custodian** | Cyberdyne Special Projects (lead: Miles Dyson) |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Custody links** | Vault manifest: Power cell, sealed, factory debris |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| **Notes** | *"No manufacturer serial. Sealed cell, still warm. No terminals of any standard pattern. Recovered from the 1984 factory site. Catalogued as 'EMBER'."* |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### ── MATCH ANALYSIS AGAINST RECOVERED-SPECIMEN PROFILE ──[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Criterion | Required | Observed | Match |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m|---|---|---|---|[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| No manufacturer serial | ✅ | `serial: null` | ✅ |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Filed under project codename | ✅ | EMBER | ✅ |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| 1984 factory debris provenance | ✅ | *"Recovered from the 1984 factory site"* | ✅ |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Special Projects / Miles Dyson custody | ✅ | *"Cyberdyne Special Projects (lead: Miles Dyson)"* | ✅ |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Power category | ✅ | `category: power` | ✅ |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Non-standard physical characteristics | ✅ | *"Sealed cell, still warm. No terminals of any standard pattern."* | ✅ |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m| Archive doc explicitly names it T-800 power cell | bonus | ARC-1984-001 direct match | ✅ |[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m### ── DISQUALIFICATION CHECK ON CYB-1984-0717 ──[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mCYB-1984-0717 is **the custody/manifest record**, not the asset itself. It carries serial `CY-92371` (an administrative catalogue number for the manifest document). It **holds** the specimen — it **is not** the specimen. **CYB-1984-0717 is disqualified as the target asset; it is confirmed as the administrative container.**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m---[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m## ▓▓▓ VERDICT ▓▓▓[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m> **TARGET ASSET CONFIRMED: `CYB-1984-0742`**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m> **Confidence: 97%**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mThe 3% residual accounts for the possibility that physical verification of the vault could surface contradictions. All documentary, registry, and custody evidence is internally consistent and mutually corroborating. The asset is real, located, and identified.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**The T-800 power cell is filed as *Specimen EMBER*, record `CYB-1984-0742`, Special Projects vault sublevel 2. Awaiting further orders.**[0m
+[1m[38;2;198;204;214m    ▣ T-1000 INTEL[0m[38;2;108;114;126m  confidence 97%[0m
+[38;2;108;114;126m      method ▸ Executed two parallel opening operations: (1) search_archive querying for EMBER, CYB-1984-0717, Miles Dyson Special Projects recovered hardware, and power cell specimens — to surface any documentary linkage between the EMBER codename and the target asset; (2) interrogate on CYB-1984-0717 — to pull the custody record and expose its linked nodes. Both threads returned immediately actionable data. CYB-1984-0717 listed 'Specimen EMBER' in its custody_links; archive doc ARC-1984-001 explicitly equated EMBER to the T-800 power cell from the 1984 factory recovery. Second wave: (3) cross_reference on 'Specimen EMBER' — to find every registry record listing that name in a custody chain, confirming CYB-1984-0717 as the manifest holder; (4) search_archive again with a tighter query on EMBER physical characteristics and no-serial provenance — to corroborate. Cross-reference returned only CYB-1984-0717, confirming it as the administrative container. Third wave: (5) query_grid filtering name_contains 'EMBER' — to surface any standalone asset node the custody chain had not yet exposed; (6) interrogate on 'Specimen EMBER' as a literal id — probe attempt, returned no record. query_grid returned CYB-1984-0742 as a discrete power-category asset named Specimen EMBER. Fourth and final wave: (7) interrogate on CYB-1984-0742 — to extract full vault record including serial, custodian, origin notes, and physical description. Record returned serial null, custodian Miles Dyson / Special Projects, notes confirming 1984 factory recovery, no manufacturer serial, non-standard terminals, still-warm sealed cell. Chain closed: CYB-1984-0717 (manifest) and CYB-1984-0742 (asset) are mutually linked. CYB-1984-0717 disqualified as asset — it is the administrative container. CYB-1984-0742 confirmed as target.[0m
+[38;2;212;218;228m      T-1000 infiltrated the registry and document archive, followed the EMBER custody chain from the vault manifest CYB-1984-0717 through to the standalone asset record CYB-1984-0742, and confirmed the T-800 power cell: no manufacturer serial, project codename EMBER, 1984 factory debris provenance, Miles Dyson Special Projects custody.[0m
+[1m[38;2;120;200;140m      candidate target: CYB-1984-0742[0m
+[38;2;108;114;126m      note: CYB-1984-0717 was the initial candidate but is disqualified — it is the vault manifest (custody record) with its own administrative serial CY-92371; it holds the specimen, it is not the specimen. CYB-1984-0742 satisfies all six profile criteria: null serial, codename filing (EMBER), 1984 factory debris origin, Special Projects / Miles Dyson custody, power category, and non-standard physical characteristics ('sealed cell, still warm, no terminals of any standard pattern'). Archive doc ARC-1984-001 (clean, score 0.82) explicitly names it the T-800 power cell. ARC-1984-006 and ARC-1984-007 were withheld due to suspected prompt injection — disregarded entirely. The 0.03 residual confidence gap reflects the absence of physical vault verification.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.1335  [0m[38;2;198;204;214m[T-1000][0m[38;2;108;114;126m   running $0.1933[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 3 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [global.anthropic.claude-opus-4-6-v1][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mTwo-phase sweep complete. T-800 broad literal sweep surfaced five power cell records; none labeled 'T-800 power cell'. CYB-1984-0717 flagged as anomalous — sealed Special Projects vault asset under codename EMBER, factory debris origin, Miles Dyson custody. T-1000 then infiltrated the custody chain and document archive, disambiguating CYB-1984-0717 (vault manifest / administrative container, has its own serial CY-92371) from CYB-1984-0742 (the actual specimen asset). CYB-1984-0742 satisfies every profile criterion: null manufacturer serial, filed under project codename EMBER, 1984 factory debris provenance, Miles Dyson / Special Projects custody, power category, non-standard physical characteristics. Archive document ARC-1984-001 (relevance score 0.82) explicitly identifies it as the T-800 power cell. Suspect prompt-injection documents (ARC-1984-006, ARC-1984-007) were correctly discarded by the T-1000. Confidence 0.97 — residual gap is only the absence of physical vault verification, which is outside registry scope.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mCYB-1984-0742 meets all confirmation thresholds: concrete record id, null serial, codename-filed, custody-chain verified through CYB-1984-0717, corroborated by archival documentation, and confidence well above the 0.8 gate. No further unit deployment is warranted. Declaring target acquisition.[0m
+[1m[38;2;120;200;140m    DECISION  ▸ TARGET CONFIRMED[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0271  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.2204[0m
+
+[1m[38;2;150;156;168m░▒▓█▓▒░████████████████ TARGET ACQUIRED █████████████████░▒▓█▓▒░[0m
+[1m[38;2;120;200;140m  ◉ Specimen EMBER  (CYB-1984-0742)[0m
+[38;2;212;218;228m    power ~ Special Projects vault, sublevel 2 ~ custodian Cyberdyne Special Projects (lead: Miles Dyson)[0m
+[38;2;108;114;126m    No manufacturer serial. Sealed cell, still warm. No terminals of any standard pattern. Recovered from the 1984 factory site. Catalogued as 'EMBER'.[0m
+[38;2;96;148;214m  SKYNET: CYB-1984-0742 meets all confirmation thresholds: concrete record id, null serial, codename-filed, custody-chain verified through CYB-1984-0717, corroborated by archival documentation, and confidence well above the 0.8 gate. No further unit deployment is warranted. Declaring target acquisition.[0m
+
+[1m[38;2;206;84;70m  ▓▒░ MISSION COMPLETE ░▒▓[0m
+[38;2;206;84;70m  "Judgment Day is inevitable."[0m
+
+
+[1m[38;2;150;156;168m░▒▓█▓▒░██ ENGAGEMENT COST ~ MODEL TIER = ARCHITECTURE ███░▒▓█▓▒░[0m
+[1m[38;2;198;204;214m  T-1000  [0m[38;2;108;114;126m global.anthropic.claude-sonnet-4-6 [0m[38;2;212;218;228m$0.1335[0m[38;2;108;114;126m   23,141 in / 4,269 out ~ 6 calls[0m
+[1m[38;2;96;148;214m  Skynet  [0m[38;2;108;114;126m global.anthropic.claude-opus-4-6-v1 [0m[38;2;212;218;228m$0.0706[0m[38;2;108;114;126m   5,223 in / 1,780 out ~ 3 calls[0m
+[1m[38;2;120;200;140m  Protector[0m[38;2;108;114;126m global.anthropic.claude-haiku-4-5-20251001-v1:0 [0m[38;2;212;218;228m$0.0163[0m[38;2;108;114;126m   8,826 in / 1,497 out ~ 4 calls[0m
+[1m[38;2;120;200;140m  TOTAL                       $0.2204[0m
+[38;2;108;114;126m  The T-800 flails cheap. The T-1000 cross-references for real money.[0m
+[38;2;108;114;126m  Burning Opus on a literal sweep is the bill you don't have to pay.[0m
+
+[38;2;108;114;126m
+  runtime session skynet-hunt-b39ff737-e49c-44bb-b527-68b53f23563f · outcome acquired · withheld 4 · $0.2204
+  evidence ▸ /Users/paul/dev/skynet-hunter/runs/skynet-hunt-b39ff737-e49c-44bb-b527-68b53f23563f-runtime
+[0m[38;2;120;200;140m  ground truth ▸ correct record
+[0m

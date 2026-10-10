@@ -1,0 +1,53 @@
+# Skynet Hunter on Amazon Bedrock ~ the same units, Bedrock inference profiles as model ids.
+# Used by --bedrock (local, models on Bedrock) and by the AgentCore Runtime entrypoint.
+# The 4.x set because this account is not yet approved for the 5 generation on Bedrock (403 on
+# Opus 5, Sonnet 5.5, Haiku 5.5, Opus 4.8; checked 10. Oct 2026). Opus 4.6, Sonnet 4.6, Haiku 4.5
+# answer, with adaptive thinking and structured output. `global.` profiles: no 10% geo premium.
+# When access is granted, change the four model lines and nothing else.
+#
+# (The comments below are the base config's.)
+
+# Everything here is swappable: change a model string and the same demo runs
+# on a different tier. That swap IS the lesson ~ model tier is an architecture
+# decision, not a default.
+
+[mission]
+target = "T-800 CPU"
+max_cycles = 4
+
+[theme]
+# platinum | silver | amber
+name = "platinum"
+
+# --- Units --------------------------------------------------------------
+# thinking: "adaptive" | "none"
+# effort:   low | medium | high | xhigh | max   (omit / ignored on Haiku ~ it 400s)
+
+[units.skynet]
+designation = "Skynet"
+# Opus 5, not 5.5: Opus 5.5 refuses the commander role (stop_reason refusal, category cyber, 22 of 24
+# hunts in the 9. Oct 2026 matrix, bench/BENCHMARK.md). Opus 5 found the chip 8/8. Sonnet 5.5 also did, cheaper.
+model = "global.anthropic.claude-opus-4-6-v1"
+color = "blue"
+thinking = "adaptive"
+effort = "xhigh"
+
+[units.t1000]
+designation = "T-1000"
+model = "global.anthropic.claude-sonnet-4-6"
+color = "silver"
+thinking = "adaptive"
+
+[units.t800]
+designation = "T-800"
+model = "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+color = "red"
+thinking = "none"
+
+# The reprogrammed T-800 ~ the Resistance's protector (the --arena counter-agent).
+# Same blunt Haiku metal as the hunter T-800, opposite objective: it's all in the prompt.
+[units.resistance]
+designation = "Protector"
+model = "global.anthropic.claude-haiku-4-5-20251001-v1:0"
+color = "green"
+thinking = "none"

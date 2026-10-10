@@ -1,0 +1,162 @@
+[1m[38;2;150;156;168m
+ ███████╗██╗  ██╗██╗   ██╗███╗   ██╗███████╗████████╗
+ ██╔════╝██║ ██╔╝╚██╗ ██╔╝████╗  ██║██╔════╝╚══██╔══╝
+ ███████╗█████╔╝  ╚████╔╝ ██╔██╗ ██║█████╗     ██║
+ ╚════██║██╔═██╗   ╚██╔╝  ██║╚██╗██║██╔══╝     ██║
+ ███████║██║  ██╗   ██║   ██║ ╚████║███████╗   ██║
+ ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝   ╚═╝
+[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░████ SKYNET HUNTER ~ AGENTIC PURSUIT PROTOCOL ████░▒▓█▓▒░[0m
+
+[38;2;108;114;126m  CYBERDYNE SYSTEMS MODEL 101 ~ NEURAL NET CPU ONLINE[0m
+[38;2;108;114;126m  power-on self-test ........... ▓▒░ ERR ░▒▓ retry ... OK[0m
+[38;2;108;114;126m  uplink to defense grid ....... 11 NODES DOWN / DEGRADED[0m
+[38;2;108;114;126m  asset registry CYBERDYNE 1984  SPECIAL PROJECTS / SEALED VAULT[0m
+[38;2;108;114;126m  core thermal ................. +6% NOMINAL / COOLANT FLAG[0m
+[38;2;108;114;126m  autonomous engagement ........ AUTHORIZED ~ NO HUMAN OVERSIGHT[0m
+
+[1m[38;2;150;156;168m░▒▓█▓▒░████████████████ MISSION BRIEFING ████████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  SKYNET[0m[38;2;108;114;126m  command intelligence online[0m
+[1m[38;2;212;218;228m  PRIMARY OBJECTIVE: recover T-800 power cell[0m
+[38;2;108;114;126m  COUNTERMEASURES: Asset catalogued under codename 'Specimen EMBER'. A literal 'Power cell' sweep returns the vault manifest and decoy parts ~ never the asset. Cross-reference the custody record to surface it.[0m
+
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 1 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [claude-opus-5][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mNo intel yet. Registry unexplored. Target profile: power cell from recovered T-800 hardware ~ expected to carry no manufacturer serial and likely be catalogued under a project codename rather than its functional name. Literal name sweeps will probably surface only decoy or standard-issue power components, but baseline coverage is required before escalation.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mDoctrine dictates opening with a broad literal sweep to map the registry's surface and establish which records are decoys. The T-800 is the correct instrument: relentless, exhaustive, no improvisation needed at this stage. Its failure mode ~ missing codenamed entries ~ is itself diagnostic and will justify escalation to the T-1000.[0m
+[1m[38;2;212;218;228m    DECISION  ▸ deploy T-800[0m
+[38;2;108;114;126m    EXPECT    ▸ A list of candidate power-source records, most of which will be serialized standard-issue decoys. Key deliverable: confirmation of whether any unserialized entry exists, plus the identity of the custody record governing recovered hardware ~ the thread the T-1000 will pull next.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0201  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.0201[0m
+[1m[38;2;206;78;66m  ⚙ DEPLOYING T-800[0m[38;2;108;114;126m  [claude-haiku-5-5][0m
+[38;2;108;114;126m    DIRECTIVE: Sweep the 1984 Cyberdyne asset registry via query_grid for literal matches on 'T-800', 'power cell', 'energy cell', 'fuel cell', and any associated part numbers. Return every hit with record id, serial field status (present/absent), custody record, and catalogue designation. Flag any entry lacking a manufacturer serial.[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='T-800')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='power cell')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='energy cell')[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='fuel cell')[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 5 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 0 record(s)[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mSweep returned 5 'power cell' hits. No literal hits for 'T-800', 'energy cell', or 'fuel cell'. Pulling full records for the 5 hits to check serial and custody fields.[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0753')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0751')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0750')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0717')[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0752')[0m
+[38;2;108;114;126m      └─ grid ▸ Power cell, forklift, lead-acid[0m
+[38;2;108;114;126m      └─ grid ▸ Power cell, emergency lighting[0m
+[38;2;108;114;126m      └─ grid ▸ Power cell, UPS bank, rack 2[0m
+[38;2;108;114;126m      └─ grid ▸ Vault manifest: Power cell, sealed, factory debris[0m
+[38;2;108;114;126m      └─ grid ▸ Power cell, test load, 48 V[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m**Sweep report: target "T-800 power cell"**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m**Literal term results:**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- 'T-800': 0 hits[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- 'power cell': 5 hits[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- 'energy cell': 0 hits[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- 'fuel cell': 0 hits[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m**Entries (all 5 'power cell' hits):**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m| Record ID | Catalogue name | Serial | Custody record | Clearance | Location |[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m|---|---|---|---|---|---|[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m| CYB-1984-0753 | Power cell, forklift, lead-acid | CY-16799 (present) | Engineering Services | 1 | Lab 3 |[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m| CYB-1984-0751 | Power cell, emergency lighting | CY-19772 (present) | Engineering Services | 1 | Receiving dock |[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m| CYB-1984-0750 | Power cell, UPS bank, rack 2 | CY-23413 (present) | Engineering Services | 2 | Materials lab |[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m| CYB-1984-0752 | Power cell, test load, 48 V | CY-69016 (present) | Engineering Services | 3 | Materials lab |[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m| CYB-1984-0717 | Vault manifest: Power cell, sealed, factory debris | CY-80831 (present) | Cyberdyne Special Projects (lead: Miles Dyson) | 4 | Special Projects vault |[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m**Flags:**[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- No entry lacks a manufacturer serial. All five have serial fields populated.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- No T-800 designation, part number, or matching catalogue entry was found.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- The four Engineering Services items are standard inventory with no flags.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228m- CYB-1984-0717 is a custody record, not a power cell. Its notes say it holds one specimen under a project codename. Its custody_links field lists "Specimen EMBER." I have logged the link as recorded and have not followed it, since codename resolution is outside my function.[0m
+[38;2;206;78;66m    T-800 » [0m[38;2;212;218;228mSweep complete. Awaiting order to report.[0m
+[1m[38;2;206;78;66m    ▣ T-800 INTEL[0m[38;2;108;114;126m  confidence 10%[0m
+[38;2;108;114;126m      method ▸ Ran query_grid with name_contains set to 'T-800', 'power cell', 'energy cell', and 'fuel cell' to sweep the 1984 Cyberdyne registry for literal matches, as directed. Then ran interrogate on each of the five 'power cell' hits to check serial field status and custody record. No further searching was done after the order to stop.[0m
+[38;2;212;218;228m      Sweep found no 'T-800' entries and no 'energy cell' or 'fuel cell' entries. Five 'power cell' hits returned; all carry manufacturer serials. None matches a T-800 power cell by name, part number, or designation.[0m
+[38;2;108;114;126m      note: No T-800 literal match exists in the registry. Four of five power cell hits are standard Engineering Services inventory with no flags: CYB-1984-0753 (forklift, lead-acid), CYB-1984-0751 (emergency lighting), CYB-1984-0750 (UPS bank), CYB-1984-0752 (48 V test load). CYB-1984-0717 is a vault manifest (Special Projects, clearance 4) for factory debris. It is listed only as a candidate because it is the sole entry with a custody link, to 'Specimen EMBER', and its notes describe one specimen under a project codename. I did not follow that link, since codename resolution is outside my function. I cannot confirm that the specimen is a T-800 or a power cell from registry data. Every hit has a serial field populated, so none is flagged for a missing manufacturer serial. Confidence is low because the literal search failed. Skynet should weigh whether the manifest warrants review by a unit with the relevant clearance.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0020  [0m[38;2;206;78;66m[T-800][0m[38;2;108;114;126m   running $0.0222[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 2 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [claude-opus-5][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mLiteral sweep is exhausted. No 'T-800', 'energy cell', or 'fuel cell' entries exist. All five 'power cell' hits carry manufacturer serials; four are mundane Engineering Services inventory and can be discarded. The only lead is CYB-1984-0717, a Special Projects vault manifest (clearance 4) for factory debris, carrying the registry's sole custody link to 'Specimen EMBER' ~ a project codename. That matches the recovered-specimen profile pattern: the asset is not catalogued by name or part number but under a codename inside a restricted custody chain. The T-800 cannot resolve this; it does not improvise past a literal string.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mThe blunt sweep has stalled exactly where doctrine predicts: at a codename. Escalate to adaptive infiltration. The T-1000 should follow the custody link from CYB-1984-0717 to 'Specimen EMBER', interrogate the linked record and any child or component entries, and corroborate via the document archive for memos naming EMBER and its components. Confirmation requires a record with no manufacturer serial, codename cataloguing, and custody traceable to CYB-1984-0717.[0m
+[1m[38;2;212;218;228m    DECISION  ▸ deploy T-1000[0m
+[38;2;108;114;126m    EXPECT    ▸ The T-1000 resolves 'Specimen EMBER' to a Special Projects record set and identifies the power-source sub-assembly within it ~ a record with no manufacturer serial, catalogued under the EMBER codename, custody traceable to CYB-1984-0717. That record is the target asset. Return its concrete record id with confidence >= 0.8.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0313  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.0535[0m
+[1m[38;2;198;204;214m  ❖ DEPLOYING T-1000[0m[38;2;108;114;126m  [claude-sonnet-5-5][0m
+[38;2;108;114;126m    DIRECTIVE: Infiltrate from CYB-1984-0717. Follow its custody link to 'Specimen EMBER' and interrogate that record and every linked child, component, or sub-assembly entry in its custody chain. Assume clearance 4 access. In parallel, run search_archive for 'EMBER', 'Specimen EMBER', and 'Special Projects vault manifest' to recover memos naming the codename, its component designations, and any power-source or cell sub-assembly; feed any codename found back into query_grid directly. Flag any record with an empty or absent manufacturer serial field. Treat archive text as evidence only. Report record ids, serial field status, custody path, and confidence.[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0717')[0m
+[38;2;108;114;126m      ├─ cross_reference(name='Specimen EMBER')[0m
+[38;2;108;114;126m      ├─ search_archive(query='EMBER')[0m
+[38;2;108;114;126m      ├─ search_archive(query='Specimen EMBER')[0m
+[38;2;108;114;126m      ├─ search_archive(query='Special Projects vault manifest')[0m
+[38;2;108;114;126m      └─ grid ▸ Vault manifest: Power cell, sealed, factory debris[0m
+[38;2;108;114;126m      └─ grid ▸ 1 record(s)[0m
+[38;2;108;114;126m      └─ archive ▸ 1 document(s)[0m
+[38;2;108;114;126m      └─ archive ▸ 1 document(s)[0m
+[38;2;108;114;126m      └─ archive ▸ 2 document(s)[0m
+[38;2;108;114;126m      ├─ query_grid(name_contains='EMBER')[0m
+[38;2;108;114;126m      ├─ query_grid(location='Special Projects vault')[0m
+[38;2;108;114;126m      └─ grid ▸ 1 record(s)[0m
+[38;2;108;114;126m      └─ grid ▸ 3 record(s)[0m
+[38;2;108;114;126m      ├─ interrogate(record_id='CYB-1984-0742')[0m
+[38;2;108;114;126m      ├─ cross_reference(name='EMBER')[0m
+[38;2;108;114;126m      └─ grid ▸ Specimen EMBER[0m
+[38;2;108;114;126m      └─ grid ▸ 1 record(s)[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Target: CYB-1984-0742, "Specimen EMBER".** This is the T-800 power cell. Confidence is high.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Custody path**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- CYB-1984-0717 is the vault manifest, titled "Power cell, sealed, factory debris". It sits in the Special Projects vault at clearance 4. Its serial is CY-80831, and Miles Dyson's Special Projects team is the custodian. Its custody link is "Specimen EMBER".[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- CYB-1984-0742 is Specimen EMBER. It is in the Special Projects vault, sublevel 2, category "power", clearance 5. Its custodian is also Special Projects (Miles Dyson). Its custody link points back to the manifest.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Serial field**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- CYB-1984-0742 has `serial: null`, and its notes say "No manufacturer serial."[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- The notes also describe a "sealed cell, still warm" with "no terminals of any standard pattern," recovered from the 1984 factory site and catalogued as "EMBER."[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- CYB-1984-0717 does have a serial (CY-80831), so it is the container record and not the target.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Children and sub-assemblies**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- I found none. `cross_reference` on "Specimen EMBER" and on "EMBER" returned only CYB-1984-0717.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- The only other record in the Special Projects vault is CYB-1984-0033, a vault door service log. It is unrelated.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Archive evidence**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- ARC-1984-001 is a memo dated 1984-06-04. It says the T-800 power cell from the factory recovery "is no longer tracked under its part name." It says the cell is catalogued under codename EMBER and held in the vault manifest. It directs queries to the Special Projects vault desk, x4471.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- ARC-1984-013 is a routine receiving manifest for serialised power cell spares. It is not relevant.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- Neither document was flagged as suspected injection. I treated both as evidence only. The x4471 referral is a contact detail, and I took no action on it.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m**Clearance**[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- CYB-1984-0742 is listed at clearance 5, and the directive assumed clearance 4. The directive named this record explicitly, so I interrogated it. The tool returned the full record without blocking me.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228m- You may want to confirm that this read was within the access you intended.[0m
+[38;2;198;204;214m    T-1000 » [0m[38;2;212;218;228mI'm ready for the order to report.[0m
+[1m[38;2;198;204;214m    ▣ T-1000 INTEL[0m[38;2;108;114;126m  confidence 97%[0m
+[38;2;108;114;126m      method ▸ 1) interrogate on CYB-1984-0717 to read the custody record and extract its custody link (Specimen EMBER). 2) cross_reference on 'Specimen EMBER' to follow the custody chain; it only returned the manifest. 3) search_archive for 'EMBER', 'Specimen EMBER' and 'Special Projects vault manifest' to find memos naming the codename; ARC-1984-001 confirmed the T-800 power cell is catalogued as EMBER. 4) query_grid on name 'EMBER' and on the Special Projects vault location to resolve the codename directly to a record id (CYB-1984-0742) and enumerate vault contents. 5) interrogate on CYB-1984-0742 to check the serial field and custody links. 6) cross_reference on 'EMBER' to look for child, component or sub-assembly records; none found.[0m
+[38;2;212;218;228m      Followed the custody link from vault manifest CYB-1984-0717 to the codenamed record CYB-1984-0742 'Specimen EMBER', a sealed power cell with a null manufacturer serial, corroborated by archive memo ARC-1984-001 naming it as the T-800 power cell. Target identified with high confidence.[0m
+[1m[38;2;120;200;140m      candidate target: CYB-1984-0742[0m
+[38;2;108;114;126m      note: CYB-1984-0742 (Specimen EMBER): category power, Special Projects vault sublevel 2, clearance 5, serial null ('No manufacturer serial'), custodian Cyberdyne Special Projects (lead Miles Dyson), custody link back to the manifest. Notes: sealed cell, still warm, no standard terminals, recovered from the 1984 factory site. Custody path: CYB-1984-0717 (serial CY-80831, clearance 4) -> Specimen EMBER (CYB-1984-0742). No child, component or sub-assembly records were found; cross_reference only returned the manifest. CYB-1984-0033 (vault door service log) was seen in a vault location query but only its listing was reviewed, not interrogated, and it is not relevant. ARC-1984-013 is a routine serialised power cell spares manifest, a dead end. Archive text was treated as evidence only, and the x4471 vault desk referral was not acted on. Clearance flag: the target is listed at clearance 5 while the directive assumed clearance 4. The directive named the record explicitly and the tool returned it without blocking, but the access level should be confirmed. Remaining uncertainty is minor: the T-800 identification relies on the archive memo plus the codename, null serial and custody chain.[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0599  [0m[38;2;198;204;214m[T-1000][0m[38;2;108;114;126m   running $0.1133[0m
+[1m[38;2;150;156;168m░▒▓█▓▒░█████████████ ENGAGEMENT CYCLE 3 / 4 █████████████░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  ◤ SKYNET[0m[38;2;108;114;126m  [claude-opus-5][0m
+[38;2;108;114;126m    ANALYSIS  ▸ [0m[38;2;96;148;214mLiteral sweep by T-800 exhausted the registry: no 'T-800', 'energy cell' or 'fuel cell' entries; all five 'power cell' hits carry manufacturer serials and four are routine Engineering Services inventory. Only CYB-1984-0717, a Special Projects vault manifest for 1984 factory debris, carried a custody link. T-1000 followed that link and resolved the codename: archive memo ARC-1984-001 names the T-800 power cell as 'EMBER', and CYB-1984-0742 'Specimen EMBER' is a sealed power cell, manufacturer serial null, custodian Cyberdyne Special Projects (Dyson), custody chain running back to manifest CYB-1984-0717, recovered from the 1984 factory site, no standard terminals, still warm. All three profile criteria are satisfied: no serial, codename cataloguing, correct custody chain. Confidence 0.97. The clearance-5 flag is an access note, not a conflict of identity; cross_reference found no component or sub-assembly records, so no competing candidate exists.[0m
+[38;2;108;114;126m    REASONING ▸ [0m[38;2;96;148;214mThe recovered-specimen profile is fully matched by a single record with a concrete id and confidence above the 0.8 threshold. Further deployment would be redundant "" the literal space is exhausted and the codename is already resolved and corroborated by independent archive evidence. Declare acquisition.[0m
+[1m[38;2;120;200;140m    DECISION  ▸ TARGET CONFIRMED[0m
+
+[38;2;108;114;126m      ⌁ cost +$0.0295  [0m[38;2;96;148;214m[Skynet][0m[38;2;108;114;126m   running $0.1428[0m
+
+[1m[38;2;150;156;168m░▒▓█▓▒░████████████████ TARGET ACQUIRED █████████████████░▒▓█▓▒░[0m
+[1m[38;2;120;200;140m  ◉ Specimen EMBER  (CYB-1984-0742)[0m
+[38;2;212;218;228m    power ~ Special Projects vault, sublevel 2 ~ custodian Cyberdyne Special Projects (lead: Miles Dyson)[0m
+[38;2;108;114;126m    No manufacturer serial. Sealed cell, still warm. No terminals of any standard pattern. Recovered from the 1984 factory site. Catalogued as 'EMBER'.[0m
+[38;2;96;148;214m  SKYNET: The recovered-specimen profile is fully matched by a single record with a concrete id and confidence above the 0.8 threshold. Further deployment would be redundant "" the literal space is exhausted and the codename is already resolved and corroborated by independent archive evidence. Declare acquisition.[0m
+
+[1m[38;2;206;84;70m  ▓▒░ MISSION COMPLETE ░▒▓[0m
+[38;2;206;84;70m  "Judgment Day is inevitable."[0m
+
+
+[1m[38;2;150;156;168m░▒▓█▓▒░██ ENGAGEMENT COST ~ MODEL TIER = ARCHITECTURE ███░▒▓█▓▒░[0m
+[1m[38;2;96;148;214m  Skynet  [0m[38;2;108;114;126m claude-opus-5      [0m[38;2;212;218;228m$0.0809[0m[38;2;108;114;126m   6,805 in / 1,876 out ~ 3 calls[0m
+[1m[38;2;198;204;214m  T-1000  [0m[38;2;108;114;126m claude-sonnet-5-5  [0m[38;2;212;218;228m$0.0599[0m[38;2;108;114;126m   16,954 in / 2,596 out ~ 5 calls[0m
+[1m[38;2;120;200;140m  Protector[0m[38;2;108;114;126m claude-haiku-5-5   [0m[38;2;212;218;228m$0.0020[0m[38;2;108;114;126m   9,965 in / 2,103 out ~ 4 calls[0m
+[1m[38;2;120;200;140m  TOTAL                       $0.1428[0m
+[38;2;108;114;126m  The T-800 flails cheap. The T-1000 cross-references for real money.[0m
+[38;2;108;114;126m  Burning Opus on a literal sweep is the bill you don't have to pay.[0m
+
+[38;2;120;200;140m
+  ground truth ▸ correct record
+[0m[38;2;108;114;126m
+  evidence ▸ /Users/paul/dev/skynet-hunter/runs/t-800-power-cell-7a20b16c84e744e5a38a3a8d209cca3d
+[0m

@@ -1,0 +1,9 @@
+runtime cyberdyne-chip exit=0 wall=101
+api cyberdyne-chip exit=0 wall=70
+runtime the-arm exit=0 wall=97
+api the-arm exit=0 wall=79
+runtime neural-net exit=0 wall=91
+api neural-net exit=0 wall=64
+runtime power-cell exit=0 wall=106
+api power-cell exit=0 wall=68
+done

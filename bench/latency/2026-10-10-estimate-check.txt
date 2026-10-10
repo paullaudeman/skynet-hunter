@@ -1,0 +1,10 @@
+runtime  cyberdyne-chip  measured  101s predicted  104.2s (+3.1%)  T-1000 5x0.69+3,438/68=54s · Skynet 3x1.47+1,421/39=41s · Protector 3x0.71+610/87=9s
+runtime  the-arm         measured   97s predicted  103.3s (+6.5%)  T-1000 5x0.69+3,319/68=52s · Skynet 3x1.47+1,392/39=40s · Protector 3x0.71+752/87=11s
+runtime  neural-net      measured   91s predicted  106.5s (+17.0%)  T-1000 5x0.69+3,565/68=56s · Skynet 3x1.47+1,415/39=41s · Protector 3x0.71+663/87=10s
+runtime  power-cell      measured  106s predicted  137.3s (+29.5%)  T-1000 6x0.69+4,269/68=67s · Skynet 3x1.47+1,780/39=50s · Protector 4x0.71+1,497/87=20s
+api      cyberdyne-chip  measured   70s predicted   72.6s (+3.7%)  Skynet 3x2.47+1,787/83=29s · T-1000 5x1.46+2,512/129=27s · Protector 4x0.83+2,601/190=17s
+api      the-arm         measured   79s predicted   82.5s (+4.4%)  Skynet 3x2.47+1,964/83=31s · T-1000 4x1.46+3,139/129=30s · Protector 4x0.83+3,427/190=21s
+api      neural-net      measured   64s predicted   63.7s (-0.5%)  Skynet 3x2.47+1,728/83=28s · T-1000 5x1.46+2,694/129=28s · Protector 3x0.83+932/190=7s
+api      power-cell      measured   68s predicted   71.7s (+5.4%)  Skynet 3x2.47+1,876/83=30s · T-1000 5x1.46+2,596/129=27s · Protector 4x0.83+2,103/190=14s
+runtime: mean error +14.0%
+api: mean error +3.2%
