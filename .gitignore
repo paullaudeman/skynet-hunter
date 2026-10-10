@@ -27,3 +27,9 @@ reflections/
 
 # Draft positioning content (LinkedIn / Medium) ~ local until published
 content/
+
+# Local directory banner (machine-specific)
+.dirbanner
+
+# Evidence bundles (one per run)
+runs/

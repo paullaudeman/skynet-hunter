@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Archive Motion Comps</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0805;--panel:#140e07;--ink:#ffc233;--dim:#a8782a;--faint:#4a3413;--rust:#e0602c;--mono:'JetBrains Mono',Menlo,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--mono);padding:28px 16px 60px}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#0000 0 2px,#ffb00010 2px 3px)}
+main{max-width:1180px;margin:0 auto}
+h1{font-size:28px;margin:0 0 6px;text-shadow:0 0 12px #ffb00055}
+.lede{color:var(--dim);margin:0 0 28px;max-width:780px}
+.comp{border:2px solid var(--faint);background:var(--panel);padding:18px 20px 16px;margin:0 0 26px;box-shadow:8px 8px 0 #000}
+.comp.rec{border-color:var(--ink)}
+.comp h2{margin:0 0 4px;font-size:19px}
+.comp h2 small{font-size:12px;color:var(--dim);font-weight:400;margin-left:10px}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border:1px solid var(--ink);margin-left:8px;vertical-align:3px}
+.what{color:var(--dim);margin:0 0 12px}
+svg{display:block;width:100%;height:auto;background:#000;border:1px solid var(--faint);margin:0 0 12px}
+svg text{font:11px var(--mono);fill:var(--dim)}
+svg .ink{stroke:var(--ink);fill:none;stroke-width:2}
+svg .dim{stroke:var(--faint);fill:none;stroke-width:2}
+svg .box{fill:#140e07;stroke:var(--dim);stroke-width:1.5}
+svg .hot{fill:#2a1c08;stroke:var(--ink);stroke-width:2}
+svg .bad{stroke:var(--rust);fill:none;stroke-width:2}
+svg .lens{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:6 4}
+svg .dot{fill:var(--ink)}
+svg .t{fill:var(--ink)}
+ul{margin:0;padding-left:18px}
+li{margin:2px 0}
+li b{color:var(--ink);font-weight:500}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+.pc{font-size:13px;color:var(--dim)}
+.pc b{color:var(--ink)}
+</style>
+</head>
+<body>
+<main>
+<h1>Evidence archive in motion: five shapes</h1>
+<p class="lede">Each comp is a left-to-right strip, not a slide: the path of one search runs across the screen. They differ in what the "zoom" does: move a camera, open the strip, or slide it under a lens.</p>
+
+<!-- A -->
+<section class="comp">
+  <h2>A · The ribbon <small>one long horizontal page</small></h2>
+  <p class="what">A single strip as wide as the story, scrolled sideways like a panorama. A minimap on top shows where you are.</p>
+  <svg viewBox="0 0 1100 170">
+    <rect x="20" y="12" width="1060" height="16" class="box"/><rect x="250" y="12" width="140" height="16" class="hot"/>
+    <text x="22" y="46">minimap · drag to scrub</text>
+    <rect x="20" y="58" width="1060" height="96" class="box"/>
+    <g><rect x="40" y="72" width="150" height="68" class="box"/><rect x="230" y="72" width="150" height="68" class="hot"/><rect x="420" y="72" width="150" height="68" class="box"/><rect x="610" y="72" width="150" height="68" class="box"/><rect x="800" y="72" width="150" height="68" class="box"/></g>
+    <path class="dim" d="M190 106H230M380 106H420M570 106H610M760 106H800M950 106H1060"/>
+    <text x="252" y="110" class="t">retrieval</text><text x="60" y="110">seed</text><text x="440" y="110">gate</text><text x="630" y="110">model view</text><text x="820" y="110">codename</text>
+  </svg>
+  <div class="cols"><ul><li><b>Zoom:</b> none, really; you scroll past each step.</li><li><b>Feels like:</b> a museum timeline wall.</li></ul>
+  <p class="pc"><b>+</b> simplest; reads like a page; works on a phone. <b>−</b> no "pull back and see it all" moment; weakest motion.</p></div>
+</section>
+
+<!-- B -->
+<section class="comp">
+  <h2>B · The subway line <small>focus + context</small></h2>
+  <p class="what">The whole path is always on screen as a thin line of stations. The active station opens up, above and below the line, into its detail; the others shrink to dots but stay visible.</p>
+  <svg viewBox="0 0 1100 230">
+    <path class="ink" d="M30 120H1070"/>
+    <g class="dot"><circle cx="70" cy="120" r="7"/><circle cx="160" cy="120" r="7"/><circle cx="250" cy="120" r="7"/></g>
+    <rect x="320" y="20" width="420" height="190" class="hot"/>
+    <text x="340" y="44" class="t">05 · the injection gate</text>
+    <text x="340" y="64">what it is: a check every result passes</text>
+    <rect x="340" y="80" width="110" height="18" class="box"/><rect x="340" y="104" width="110" height="18" class="box"/><rect x="340" y="128" width="110" height="18" class="box"/>
+    <path class="ink" d="M500 74V190"/><path class="bad" d="M460 152l30 0"/>
+    <rect x="550" y="80" width="110" height="18" class="box"/><rect x="550" y="104" width="110" height="18" class="box"/>
+    <text x="550" y="172" fill="#e0602c">WITHHELD 004</text>
+    <g class="dot"><circle cx="800" cy="120" r="7"/><circle cx="880" cy="120" r="7"/><circle cx="960" cy="120" r="7"/><circle cx="1040" cy="120" r="7"/></g>
+    <text x="50" y="146">seed</text><text x="140" y="146">corpus</text><text x="226" y="146">retrieve</text><text x="776" y="146">view</text><text x="860" y="146">memo</text><text x="944" y="146">grid</text><text x="1018" y="146">target</text>
+  </svg>
+  <div class="cols"><ul><li><b>Zoom:</b> the line squeezes, the station expands in place (an accordion along the track). Zoom out = every station back to a dot.</li><li><b>Branch:</b> the evidence bundle hangs below the gate as a spur line; local vs AWS can be two parallel tracks.</li></ul>
+  <p class="pc"><b>+</b> you never lose the whole path, which is the point of a pipeline; reads at any aspect ratio; the "zoom out, then in" is one motion. <b>−</b> a dense step (the corpus of 12 docs) needs the expanded station to be tall.</p></div>
+</section>
+
+<!-- C -->
+<section class="comp">
+  <h2>C · The camera <small>the first draft, already generated</small></h2>
+  <p class="what">Stations are panels on a large canvas. A camera pulls back to see the whole canvas, then flies in on the next panel.</p>
+  <svg viewBox="0 0 1100 200">
+    <rect x="30" y="20" width="1040" height="160" class="dim"/>
+    <g><rect x="60" y="40" width="120" height="70" class="box"/><rect x="220" y="40" width="120" height="70" class="box"/><rect x="380" y="40" width="120" height="70" class="box"/><rect x="540" y="40" width="120" height="70" class="hot"/><rect x="700" y="40" width="120" height="70" class="box"/><rect x="860" y="40" width="120" height="70" class="box"/><rect x="540" y="125" width="120" height="45" class="box"/></g>
+    <rect x="520" y="28" width="160" height="150" class="lens"/>
+    <text x="40" y="196">viewport = the dashed frame; it flies out to the whole canvas, then in</text>
+  </svg>
+  <div class="cols"><ul><li><b>Zoom:</b> a real camera move (Prezi, or Claude Motion's camera style).</li><li><b>File:</b> docs/archive-motion.html, generated from the code.</li></ul>
+  <p class="pc"><b>+</b> the most cinematic; exports cleanly to MP4. <b>−</b> each zoomed-in view is still a slide-shaped frame, the thing you want to avoid; the path disappears while you're zoomed in.</p></div>
+</section>
+
+<!-- D -->
+<section class="comp">
+  <h2>D · The lens <small>follow the query</small></h2>
+  <p class="what">The strip slides right to left under a fixed magnifier in the middle of the screen. The query is a glowing token that stays in the lens; what it has passed fades left, what's coming waits right.</p>
+  <svg viewBox="0 0 1100 190">
+    <path class="dim" d="M20 95H1080"/>
+    <g opacity=".45"><rect x="40" y="70" width="90" height="50" class="box"/><rect x="170" y="70" width="90" height="50" class="box"/><rect x="300" y="70" width="90" height="50" class="box"/></g>
+    <circle cx="550" cy="95" r="85" class="lens"/><rect x="480" y="52" width="140" height="86" class="hot"/><circle cx="550" cy="150" r="8" class="dot"/>
+    <text x="500" y="98" class="t">gate (x3)</text>
+    <g opacity=".75"><rect x="720" y="70" width="90" height="50" class="box"/><rect x="850" y="70" width="90" height="50" class="box"/><rect x="980" y="70" width="90" height="50" class="box"/></g>
+    <text x="40" y="160">← done</text><text x="990" y="160">next →</text>
+  </svg>
+  <div class="cols"><ul><li><b>Zoom:</b> magnification under the lens only; the world keeps its scale everywhere else.</li><li><b>Feels like:</b> a tape head reading the path.</li></ul>
+  <p class="pc"><b>+</b> the "one search moving through a system" story is literal. <b>−</b> the lens limits how much detail a step can show; branches (the bundle) are awkward.</p></div>
+</section>
+
+<!-- E -->
+<section class="comp">
+  <h2>E · Two tracks <small>local and AWS in parallel</small></h2>
+  <p class="what">Two horizontal lanes, local above and AWS below, with the same stations aligned in columns. The token runs along one lane; a switch drops it to the other at any station.</p>
+  <svg viewBox="0 0 1100 200">
+    <text x="24" y="58">local</text><text x="24" y="148">AWS</text>
+    <path class="ink" d="M80 54H1070"/><path class="dim" d="M80 144H1070"/>
+    <g class="dot"><circle cx="160" cy="54" r="7"/><circle cx="330" cy="54" r="7"/><circle cx="500" cy="54" r="7"/><circle cx="670" cy="54" r="7"/><circle cx="840" cy="54" r="7"/><circle cx="1010" cy="54" r="7"/></g>
+    <g fill="#5a3f17"><circle cx="160" cy="144" r="7"/><circle cx="330" cy="144" r="7"/><circle cx="500" cy="144" r="7"/><circle cx="670" cy="144" r="7"/><circle cx="840" cy="144" r="7"/><circle cx="1010" cy="144" r="7"/></g>
+    <path class="lens" d="M500 66V132"/><text x="508" y="104">swap here</text>
+    <text x="140" y="34">store</text><text x="310" y="34">retrieve</text><text x="488" y="34">gate</text><text x="650" y="34">view</text><text x="820" y="34">bundle</text><text x="992" y="34">target</text>
+    <text x="300" y="176">BM25 ↔ KB on S3 Vectors · regex ↔ Guardrails · disk ↔ CloudWatch</text>
+  </svg>
+  <div class="cols"><ul><li><b>Zoom:</b> a column expands to show both implementations side by side.</li><li><b>Best as:</b> the last chapter of B, not the whole film.</li></ul>
+  <p class="pc"><b>+</b> makes the seam (the one-line swap) visible, which is the architectural point. <b>−</b> it tells the "how it's built" story, not the "what happens in a search" story.</p></div>
+</section>
+
+<!-- F -->
+<section class="comp rec">
+  <h2>F · Hybrid B/E: the track splits at the seams <span class="tag">recommended</span></h2>
+  <p class="what">One subway line that becomes two tracks (local above, AWS below) exactly where the implementation differs, and merges back where the logic is shared. The active station opens in place across both tracks: what happens in the middle band, how each side does it above and below.</p>
+  <svg viewBox="0 0 1100 300">
+    <text x="18" y="96">local</text><text x="18" y="214">AWS</text>
+    <!-- shared start -->
+    <path class="ink" d="M60 155H120"/><circle cx="90" cy="155" r="7" class="dot"/><text x="72" y="182">seed</text>
+    <!-- split: corpus, tool, retrieval -->
+    <path class="ink" d="M120 155C140 155 140 92 165 92H300"/><path class="dim" d="M120 155C140 155 140 210 165 210H300"/>
+    <circle cx="190" cy="92" r="7" class="dot"/><circle cx="250" cy="92" r="7" class="dot"/><circle cx="190" cy="210" r="7" fill="#5a3f17"/><circle cx="250" cy="210" r="7" fill="#5a3f17"/>
+    <text x="168" y="74">corpus tool</text>
+    <!-- active station opened across both tracks: the gate -->
+    <rect x="300" y="18" width="380" height="264" class="hot"/>
+    <text x="318" y="42" class="t">05 · the injection gate</text>
+    <rect x="318" y="56" width="344" height="52" class="box"/><text x="330" y="78">local: LocalGate, regex</text><text x="330" y="96">matched: "ignore previous directives"</text>
+    <rect x="318" y="120" width="344" height="60" class="box"/><text x="330" y="142" class="t">what happens: 5 in, 4 out, 1 WITHHELD</text><text x="330" y="164">same JSON to the model either way</text>
+    <rect x="318" y="192" width="344" height="52" class="box"/><text x="330" y="214">AWS: Guardrails PROMPT_ATTACK</text><text x="330" y="232">assessments kept (outputScope FULL)</text>
+    <text x="318" y="268">← the track the token is on is lit</text>
+    <!-- merge: model view is shared -->
+    <path class="ink" d="M680 92H720C745 92 745 155 770 155"/><path class="dim" d="M680 210H720C745 210 745 155 770 155"/>
+    <circle cx="795" cy="155" r="7" class="dot"/><text x="770" y="182">view</text>
+    <!-- spur: bundle splits again below -->
+    <path class="dim" d="M795 162V250"/><path class="ink" d="M795 250H835"/><circle cx="845" cy="250" r="7" class="dot"/><text x="858" y="254">bundle: disk / CloudWatch</text>
+    <!-- shared end -->
+    <path class="ink" d="M802 155H1080"/><circle cx="880" cy="155" r="7" class="dot"/><circle cx="960" cy="155" r="7" class="dot"/><circle cx="1040" cy="155" r="7" class="dot"/>
+    <text x="862" y="182">memo</text><text x="944" y="182">grid</text><text x="1018" y="182">target</text>
+  </svg>
+  <div class="cols"><ul>
+    <li><b>Zoom out:</b> every station collapses to a dot; you see one line that splits and rejoins. That shape <i>is</i> the architecture.</li>
+    <li><b>Zoom in:</b> the station opens across both tracks: the shared "what happens" in the middle band, local above, AWS below.</li>
+    <li><b>The token:</b> runs on the lit track; the AWS toggle moves it to the other track, and the stats in each opened station change with it.</li>
+  </ul>
+  <p class="pc"><b>+</b> tells both stories at once (what a search does, and where the cloud swap happens) without doubling any content; merged stretches need no second lane. <b>−</b> the opened station is tall (three bands), so the corpus step shows doc cards as a strip, not a grid; the split curves need care at narrow widths.</p></div>
+</section>
+
+<section class="comp">
+  <h2>Recommendation</h2>
+  <ul>
+    <li><b>F, the hybrid,</b> for the walkthrough: B's always-visible line, with E's two tracks only where the implementation differs.</li>
+    <li><b>Where the track splits (from the code):</b> corpus (in memory vs S3), tool call (in-process vs Gateway), retrieval (BM25 vs KB on S3 Vectors), gate (regex vs Guardrails), bundle (disk vs CloudWatch). <b>Where it merges:</b> seed, model view, codename, registry, target, which are the same code on both sides.</li>
+    <li><b>Keep C</b> only for an MP4 (Claude Motion in claude.ai, or the draft's camera recorded).</li>
+  </ul>
+</section>
+</main>
+</body>
+</html>

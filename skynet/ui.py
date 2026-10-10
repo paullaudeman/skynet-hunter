@@ -136,7 +136,10 @@ class UI:
             data = json.loads(out)
         except json.JSONDecodeError:
             data = out
-        if isinstance(data, list):
+        if isinstance(data, dict) and "results" in data:
+            held = sum(1 for r in data["results"] if r.get("suspected_injection"))
+            summary = f"{len(data['results'])} document(s)" + (f", {held} withheld" if held else "")
+        elif isinstance(data, list):
             summary = f"{len(data)} record(s)"
         elif isinstance(data, dict) and "error" in data:
             summary = data["error"]
@@ -144,7 +147,8 @@ class UI:
             summary = data.get("name", data.get("id", "1 record"))
         else:
             summary = str(data)[:60]
-        self._out(self.t.paint("dim", f"      └─ grid ▸ {summary}"))
+        source = "archive" if name == "search_archive" else "grid"
+        self._out(self.t.paint("dim", f"      └─ {source} ▸ {summary}"))
         self._pause(0.05)
 
     def intel_report(self, unit: Any, report: Any) -> None:

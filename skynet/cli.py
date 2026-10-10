@@ -57,6 +57,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--scenario", choices=scenario.SCENARIO_CHOICES, default="cyberdyne-chip",
                    help="Which hunt to run. 'random' rerolls a fresh scenario.")
     p.add_argument("--seed", type=int, help="Seed for --scenario random (reproducible rerolls).")
+    p.add_argument("--archive", action="store_true",
+                   help="Attach the 1984 document archive (search_archive): a second route to the target.")
+    p.add_argument("--archive-kb", metavar="KB_ID",
+                   help="Use a Bedrock Knowledge Base as the archive instead of the local one (implies --archive).")
+    p.add_argument("--guardrail", metavar="ID:VERSION",
+                   help="Gate archive results with Bedrock Guardrails (numbered version, never DRAFT).")
+    p.add_argument("--aws-region", help="Region for --archive-kb / --guardrail. Always explicit.")
+    p.add_argument("--record", action="store_true",
+                   help="Write an evidence bundle to runs/<session_id>/ (always on for live runs).")
+    p.add_argument("--no-record", action="store_true", help="Live runs only: skip the evidence bundle.")
     p.add_argument("--max-cycles", type=int, help="Override the engagement budget.")
     p.add_argument("--no-art", action="store_true", help="Mute the BBS theater / typewriter delays.")
     p.add_argument("--config", default=str(DEFAULT_CONFIG), help="Path to config.toml.")
@@ -77,6 +87,43 @@ def main(argv: list[str] | None = None) -> int:
     theme = Theme(theme_name)
     ui = UI(theme, art=not args.no_art)
     units = build_units(config)
+    store = None
+    cloud = bool(args.archive_kb or args.guardrail)
+    if (args.archive or cloud) and (args.tui or args.arena):
+        sys.stderr.write("  --archive is not wired into --tui or --arena yet. Use it with --simulate or a live run.\n")
+        return 1
+    if cloud and args.simulate:
+        # --simulate promises no spend; a Knowledge Base or Guardrail would bill every search.
+        sys.stderr.write("  --archive-kb and --guardrail call AWS and bill per search; --simulate never spends. Drop one.\n")
+        return 1
+    if cloud:
+        if not args.aws_region:
+            sys.stderr.write("  --archive-kb and --guardrail need an explicit --aws-region.\n")
+            return 1
+        try:
+            import boto3  # noqa: F401
+        except ModuleNotFoundError:
+            sys.stderr.write("  The AWS archive needs boto3: uv sync --extra aws\n")
+            return 1
+        from . import archive_aws
+        gate = None
+        if args.guardrail:
+            gid, sep, ver = args.guardrail.partition(":")
+            if not (gid and sep and ver):
+                sys.stderr.write("  --guardrail takes ID:VERSION, e.g. abc123:1 (a numbered version, never DRAFT).\n")
+                return 1
+            from .archive import LocalGate, UnionGate
+            # both gates, withhold on either (probe, 10. Oct 2026: they miss different attacks)
+            gate = UnionGate([LocalGate(), archive_aws.BedrockGuardrailGate(gid, ver, args.aws_region)])
+        if args.archive_kb:
+            store = archive_aws.BedrockKBEvidenceStore(args.archive_kb, sc.key, args.aws_region, gate=gate)
+        else:
+            from .archive import LocalEvidenceStore, build_archive
+            store = LocalEvidenceStore(build_archive(sc, seed=args.seed))
+            store.gate = gate
+    elif args.archive:
+        from .archive import LocalEvidenceStore, build_archive
+        store = LocalEvidenceStore(build_archive(sc, seed=args.seed))
 
     if args.tui:
         from .tui.app import run_tui
@@ -88,8 +135,30 @@ def main(argv: list[str] | None = None) -> int:
         arena.run_arena_simulation(units, sc, ui, max_cycles)
         return 0
 
+    # Evidence bundle: on for live runs (they cost money; the record must not be missing),
+    # opt-in for --simulate. Wrapping only records; what the model and the screen get is unchanged.
+    from .orchestrator import new_session_id
+    session_id = new_session_id(target)
+    rec = None
+    if args.record or (not args.simulate and not args.no_record):
+        from .evidence import EvidenceRecorder, RecordingStore, RecordingUI
+        rec = EvidenceRecorder(session_id, mode="simulate" if args.simulate else "live",
+                               scenario=sc.key, seed=args.seed, target=target,
+                               models={k: u.model for k, u in units.items()},
+                               archive=None if store is None else type(store).__name__,
+                               gate=None if store is None else type(getattr(store, "gate", None)).__name__)
+        ui = RecordingUI(ui, rec)
+        if store is not None:
+            store = RecordingStore(store, rec)
+
+    def bundle_done(outcome: str, **extra) -> None:
+        if rec is not None:
+            path = rec.finish(outcome, **extra)
+            sys.stderr.write(theme.paint("dim", f"\n  evidence ▸ {path.parent}\n"))
+
     if args.simulate:
-        simulate.run_simulation(units, sc, ui, max_cycles)
+        ok = simulate.run_simulation(units, sc, ui, max_cycles, archive=store)
+        bundle_done("acquired" if ok else "failed")
         ui.hold()
         return 0
 
@@ -108,8 +177,21 @@ def main(argv: list[str] | None = None) -> int:
 
     client = make_client()
     ui.boot()
-    skynet = Skynet(client, units, db, ui, target, max_cycles, profile=sc.profile)
-    acquired = skynet.run()
+    skynet = Skynet(client, units, db, ui, target, max_cycles, profile=sc.profile,
+                    session_id=session_id, archive=store)
+    acquired = False
+    try:
+        acquired = skynet.run()
+    finally:
+        # a crashed run still leaves its evidence
+        refusal = skynet.refusal
+        outcome = "acquired" if acquired else ("refused" if refusal else "failed")
+        if rec is not None and rec.cost is None:
+            rec.cost = {"total_cost": round(skynet.meter.total_cost, 6), "estimated": skynet.meter.estimated}
+        bundle_done(outcome, refusal=refusal)
+    gate = getattr(store, "gate", None)
+    if getattr(gate, "errors", 0):
+        sys.stderr.write(theme.paint("bad", f"\n  Guardrail errors: {gate.errors}. Those documents were withheld (fail closed).\n"))
     ui.hold()
     return 0 if acquired else 2
 
